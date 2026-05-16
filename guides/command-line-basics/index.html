@@ -1,297 +1,368 @@
-<main class="content">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <section class="content-section">
-    <p class="section-label">Guide</p>
-    <h2>Command Line Basics for IT, Networking and Security</h2>
+  <title>Command Line Basics | Alex Mateescu</title>
 
-    <p>
-      This guide is a beginner-friendly introduction to the command line.
-      The goal is to understand how to move around the system, check files and folders,
-      create simple files, and run basic network checks.
-    </p>
+  <link rel="stylesheet" href="../../style.css" />
 
-    <p>
-      The examples use a Linux-style terminal prompt:
-    </p>
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
 
-    <pre><code>hawkode@linux:~$</code></pre>
+  <div class="page">
 
-    <p>
-      You do not type the full prompt. You only type the command after the <strong>$</strong> symbol.
-    </p>
-  </section>
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
 
-  <section class="content-section">
-    <p class="section-label">Step 1</p>
-    <h2>Understand the terminal prompt</h2>
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
 
-    <p>
-      A terminal prompt shows that the system is ready for you to type a command.
-    </p>
+        <div class="contact">
+          <p>al3ksmatee@gmail.com</p>
 
-    <pre><code>hawkode@linux:~$</code></pre>
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
 
-    <p>
-      In this example:
-    </p>
+            <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
 
-    <ul>
-      <li><strong>hawkode</strong> is the username</li>
-      <li><strong>linux</strong> is the computer name</li>
-      <li><strong>~</strong> means the home folder</li>
-      <li><strong>$</strong> means the terminal is ready for a command</li>
-    </ul>
-  </section>
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
 
-  <section class="content-section">
-    <p class="section-label">Step 2</p>
-    <h2>Check where you are with pwd</h2>
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
 
-    <p>
-      The <strong>pwd</strong> command shows your current folder location.
-      It means <strong>print working directory</strong>.
-    </p>
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          Command line basics for IT, networking, Linux practice, and security labs.
+        </p>
+      </section>
 
-    <pre><code>hawkode@linux:~$ pwd
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../../#guides" class="active">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Guide</p>
+        <h2>Command Line Basics for IT, Networking and Security</h2>
+
+        <p>
+          This guide is a beginner-friendly introduction to the command line.
+          The goal is to understand how to move around the system, check files and folders,
+          create simple files, and run basic network checks.
+        </p>
+
+        <p>
+          The examples use a Linux-style terminal prompt:
+        </p>
+
+        <pre><code>hawkode@linux:~$</code></pre>
+
+        <p>
+          You do not type the full prompt. You only type the command after the <strong>$</strong> symbol.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 1</p>
+        <h2>Understand the terminal prompt</h2>
+
+        <p>
+          A terminal prompt shows that the system is ready for you to type a command.
+        </p>
+
+        <pre><code>hawkode@linux:~$</code></pre>
+
+        <p>
+          In this example:
+        </p>
+
+        <ul>
+          <li><strong>hawkode</strong> is the username</li>
+          <li><strong>linux</strong> is the computer name</li>
+          <li><strong>~</strong> means the home folder</li>
+          <li><strong>$</strong> means the terminal is ready for a command</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 2</p>
+        <h2>Check where you are with pwd</h2>
+
+        <p>
+          The <strong>pwd</strong> command shows your current folder location.
+          It means <strong>print working directory</strong>.
+        </p>
+
+        <pre><code>hawkode@linux:~$ pwd
 /home/hawkode</code></pre>
 
-    <p>
-      This is useful before creating, moving, or deleting files because it confirms
-      where you are in the system.
-    </p>
-  </section>
+        <p>
+          This is useful before creating, moving, or deleting files because it confirms
+          where you are in the system.
+        </p>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Step 3</p>
-    <h2>List files and folders with ls</h2>
+      <section class="content-section">
+        <p class="section-label">Step 3</p>
+        <h2>List files and folders with ls</h2>
 
-    <p>
-      The <strong>ls</strong> command shows what is inside the current folder.
-    </p>
+        <p>
+          The <strong>ls</strong> command shows what is inside the current folder.
+        </p>
 
-    <pre><code>hawkode@linux:~$ ls
+        <pre><code>hawkode@linux:~$ ls
 Desktop  Documents  Downloads  Projects</code></pre>
 
-    <p>
-      This helps you see what folders or files are available before moving around.
-    </p>
+        <p>
+          This helps you see what folders or files are available before moving around.
+        </p>
 
-    <p>
-      A more detailed version is:
-    </p>
+        <p>
+          A more detailed version is:
+        </p>
 
-    <pre><code>hawkode@linux:~$ ls -l</code></pre>
+        <pre><code>hawkode@linux:~$ ls -l</code></pre>
 
-    <p>
-      This shows extra information such as file permissions, owner, size, and date modified.
-    </p>
-  </section>
+        <p>
+          This shows extra information such as file permissions, owner, size, and date modified.
+        </p>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Step 4</p>
-    <h2>Move between folders with cd</h2>
+      <section class="content-section">
+        <p class="section-label">Step 4</p>
+        <h2>Move between folders with cd</h2>
 
-    <p>
-      The <strong>cd</strong> command means <strong>change directory</strong>.
-      It lets you move into another folder.
-    </p>
+        <p>
+          The <strong>cd</strong> command means <strong>change directory</strong>.
+          It lets you move into another folder.
+        </p>
 
-    <pre><code>hawkode@linux:~$ cd Documents
+        <pre><code>hawkode@linux:~$ cd Documents
 hawkode@linux:~/Documents$</code></pre>
 
-    <p>
-      The prompt changed from:
-    </p>
+        <p>
+          The prompt changed from:
+        </p>
 
-    <pre><code>~$</code></pre>
+        <pre><code>~$</code></pre>
 
-    <p>
-      to:
-    </p>
+        <p>
+          to:
+        </p>
 
-    <pre><code>~/Documents$</code></pre>
+        <pre><code>~/Documents$</code></pre>
 
-    <p>
-      That means you are now inside the Documents folder.
-    </p>
+        <p>
+          That means you are now inside the Documents folder.
+        </p>
 
-    <p>
-      To go back one folder:
-    </p>
+        <p>
+          To go back one folder:
+        </p>
 
-    <pre><code>hawkode@linux:~/Documents$ cd ..
+        <pre><code>hawkode@linux:~/Documents$ cd ..
 hawkode@linux:~$</code></pre>
-  </section>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Step 5</p>
-    <h2>Create a folder with mkdir</h2>
+      <section class="content-section">
+        <p class="section-label">Step 5</p>
+        <h2>Create a folder with mkdir</h2>
 
-    <p>
-      The <strong>mkdir</strong> command creates a new folder.
-    </p>
+        <p>
+          The <strong>mkdir</strong> command creates a new folder.
+        </p>
 
-    <pre><code>hawkode@linux:~$ mkdir labs</code></pre>
+        <pre><code>hawkode@linux:~$ mkdir labs</code></pre>
 
-    <p>
-      Now check that the folder was created:
-    </p>
+        <p>
+          Now check that the folder was created:
+        </p>
 
-    <pre><code>hawkode@linux:~$ ls
+        <pre><code>hawkode@linux:~$ ls
 Desktop  Documents  Downloads  Projects  labs</code></pre>
 
-    <p>
-      This is useful for organising lab files, notes, scripts, and project work.
-    </p>
-  </section>
+        <p>
+          This is useful for organising lab files, notes, scripts, and project work.
+        </p>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Step 6</p>
-    <h2>Create a file with touch</h2>
+      <section class="content-section">
+        <p class="section-label">Step 6</p>
+        <h2>Create a file with touch</h2>
 
-    <p>
-      The <strong>touch</strong> command creates an empty file.
-    </p>
+        <p>
+          The <strong>touch</strong> command creates an empty file.
+        </p>
 
-    <pre><code>hawkode@linux:~$ touch notes.txt</code></pre>
+        <pre><code>hawkode@linux:~$ touch notes.txt</code></pre>
 
-    <p>
-      Check that the file exists:
-    </p>
+        <p>
+          Check that the file exists:
+        </p>
 
-    <pre><code>hawkode@linux:~$ ls
+        <pre><code>hawkode@linux:~$ ls
 Desktop  Documents  Downloads  Projects  labs  notes.txt</code></pre>
-  </section>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Step 7</p>
-    <h2>Read a file with cat</h2>
+      <section class="content-section">
+        <p class="section-label">Step 7</p>
+        <h2>Read a file with cat</h2>
 
-    <p>
-      The <strong>cat</strong> command prints the contents of a file in the terminal.
-    </p>
+        <p>
+          The <strong>cat</strong> command prints the contents of a file in the terminal.
+        </p>
 
-    <pre><code>hawkode@linux:~$ cat notes.txt</code></pre>
+        <pre><code>hawkode@linux:~$ cat notes.txt</code></pre>
 
-    <p>
-      If the file is empty, nothing will appear. That is normal.
-    </p>
+        <p>
+          If the file is empty, nothing will appear. That is normal.
+        </p>
 
-    <p>
-      This command is useful for quickly checking small files, notes, logs, and command output.
-    </p>
-  </section>
+        <p>
+          This command is useful for quickly checking small files, notes, logs, and command output.
+        </p>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Step 8</p>
-    <h2>Copy and move files</h2>
+      <section class="content-section">
+        <p class="section-label">Step 8</p>
+        <h2>Copy and move files</h2>
 
-    <p>
-      Use <strong>cp</strong> to copy a file.
-    </p>
+        <p>
+          Use <strong>cp</strong> to copy a file.
+        </p>
 
-    <pre><code>hawkode@linux:~$ cp notes.txt notes-backup.txt</code></pre>
+        <pre><code>hawkode@linux:~$ cp notes.txt notes-backup.txt</code></pre>
 
-    <p>
-      This creates a second copy called <strong>notes-backup.txt</strong>.
-    </p>
+        <p>
+          This creates a second copy called <strong>notes-backup.txt</strong>.
+        </p>
 
-    <p>
-      Use <strong>mv</strong> to move a file into a folder.
-    </p>
+        <p>
+          Use <strong>mv</strong> to move a file into a folder.
+        </p>
 
-    <pre><code>hawkode@linux:~$ mv notes.txt labs/</code></pre>
+        <pre><code>hawkode@linux:~$ mv notes.txt labs/</code></pre>
 
-    <p>
-      Now the file has been moved into the <strong>labs</strong> folder.
-    </p>
-  </section>
+        <p>
+          Now the file has been moved into the <strong>labs</strong> folder.
+        </p>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Step 9</p>
-    <h2>Remove files carefully</h2>
+      <section class="content-section">
+        <p class="section-label">Step 9</p>
+        <h2>Remove files carefully</h2>
 
-    <p>
-      Use <strong>rm</strong> to delete a file.
-    </p>
+        <p>
+          Use <strong>rm</strong> to delete a file.
+        </p>
 
-    <pre><code>hawkode@linux:~$ rm notes-backup.txt</code></pre>
+        <pre><code>hawkode@linux:~$ rm notes-backup.txt</code></pre>
 
-    <p>
-      Be careful: Linux usually does not move deleted files to a recycle bin.
-      Once removed, they can be hard to recover.
-    </p>
+        <p>
+          Be careful: Linux usually does not move deleted files to a recycle bin.
+          Once removed, they can be hard to recover.
+        </p>
 
-    <p>
-      Before deleting anything, check your location:
-    </p>
+        <p>
+          Before deleting anything, check your location:
+        </p>
 
-    <pre><code>hawkode@linux:~$ pwd</code></pre>
+        <pre><code>hawkode@linux:~$ pwd</code></pre>
 
-    <p>
-      And check what files are in the folder:
-    </p>
+        <p>
+          And check what files are in the folder:
+        </p>
 
-    <pre><code>hawkode@linux:~$ ls</code></pre>
-  </section>
+        <pre><code>hawkode@linux:~$ ls</code></pre>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Step 10</p>
-    <h2>Basic network checks</h2>
+      <section class="content-section">
+        <p class="section-label">Step 10</p>
+        <h2>Basic network checks</h2>
 
-    <p>
-      The command line is useful for checking network connectivity.
-    </p>
+        <p>
+          The command line is useful for checking network connectivity.
+        </p>
 
-    <p>
-      Use <strong>ping</strong> to test if a system is reachable:
-    </p>
+        <p>
+          Use <strong>ping</strong> to test if a system is reachable:
+        </p>
 
-    <pre><code>hawkode@linux:~$ ping 8.8.8.8</code></pre>
+        <pre><code>hawkode@linux:~$ ping 8.8.8.8</code></pre>
 
-    <p>
-      Use <strong>ip address</strong> to view network interface and IP information:
-    </p>
+        <p>
+          Use <strong>ip address</strong> to view network interface and IP information:
+        </p>
 
-    <pre><code>hawkode@linux:~$ ip address</code></pre>
+        <pre><code>hawkode@linux:~$ ip address</code></pre>
 
-    <p>
-      These commands are useful when troubleshooting basic connectivity problems.
-    </p>
-  </section>
+        <p>
+          These commands are useful when troubleshooting basic connectivity problems.
+        </p>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Summary</p>
-    <h2>Commands covered</h2>
+      <section class="content-section">
+        <p class="section-label">Summary</p>
+        <h2>Commands covered</h2>
 
-    <div class="list">
-      <p><strong>pwd</strong> — show your current location</p>
-      <p><strong>ls</strong> — list files and folders</p>
-      <p><strong>cd</strong> — move between folders</p>
-      <p><strong>mkdir</strong> — create a folder</p>
-      <p><strong>touch</strong> — create an empty file</p>
-      <p><strong>cat</strong> — read a file</p>
-      <p><strong>cp</strong> — copy a file</p>
-      <p><strong>mv</strong> — move or rename a file</p>
-      <p><strong>rm</strong> — delete a file</p>
-      <p><strong>ping</strong> — test network connectivity</p>
-      <p><strong>ip address</strong> — show network interface information</p>
-    </div>
-  </section>
+        <div class="list">
+          <p><strong>pwd</strong> — show your current location</p>
+          <p><strong>ls</strong> — list files and folders</p>
+          <p><strong>cd</strong> — move between folders</p>
+          <p><strong>mkdir</strong> — create a folder</p>
+          <p><strong>touch</strong> — create an empty file</p>
+          <p><strong>cat</strong> — read a file</p>
+          <p><strong>cp</strong> — copy a file</p>
+          <p><strong>mv</strong> — move or rename a file</p>
+          <p><strong>rm</strong> — delete a file</p>
+          <p><strong>ping</strong> — test network connectivity</p>
+          <p><strong>ip address</strong> — show network interface information</p>
+        </div>
+      </section>
 
-  <section class="content-section">
-    <p class="section-label">Why It Matters</p>
-    <h2>Why this matters in IT and security</h2>
+      <section class="content-section">
+        <p class="section-label">Why It Matters</p>
+        <h2>Why this matters in IT and security</h2>
 
-   <p>
-  The command line is a foundation skill for IT, networking, Linux administration,
-  cybersecurity labs, scripting, log analysis, and troubleshooting.
-</p>
+        <p>
+          The command line is a foundation skill for IT, networking, Linux administration,
+          cybersecurity labs, scripting, log analysis, and troubleshooting.
+        </p>
 
-<p>
-  Once the basics are clear, it becomes easier to work with more advanced tools,
-  follow technical labs, document results, and understand what your system is doing.
-</p>
-  </section>
+        <p>
+          Once the basics are clear, it becomes easier to work with more advanced tools,
+          follow technical labs, document results, and understand what your system is doing.
+        </p>
+      </section>
 
-</main>
+    </main>
+
+  </div>
+
+</body>
+</html>
