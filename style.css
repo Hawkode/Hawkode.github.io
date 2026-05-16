@@ -64,12 +64,6 @@ body {
   font-weight: bold;
 }
 
-.summary {
-  color: #86efac;
-  font-size: 14px;
-  margin-bottom: 22px;
-}
-
 .contact p {
   margin: 7px 0;
   font-size: 14px;
@@ -85,6 +79,28 @@ body {
 .sidebar p {
   color: #d1fae5;
   font-size: 14px;
+}
+
+/* Social icons */
+
+.social-icons {
+  display: flex;
+  gap: 14px;
+  margin-top: 12px;
+  align-items: center;
+}
+
+.social-icons a {
+  color: #4ade80;
+  font-size: 24px;
+  text-decoration: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.social-icons a:hover {
+  color: #86efac;
+  transform: scale(1.12);
+  text-decoration: none;
 }
 
 /* Sidebar menu */
