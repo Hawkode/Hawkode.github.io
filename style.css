@@ -367,6 +367,10 @@ code {
     grid-template-columns: 1fr;
   }
 
+  .guide-grid {
+    grid-template-columns: 1fr;
+  }
+
   .content-section {
     padding: 0 0 36px;
   }
