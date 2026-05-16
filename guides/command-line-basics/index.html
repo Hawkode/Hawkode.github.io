@@ -1,1 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Command Line Basics | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p>al3ksmatee@gmail.com</p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          Command line basics for IT, networking, Linux practice, and security labs.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../" class="active">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Guide</p>
+        <h2>Command Line Basics for IT, Networking and Security</h2>
+
+        <p>
+          The command line is one of the most useful skills to learn in IT. It helps with
+          troubleshooting, file management, networking, server administration, scripting,
+          and security labs.
+        </p>
+
+        <p>
+          This guide covers basic Linux and macOS terminal commands using simple examples.
+          The goal is to understand what each command does and why it matters.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Getting Started</p>
+        <h2>What is the command line?</h2>
+
+        <p>
+          The command line is a text-based way to interact with a computer. Instead of clicking
+          through menus, you type commands to move around folders, create files, check system
+          information, run tools, and troubleshoot problems.
+        </p>
+
+        <p>
+          In Linux and macOS, the command line is usually accessed through an application called
+          <strong>Terminal</strong>.
+        </p>
+
+        <pre><code>hawkode@linux:~$</code></pre>
+
+        <p>
+          This is called the prompt. It shows that the terminal is ready for a command.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Navigation</p>
+        <h2>Checking where you are: pwd</h2>
+
+        <p>
+          The <strong>pwd</strong> command means “print working directory”. It shows your current location
+          in the file system.
+        </p>
+
+        <pre><code>hawkode@linux:~$ pwd
+/home/hawkode</code></pre>
+
+        <p>
+          This is useful because it tells you exactly where you are before creating, moving,
+          or deleting files.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Files and Folders</p>
+        <h2>Listing files and folders: ls</h2>
+
+        <p>
+          The <strong>ls</strong> command lists the files and folders in your current directory.
+        </p>
+
+        <pre><code>hawkode@linux:~$ ls
+Desktop  Documents  Downloads  Projects</code></pre>
+
+        <p>
+          You can also use <strong>ls -la</strong> to show hidden files, permissions, owners,
+          file sizes, and modification dates.
+        </p>
+
+        <pre><code>hawkode@linux:~$ ls -la
+drwxr-xr-x  5 hawkode hawkode 4096 Jan 10 10:20 .
+drwxr-xr-x  3 root    root    4096 Jan 10 09:50 ..
+drwxr-xr-x  2 hawkode hawkode 4096 Jan 10 10:10 Documents
+drwxr-xr-x  2 hawkode hawkode 4096 Jan 10 10:15 Projects</code></pre>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Navigation</p>
+        <h2>Moving around: cd</h2>
+
+        <p>
+          The <strong>cd</strong> command means “change directory”. It lets you move between folders.
+        </p>
+
+        <pre><code>hawkode@linux:~$ cd Documents
+hawkode@linux:~/Documents$</code></pre>
+
+        <p>
+          To move back one level, use:
+        </p>
+
+        <pre><code>hawkode@linux:~/Documents$ cd ..
+hawkode@linux:~$</code></pre>
+
+        <p>
+          To return to your home folder, use:
+        </p>
+
+        <pre><code>hawkode@linux:~/Documents$ cd ~
+hawkode@linux:~$</code></pre>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Creating Items</p>
+        <h2>Creating folders and files</h2>
+
+        <p>
+          Use <strong>mkdir</strong> to create a folder.
+        </p>
+
+        <pre><code>hawkode@linux:~$ mkdir labs</code></pre>
+
+        <p>
+          Use <strong>touch</strong> to create an empty file.
+        </p>
+
+        <pre><code>hawkode@linux:~$ touch notes.txt</code></pre>
+
+        <p>
+          These commands are useful when organising lab notes, scripts, logs, and project files.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reading Files</p>
+        <h2>Viewing file contents: cat</h2>
+
+        <p>
+          The <strong>cat</strong> command prints the contents of a file in the terminal.
+        </p>
+
+        <pre><code>hawkode@linux:~$ cat notes.txt
+Nmap scan results
+Open ports: 22, 80, 443</code></pre>
+
+        <p>
+          This is helpful when checking small text files, logs, configuration notes, or command output.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Managing Files</p>
+        <h2>Copying and moving files</h2>
+
+        <p>
+          Use <strong>cp</strong> to copy a file.
+        </p>
+
+        <pre><code>hawkode@linux:~$ cp notes.txt backup-notes.txt</code></pre>
+
+        <p>
+          Use <strong>mv</strong> to move or rename a file.
+        </p>
+
+        <pre><code>hawkode@linux:~$ mv notes.txt Projects/notes.txt</code></pre>
+
+        <p>
+          The <strong>mv</strong> command can also rename files.
+        </p>
+
+        <pre><code>hawkode@linux:~$ mv old-name.txt new-name.txt</code></pre>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Deleting Safely</p>
+        <h2>Removing files and folders</h2>
+
+        <p>
+          Use <strong>rm</strong> to remove a file.
+        </p>
+
+        <pre><code>hawkode@linux:~$ rm old-notes.txt</code></pre>
+
+        <p>
+          Use <strong>rmdir</strong> to remove an empty folder.
+        </p>
+
+        <pre><code>hawkode@linux:~$ rmdir empty-folder</code></pre>
+
+        <p>
+          Be careful with remove commands. Linux usually does not ask twice unless you tell it to.
+          Always check your location with <strong>pwd</strong> before deleting files.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Permissions</p>
+        <h2>Understanding permissions</h2>
+
+        <p>
+          File permissions control who can read, write, or execute a file.
+        </p>
+
+        <pre><code>hawkode@linux:~$ ls -l script.sh
+-rwxr-xr-x 1 hawkode hawkode 120 Jan 10 12:00 script.sh</code></pre>
+
+        <p>
+          In this example:
+        </p>
+
+        <ul>
+          <li><strong>r</strong> means read</li>
+          <li><strong>w</strong> means write</li>
+          <li><strong>x</strong> means execute</li>
+        </ul>
+
+        <p>
+          Permissions matter in Linux administration, scripting, security testing, and server hardening.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Networking</p>
+        <h2>Useful network commands</h2>
+
+        <p>
+          The terminal is useful for checking network connectivity and basic troubleshooting.
+        </p>
+
+        <pre><code>hawkode@linux:~$ ping 8.8.8.8</code></pre>
+
+        <pre><code>hawkode@linux:~$ ip address</code></pre>
+
+        <pre><code>hawkode@linux:~$ ss -tulnp</code></pre>
+
+        <p>
+          These commands can help check connectivity, IP information, open ports, and listening services.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Why It Matters</p>
+        <h2>Why this matters in IT and security</h2>
+
+        <p>
+          The command line is used heavily in networking, Linux administration, cybersecurity labs,
+          log analysis, scripting, and troubleshooting.
+        </p>
+
+        <p>
+          Tools like Nmap, OpenVAS, Snort, Metasploit, and many log tools are often used from the
+          terminal. Understanding the basics makes it easier to work through labs, document findings,
+          and troubleshoot issues with more confidence.
+        </p>
+
+        <p>
+          This is one of the foundations I continue to build on across my infrastructure,
+          networking, and security practice.
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
