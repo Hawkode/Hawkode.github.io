@@ -27,7 +27,7 @@ body {
   width: 360px;
   height: 100vh;
   position: fixed;
-  left: 0;
+  left: 140;
   top: 0;
   padding: 42px 30px;
   background: linear-gradient(145deg, #020617, #04150b, #052e16);
@@ -114,9 +114,9 @@ body {
 /* Main content */
 
 .content {
-  margin-left: 360px;
-  width: calc(100% - 360px);
-  padding: 44px;
+  margin-left: 500px;
+  width: calc(100% - 500px);
+  padding: 70px 0 70px 90px;
 }
 
 .content-section {
