@@ -1,44 +1,196 @@
-<aside class="sidebar">
-  <div class="sidebar-section profile">
-    <h1>Alex Mateescu</h1>
-    <h2>IT Service Engineer</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alex Mateescu | IT Service Engineer Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-    <p class="tagline">
-      Microsoft 365 | Active Directory | Entra ID | Networking | Endpoint Security | Security+
-    </p>
+  <div class="page">
 
-    <div class="contact">
-      <p>al3ksmatee@gmail.com</p>
-      <p>
-        <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank">www.linkedin.com/in/al3ksmatee</a>
-      </p>
-      <p>
-        <a href="https://github.com/Hawkode" target="_blank">https://github.com/Hawkode</a>
-      </p>
-    </div>
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">IT Service Engineer</p>
+
+        <p class="summary">
+          Microsoft 365 • Active Directory • Entra ID • Networking • Endpoint Security • Security+
+        </p>
+
+        <div class="contact">
+          <p>al3ksmatee@gmail.com</p>
+          <p><a href="https://www.linkedin.com/in/al3ksmatee" target="_blank">www.linkedin.com/in/al3ksmatee</a></p>
+          <p><a href="https://github.com/Hawkode" target="_blank">https://github.com/Hawkode</a></p>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>About</h2>
+        <p>
+          IT Service Engineer focused on 1st/2nd line support, Microsoft 365, Active Directory,
+          Entra ID, networking, endpoint security, and technical documentation.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="#about">About Me</a>
+        <a href="#skills">Core Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#guides">Documentation & Guides</a>
+        <a href="#certifications">Certifications</a>
+        <a href="#cv">CV</a>
+      </nav>
+
+      <section class="sidebar-block">
+        <h2>Quick Access</h2>
+        <p><a href="Alex.Mateescu-CV.pdf" target="_blank">Download CV</a></p>
+      </section>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section id="about" class="content-section">
+        <p class="section-label">Profile</p>
+        <h2>About Me</h2>
+
+        <p>
+          I am an IT Service Engineer based in the Manchester area, focused on 1st and 2nd line IT support,
+          Microsoft 365 administration, Active Directory, Microsoft Entra ID, endpoint security, and networking.
+        </p>
+
+        <p>
+          My work includes user support, onboarding and offboarding, access changes, endpoint troubleshooting,
+          Microsoft 365 support, network connectivity checks, and technical documentation.
+        </p>
+
+        <p>
+          This portfolio is where I document my projects, troubleshooting guides, technical notes,
+          certifications, and hands-on work across IT support, infrastructure, and security.
+        </p>
+      </section>
+
+      <section id="skills" class="content-section">
+        <p class="section-label">Technical Focus</p>
+        <h2>Core Skills</h2>
+
+        <div class="grid">
+          <div class="card">
+            <h3>IT Support</h3>
+            <p>1st/2nd line support, ticket handling, user troubleshooting, hardware and software support.</p>
+          </div>
+
+          <div class="card">
+            <h3>Microsoft 365</h3>
+            <p>User accounts, licences, MFA checks, mailbox issues, access support, and admin tasks.</p>
+          </div>
+
+          <div class="card">
+            <h3>Active Directory & Entra ID</h3>
+            <p>User creation, groups, password resets, onboarding, offboarding, and access changes.</p>
+          </div>
+
+          <div class="card">
+            <h3>Networking</h3>
+            <p>DNS, DHCP, VLANs, Wi-Fi, IP configuration, physical connectivity, and basic diagnostics.</p>
+          </div>
+
+          <div class="card">
+            <h3>Endpoint Support</h3>
+            <p>Windows troubleshooting, patching, device controls, drivers, performance issues, and asset checks.</p>
+          </div>
+
+          <div class="card">
+            <h3>Documentation</h3>
+            <p>SOPs, troubleshooting guides, checklists, ticket notes, and repeatable IT processes.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="content-section">
+        <p class="section-label">Portfolio Work</p>
+        <h2>Projects</h2>
+
+        <article class="project">
+          <h3>Active Directory User Management Lab</h3>
+          <p>
+            A practical lab focused on user creation, password resets, group membership,
+            access control, and shared folder permissions.
+          </p>
+          <p class="tags">Active Directory • Windows Server • Users & Groups • Permissions</p>
+        </article>
+
+        <article class="project">
+          <h3>Microsoft 365 Support Notes</h3>
+          <p>
+            Documentation covering common Microsoft 365 support tasks such as user access,
+            mailbox issues, MFA checks, licence assignment, and account troubleshooting.
+          </p>
+          <p class="tags">Microsoft 365 • MFA • Mailbox Support • Licensing</p>
+        </article>
+
+        <article class="project">
+          <h3>Network Troubleshooting Guide</h3>
+          <p>
+            A guide covering common checks for DNS, DHCP, IP configuration, Wi-Fi issues,
+            VLANs, and physical connectivity problems.
+          </p>
+          <p class="tags">DNS • DHCP • VLANs • Wi-Fi • Connectivity</p>
+        </article>
+
+        <article class="project">
+          <h3>Windows Endpoint Troubleshooting</h3>
+          <p>
+            Notes and examples for fixing Windows performance issues, user profile problems,
+            software faults, updates, drivers, and hardware-related incidents.
+          </p>
+          <p class="tags">Windows 10/11 • Drivers • Updates • Endpoint Support</p>
+        </article>
+      </section>
+
+      <section id="guides" class="content-section">
+        <p class="section-label">Knowledge Base</p>
+        <h2>Documentation & Guides</h2>
+
+        <div class="list">
+          <p><strong>Windows Troubleshooting Checklist</strong> — common checks for slow devices, login issues, updates, and drivers.</p>
+          <p><strong>Microsoft 365 Support Guide</strong> — user access, MFA, licences, mailbox issues, and account checks.</p>
+          <p><strong>Network Troubleshooting Notes</strong> — ping, ipconfig, DNS, DHCP, Wi-Fi, and physical checks.</p>
+          <p><strong>Ticket Handling Examples</strong> — clear issue logging, troubleshooting steps, resolution notes, and escalation examples.</p>
+        </div>
+      </section>
+
+      <section id="certifications" class="content-section">
+        <p class="section-label">Learning</p>
+        <h2>Certifications</h2>
+
+        <ul>
+          <li>CompTIA Security+</li>
+          <li>Microsoft Certified: Security, Compliance, and Identity Fundamentals</li>
+          <li>Cybersecurity Practical Training</li>
+          <li>Electronic & Electrical Devices Maintenance and Troubleshooting</li>
+        </ul>
+      </section>
+
+      <section id="cv" class="content-section">
+        <p class="section-label">Resume</p>
+        <h2>CV</h2>
+
+        <p>
+          Download my CV to view my full experience, education, certifications, and technical background.
+        </p>
+
+        <a class="button" href="Alex.Mateescu-CV.pdf" target="_blank">Download CV</a>
+      </section>
+
+    </main>
+
   </div>
 
-  <div class="sidebar-section">
-    <h3>About Me</h3>
-    <p>
-      IT Service Engineer focused on 1st/2nd line support, Microsoft 365, Active Directory,
-      Entra ID, networking, endpoint security, and technical documentation.
-    </p>
-  </div>
-
-  <nav class="sidebar-section">
-    <a href="#about">About Me</a>
-    <a href="#skills">Core Skills</a>
-    <a href="#projects">Projects</a>
-    <a href="#documentation">Documentation & Guides</a>
-    <a href="#certifications">Certifications</a>
-    <a href="#cv">CV</a>
-  </nav>
-
-  <div class="sidebar-section">
-    <h3>Quick Access</h3>
-    <p>
-      <a href="Alex.Mateescu-CV.pdf" target="_blank">Download CV</a>
-    </p>
-  </div>
-</aside>
+</body>
+</html>
