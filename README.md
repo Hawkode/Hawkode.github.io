@@ -7,7 +7,7 @@ The site focuses on my work and learning across:
 - Infrastructure
 - Networking
 - Security
-- Linux and command-line practice
+- Guides
 - Microsoft 365 and Azure
 - Technical documentation
 - Projects and labs
