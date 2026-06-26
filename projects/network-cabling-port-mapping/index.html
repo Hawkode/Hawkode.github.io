@@ -1,1 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Network Cabling & Port Mapping | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .visual-card {
+      background: rgba(34, 197, 94, 0.04);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    }
+
+    .visual-card h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: #bbf7d0;
+    }
+
+    .visual-card p {
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .network-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 14px;
+      border-radius: 8px;
+      background: #020617;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+    }
+
+    @media (max-width: 900px) {
+      .visual-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p>al3ksmatee@gmail.com</p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Project</h2>
+        <p>
+          A work-related physical networking project focused on patch panel tracing,
+          wall socket mapping, port labelling, site documentation, and infrastructure visibility.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../" class="active">Projects & Labs</a>
+        <a href="../../#guides">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Work Project</p>
+        <h2>Network Cabling & Port Mapping</h2>
+
+        <p>
+          This project focused on improving physical network visibility by tracing network
+          cables from server room patch panels to wall sockets, matching patch panel ports
+          with office wall ports, applying clear labels, and documenting port-to-location
+          records.
+        </p>
+
+        <p>
+          The goal was to create a reliable reference for troubleshooting, hardware setup,
+          office changes, asset tracking, and day-to-day infrastructure work. This helped
+          reduce uncertainty when identifying which network port served a desk, device,
+          office area, or endpoint.
+        </p>
+
+        <p>
+          <strong>Privacy note:</strong> Real company names, site names, floor plans,
+          port numbers, switch details, desk numbers, screenshots, and internal references
+          have been removed or recreated in a sanitised format.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Project Snapshot</p>
+        <h2>Overview</h2>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Focus Areas</h3>
+            <ul>
+              <li>Patch panel tracing</li>
+              <li>Wall socket identification</li>
+              <li>Port-to-location mapping</li>
+              <li>Network labelling</li>
+              <li>Physical connectivity checks</li>
+              <li>Site documentation</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Operational Value</h3>
+            <ul>
+              <li>Faster network troubleshooting</li>
+              <li>Clearer desk and port visibility</li>
+              <li>Improved hardware setup process</li>
+              <li>Better support for office changes</li>
+              <li>More reliable infrastructure records</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Project Visuals</p>
+        <h2>Physical Network Layout</h2>
+
+        <p>
+          These simplified visuals represent the type of physical network work involved:
+          patch panels, switch connectivity, wall sockets, labels, and port-to-location documentation.
+        </p>
+
+        <div class="visual-grid">
+
+          <div class="visual-card">
+            <svg class="network-svg" viewBox="0 0 500 260" role="img" aria-label="Patch panel diagram">
+              <rect x="30" y="55" width="440" height="120" rx="12" fill="#03130b" stroke="#22c55e" stroke-width="2"/>
+              <text x="45" y="35" fill="#86efac" font-size="18" font-family="Arial">Patch Panel</text>
+
+              <g fill="#020617" stroke="#4ade80" stroke-width="2">
+                <rect x="55" y="85" width="36" height="24" rx="4"/>
+                <rect x="105" y="85" width="36" height="24" rx="4"/>
+                <rect x="155" y="85" width="36" height="24" rx="4"/>
+                <rect x="205" y="85" width="36" height="24" rx="4"/>
+                <rect x="255" y="85" width="36" height="24" rx="4"/>
+                <rect x="305" y="85" width="36" height="24" rx="4"/>
+                <rect x="355" y="85" width="36" height="24" rx="4"/>
+                <rect x="405" y="85" width="36" height="24" rx="4"/>
+              </g>
+
+              <g fill="#22c55e" font-size="11" font-family="Arial">
+                <text x="64" y="135">01</text>
+                <text x="114" y="135">02</text>
+                <text x="164" y="135">03</text>
+                <text x="214" y="135">04</text>
+                <text x="264" y="135">05</text>
+                <text x="314" y="135">06</text>
+                <text x="364" y="135">07</text>
+                <text x="414" y="135">08</text>
+              </g>
+
+              <path d="M73 109 C73 165, 160 175, 160 220" fill="none" stroke="#22c55e" stroke-width="3"/>
+              <path d="M223 109 C223 165, 300 175, 300 220" fill="none" stroke="#86efac" stroke-width="3"/>
+              <path d="M373 109 C373 165, 420 175, 420 220" fill="none" stroke="#4ade80" stroke-width="3"/>
+
+              <text x="45" y="235" fill="#d1fae5" font-size="14" font-family="Arial">Ports traced and matched to physical locations</text>
+            </svg>
+
+            <h3>Patch Panel Tracing</h3>
+            <p>
+              Patch panel ports were reviewed and matched to wall sockets so physical network paths could be documented clearly.
+            </p>
+          </div>
+
+          <div class="visual-card">
+            <svg class="network-svg" viewBox="0 0 500 260" role="img" aria-label="Network switch diagram">
+              <rect x="40" y="70" width="420" height="95" rx="10" fill="#03130b" stroke="#22c55e" stroke-width="2"/>
+              <text x="50" y="45" fill="#86efac" font-size="18" font-family="Arial">Network Switch</text>
+
+              <g fill="#020617" stroke="#4ade80" stroke-width="2">
+                <rect x="65" y="100" width="28" height="18" rx="3"/>
+                <rect x="105" y="100" width="28" height="18" rx="3"/>
+                <rect x="145" y="100" width="28" height="18" rx="3"/>
+                <rect x="185" y="100" width="28" height="18" rx="3"/>
+                <rect x="225" y="100" width="28" height="18" rx="3"/>
+                <rect x="265" y="100" width="28" height="18" rx="3"/>
+                <rect x="305" y="100" width="28" height="18" rx="3"/>
+                <rect x="345" y="100" width="28" height="18" rx="3"/>
+                <rect x="385" y="100" width="28" height="18" rx="3"/>
+              </g>
+
+              <circle cx="75" cy="140" r="5" fill="#22c55e"/>
+              <circle cx="115" cy="140" r="5" fill="#22c55e"/>
+              <circle cx="155" cy="140" r="5" fill="#22c55e"/>
+              <circle cx="195" cy="140" r="5" fill="#86efac"/>
+              <circle cx="235" cy="140" r="5" fill="#22c55e"/>
+              <circle cx="275" cy="140" r="5" fill="#86efac"/>
+              <circle cx="315" cy="140" r="5" fill="#22c55e"/>
+              <circle cx="355" cy="140" r="5" fill="#22c55e"/>
+              <circle cx="395" cy="140" r="5" fill="#86efac"/>
+
+              <line x1="85" y1="118" x2="85" y2="220" stroke="#22c55e" stroke-width="3"/>
+              <line x1="205" y1="118" x2="205" y2="220" stroke="#86efac" stroke-width="3"/>
+              <line x1="365" y1="118" x2="365" y2="220" stroke="#4ade80" stroke-width="3"/>
+
+              <text x="50" y="235" fill="#d1fae5" font-size="14" font-family="Arial">Switch connectivity checked against patching records</text>
+            </svg>
+
+            <h3>Switch Connectivity</h3>
+            <p>
+              Switch and rack connectivity helped connect physical cabling records with active network infrastructure.
+            </p>
+          </div>
+
+          <div class="visual-card">
+            <svg class="network-svg" viewBox="0 0 500 260" role="img" aria-label="Wall socket diagram">
+              <rect x="160" y="45" width="180" height="155" rx="14" fill="#03130b" stroke="#22c55e" stroke-width="2"/>
+              <text x="178" y="32" fill="#86efac" font-size="18" font-family="Arial">Wall Socket</text>
+
+              <rect x="205" y="85" width="90" height="60" rx="8" fill="#020617" stroke="#4ade80" stroke-width="3"/>
+              <rect x="225" y="105" width="50" height="25" rx="4" fill="#03130b" stroke="#22c55e" stroke-width="2"/>
+
+              <text x="210" y="177" fill="#86efac" font-size="15" font-family="Arial">WS-014-B</text>
+              <line x1="250" y1="145" x2="250" y2="230" stroke="#22c55e" stroke-width="3"/>
+              <text x="95" y="235" fill="#d1fae5" font-size="14" font-family="Arial">Wall sockets matched to patch panel and desk records</text>
+            </svg>
+
+            <h3>Wall Socket Mapping</h3>
+            <p>
+              Wall sockets were matched against patch panel ports to create clearer port-to-location records.
+            </p>
+          </div>
+
+          <div class="visual-card">
+            <svg class="network-svg" viewBox="0 0 500 260" role="img" aria-label="Port label documentation diagram">
+              <rect x="40" y="45" width="420" height="170" rx="10" fill="#03130b" stroke="#22c55e" stroke-width="2"/>
+              <text x="55" y="30" fill="#86efac" font-size="18" font-family="Arial">Port Map Record</text>
+
+              <g font-family="Arial" font-size="15">
+                <text x="65" y="85" fill="#86efac">Desk:</text>
+                <text x="170" y="85" fill="#d1fae5">Desk-014</text>
+
+                <text x="65" y="115" fill="#86efac">Wall Socket:</text>
+                <text x="170" y="115" fill="#d1fae5">WS-014-B</text>
+
+                <text x="65" y="145" fill="#86efac">Patch Panel:</text>
+                <text x="170" y="145" fill="#d1fae5">PP-01 / Port 24</text>
+
+                <text x="65" y="175" fill="#86efac">Status:</text>
+                <text x="170" y="175" fill="#d1fae5">Active</text>
+              </g>
+
+              <rect x="330" y="80" width="80" height="80" rx="8" fill="#020617" stroke="#4ade80" stroke-width="2"/>
+              <text x="344" y="125" fill="#22c55e" font-size="16" font-family="Arial">LABEL</text>
+
+              <text x="55" y="235" fill="#d1fae5" font-size="14" font-family="Arial">Documentation created for troubleshooting and site visibility</text>
+            </svg>
+
+            <h3>Labelling and Records</h3>
+            <p>
+              Labelling and documentation improved troubleshooting, hardware setup, and physical network visibility.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Problem</p>
+        <h2>Why This Project Was Needed</h2>
+
+        <p>
+          In office environments, physical network documentation can become outdated over
+          time. Wall sockets may not clearly match patch panel ports, labels can be missing
+          or inconsistent, and desk moves or equipment changes can make it harder to know
+          which connection belongs to which location.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Before</h3>
+            <ul>
+              <li>Patch panel ports were harder to match to wall sockets quickly.</li>
+              <li>Some physical network paths needed clearer documentation.</li>
+              <li>Desk locations and port references were not always easy to confirm.</li>
+              <li>Troubleshooting could take longer when port records were unclear.</li>
+              <li>Hardware setup and office changes required extra manual checking.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Target State</h3>
+            <ul>
+              <li>Clear mapping between patch panel ports and wall sockets.</li>
+              <li>Consistent labels for ports, desks, and locations.</li>
+              <li>Reliable port-to-location records.</li>
+              <li>Faster identification of active network points.</li>
+              <li>Better physical network visibility across the site.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Approach</p>
+        <h2>Port Mapping Workflow</h2>
+
+        <p>
+          The project followed a structured workflow to identify, verify, label, and
+          document network connections in a repeatable way.
+        </p>
+
+        <div class="project">
+          <h3>Mapping Flow</h3>
+          <p class="tags">Patch Panel • Wall Socket • Desk Location • Documentation</p>
+
+          <pre><code>Patch panel port
+        ↓
+Cable trace or connectivity check
+        ↓
+Wall socket identification
+        ↓
+Desk or office location confirmed
+        ↓
+Label applied or checked
+        ↓
+Port-to-location record updated
+        ↓
+Used for troubleshooting, setup, moves, and asset visibility</code></pre>
+        </div>
+
+        <p>
+          This made the physical network easier to understand and reduced the time needed
+          to locate the correct connection during troubleshooting or equipment setup.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Tracing</p>
+        <h2>Patch Panel to Wall Socket Tracing</h2>
+
+        <p>
+          Cables were traced from the server room patch panels to office wall sockets.
+          The aim was to confirm which patch panel port served which physical location.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Tasks Completed</h3>
+            <ul>
+              <li>Reviewed server room patch panel layout.</li>
+              <li>Identified ports that needed clearer records.</li>
+              <li>Matched patch panel ports with wall sockets.</li>
+              <li>Checked desk or area location for each socket.</li>
+              <li>Updated records where mappings were confirmed.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Information Captured</h3>
+            <ul>
+              <li>Patch panel reference</li>
+              <li>Patch panel port number</li>
+              <li>Wall socket number</li>
+              <li>Desk or office area</li>
+              <li>Connection status</li>
+              <li>Notes for future checks</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Documentation</p>
+        <h2>Port-to-Location Records</h2>
+
+        <p>
+          A port-to-location record was created so that each confirmed connection could
+          be used as a reliable reference later.
+        </p>
+
+        <div class="project">
+          <h3>Example Sanitised Port Record</h3>
+          <p class="tags">Port Mapping • Desk Reference • Physical Network Visibility</p>
+
+          <pre><code>Site: Site A
+Area: Office Floor 1
+Desk: Desk-014
+Wall Socket: WS-014-B
+Patch Panel: PP-01
+Patch Panel Port: 24
+Switch Port: SW-01 / Port 24
+Status: Active
+Notes: Standard desk network connection</code></pre>
+        </div>
+
+        <p>
+          This type of record helped connect the physical layout of the office with the
+          server room patching and made it easier to identify where a network connection
+          was going.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Labelling</p>
+        <h2>Port Labelling and Visual Identification</h2>
+
+        <p>
+          Clear labels were applied or checked to make ports easier to identify. This
+          reduced confusion when locating sockets, patch panel ports, or desk connections.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Label Examples</h3>
+            <pre><code>PP-01-24
+WS-014-B
+Desk-014
+Floor-1-Area-B
+SW-01-24</code></pre>
+          </div>
+
+          <div class="card">
+            <h3>Why Labelling Helped</h3>
+            <ul>
+              <li>Reduced time spent identifying ports.</li>
+              <li>Improved consistency across records.</li>
+              <li>Helped with desk moves and hardware setup.</li>
+              <li>Made troubleshooting more repeatable.</li>
+              <li>Improved handover and team visibility.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Connectivity</p>
+        <h2>Connectivity Checks</h2>
+
+        <p>
+          Connectivity checks were used to confirm that documented ports were accurate
+          and usable. This helped verify whether a wall socket, patch panel port, or desk
+          connection was active and correctly identified.
+        </p>
+
+        <ul>
+          <li>Checked whether wall sockets matched the expected patch panel ports.</li>
+          <li>Confirmed active network points where required.</li>
+          <li>Reviewed connections that did not match existing records.</li>
+          <li>Updated documentation after confirmed checks.</li>
+          <li>Flagged unclear or unused ports for later review.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Operational Use</p>
+        <h2>How The Records Supported IT Work</h2>
+
+        <div class="list">
+          <p>
+            <strong>Troubleshooting:</strong> when a user or device had a network issue,
+            the correct wall socket and patch panel path could be identified faster.
+          </p>
+
+          <p>
+            <strong>Hardware setup:</strong> new desks, laptops, desktops, phones, or other
+            networked devices could be connected using clearer port references.
+          </p>
+
+          <p>
+            <strong>Office changes:</strong> desk moves and area changes were easier to plan
+            because physical network points were documented.
+          </p>
+
+          <p>
+            <strong>Asset tracking:</strong> network port records could be linked with device
+            locations, desk references, and asset inventory information.
+          </p>
+
+          <p>
+            <strong>Site visibility:</strong> the server room, patch panels, wall sockets,
+            desks, and office areas became easier to understand as one connected system.
+          </p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Quality Control</p>
+        <h2>Checks and Validation</h2>
+
+        <p>
+          After mappings were recorded, the information was reviewed for accuracy and
+          consistency.
+        </p>
+
+        <ul>
+          <li>Checked that patch panel references matched wall socket records.</li>
+          <li>Reviewed labels for clarity and consistency.</li>
+          <li>Confirmed desk or area locations were recorded correctly.</li>
+          <li>Updated unclear or outdated records.</li>
+          <li>Checked records against known hardware locations where possible.</li>
+          <li>Kept notes for ports that needed future review.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Outcome</p>
+        <h2>Project Outcome</h2>
+
+        <p>
+          The project created a clearer reference for physical network connections across
+          the site. Patch panel ports, wall sockets, desk locations, and port records became
+          easier to understand and maintain.
+        </p>
+
+        <p>
+          This improved troubleshooting, hardware setup, office changes, asset tracking,
+          and physical network visibility. It also helped reduce time spent manually
+          identifying network paths when dealing with endpoint or connectivity issues.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Operational Improvements</h3>
+            <ul>
+              <li>Faster identification of network points.</li>
+              <li>Clearer patch panel to wall socket records.</li>
+              <li>Better visibility of desk and office connectivity.</li>
+              <li>Improved support for hardware setup and office moves.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Technical Value</h3>
+            <ul>
+              <li>Improved physical network documentation.</li>
+              <li>Reduced reliance on informal knowledge.</li>
+              <li>Created a repeatable mapping process.</li>
+              <li>Connected site documentation with asset visibility.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reflection</p>
+        <h2>What This Project Demonstrates</h2>
+
+        <p>
+          This project demonstrates practical networking and infrastructure awareness.
+          It shows the importance of understanding not only logical network configuration,
+          but also the physical path between the server room, patch panels, wall sockets,
+          desks, and user devices.
+        </p>
+
+        <p>
+          Good physical documentation supports faster troubleshooting, better hardware
+          planning, cleaner asset records, and improved visibility across a site. This is
+          especially valuable when working with infrastructure, endpoint management, and
+          operational security because accurate location and connectivity records help
+          teams understand what is connected, where it is located, and how it is being used.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Skills</p>
+        <h2>Skills Demonstrated</h2>
+
+        <p class="tags">
+          Networking • Patch Panels • Structured Cabling • Port Mapping • Wall Sockets •
+          Physical Connectivity • Site Documentation • Network Troubleshooting •
+          Desk Mapping • Asset Visibility • Infrastructure Documentation •
+          Hardware Setup • Operational Visibility
+        </p>
+
+        <p>
+          <a class="button" href="../">Back to Projects</a>
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
