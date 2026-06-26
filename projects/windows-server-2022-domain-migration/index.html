@@ -49,9 +49,9 @@
         <h2>Project</h2>
         <p>
           A work-related infrastructure migration project covering Windows Server 2022,
-          Active Directory, DNS, DHCP, replication checks, Microsoft Entra ID sync,
-          shared data migration, ADManager Plus, ManageEngine, PowerShell, and
-          Windows 11 Pro domain joins.
+          Active Directory, OU design, DNS, DHCP, replication checks, Microsoft Entra ID
+          synchronisation, shared data migration, ADManager Plus, ManageEngine, PowerShell,
+          and Windows 11 Pro domain joins.
         </p>
       </section>
 
@@ -74,16 +74,23 @@
         <h2>Windows Server 2022 Domain Controller Migration</h2>
 
         <p>
-          This project involved building a new Windows Server 2022 domain controller
-          and migrating core infrastructure services, user accounts, Windows 11 Pro laptops,
+          This project involved building a new Windows Server 2022 domain controller and
+          migrating core infrastructure services, user accounts, Windows 11 Pro laptops,
           shared data, and identity synchronisation from an older environment.
         </p>
 
         <p>
-          The new environment included Active Directory Domain Services, DNS, DHCP,
-          Active Directory replication checks, Microsoft Entra ID sync, Robocopy data
-          migration, user account migration and attribute matching with ADManager Plus,
-          and PowerShell-based domain join automation deployed through ManageEngine.
+          Before the migration, users existed both as local Active Directory accounts and
+          as Microsoft Entra ID cloud accounts, but the identity path was not cleanly
+          synchronised through the new on-premises directory. The new design aligned
+          on-premises accounts with the existing cloud identities so users could work from
+          one synced identity and one password experience.
+        </p>
+
+        <p>
+          ADManager Plus was used for user account migration, attribute matching, account
+          checks, and bulk updates. PowerShell and ManageEngine were used to automate
+          Windows 11 Pro domain joins, while Robocopy was used for shared data migration.
         </p>
 
         <p>
@@ -102,8 +109,8 @@
             <ul>
               <li>Windows Server 2022 domain controller</li>
               <li>Active Directory Domain Services</li>
-              <li>DNS configuration</li>
-              <li>DHCP configuration</li>
+              <li>Organisational unit structure</li>
+              <li>DNS and DHCP services</li>
               <li>Active Directory replication validation</li>
               <li>Microsoft Entra ID synchronisation</li>
               <li>Windows 11 Pro domain join workflow</li>
@@ -115,11 +122,11 @@
             <ul>
               <li>50+ user accounts migrated</li>
               <li>Shared data migrated with Robocopy</li>
-              <li>User attributes matched with ADManager Plus</li>
+              <li>User attributes aligned with ADManager Plus</li>
+              <li>Existing cloud identities matched during sync validation</li>
               <li>Windows 11 Pro laptops joined to the new domain</li>
-              <li>Replication and sync status checked after changes</li>
-              <li>Internal documentation created for the migration process</li>
-              <li>Post-migration checks completed across identity, data, and endpoints</li>
+              <li>Replication and sync checks completed after key changes</li>
+              <li>Internal documentation created for future reference</li>
             </ul>
           </div>
         </div>
@@ -137,13 +144,13 @@
 
         <div class="grid">
           <div class="card">
-            <h3>Before</h3>
+            <h3>Previous State</h3>
             <ul>
               <li>Core services were running in an older environment.</li>
-              <li>User accounts required careful migration and attribute matching.</li>
-              <li>Shared data needed to be moved in a controlled way.</li>
-              <li>Windows 11 Pro laptops needed to be joined to the new domain.</li>
-              <li>Directory replication and cloud sync needed validation.</li>
+              <li>Users existed locally and also in Microsoft Entra ID.</li>
+              <li>Local and cloud identity information needed careful matching.</li>
+              <li>Shared data needed a controlled migration process.</li>
+              <li>Windows 11 Pro laptops needed to join the new domain.</li>
               <li>Internal records needed to reflect the new environment accurately.</li>
             </ul>
           </div>
@@ -154,9 +161,8 @@
               <li>New Windows Server 2022 domain controller.</li>
               <li>Configured AD DS, DNS, and DHCP services.</li>
               <li>Cleaner Active Directory structure for users, devices, and groups.</li>
-              <li>Healthy replication before and after migration changes.</li>
-              <li>On-premises users synced with Microsoft Entra ID.</li>
-              <li>Repeatable Windows 11 Pro domain join process.</li>
+              <li>On-premises accounts matched with existing Microsoft Entra ID accounts.</li>
+              <li>One synced password experience for local and Microsoft 365 sign-in.</li>
               <li>Documented process for future internal reference.</li>
             </ul>
           </div>
@@ -169,12 +175,13 @@
 
         <div class="list">
           <p>
-            <strong>1. Discovery:</strong> reviewed the existing environment, user accounts,
-            Windows 11 Pro laptops, shared data, network services, and identity requirements.
+            <strong>1. Discovery:</strong> reviewed the existing domain, user accounts,
+            cloud identities, Windows 11 Pro laptops, shared data, network services,
+            and identity requirements.
           </p>
 
           <p>
-            <strong>2. Server Build:</strong> installed Windows Server 2022, added required
+            <strong>2. Server Build:</strong> installed Windows Server 2022, added the required
             roles, and promoted the server as a new domain controller.
           </p>
 
@@ -185,18 +192,18 @@
 
           <p>
             <strong>4. Replication Checks:</strong> checked Active Directory replication health
-            so directory changes, DNS records, and domain controller information were consistent
+            so directory changes, DNS records, and domain controller data were consistent
             before continuing the migration.
           </p>
 
           <p>
-            <strong>5. Network Services:</strong> configured DNS and DHCP so client devices
-            could resolve domain resources and receive the correct network settings.
+            <strong>5. Identity Alignment:</strong> used ADManager Plus to match user attributes
+            between on-premises accounts and existing Microsoft Entra ID users before validating sync.
           </p>
 
           <p>
-            <strong>6. User Account Migration:</strong> migrated 50+ user accounts, matched
-            attributes, reviewed group membership, and completed bulk updates using ADManager Plus.
+            <strong>6. Network Services:</strong> configured DNS and DHCP so client devices
+            could resolve domain resources and receive the correct network settings.
           </p>
 
           <p>
@@ -210,13 +217,13 @@
           </p>
 
           <p>
-            <strong>9. Hybrid Identity:</strong> synced on-premises Active Directory accounts
-            with Microsoft Entra ID and checked cloud identity records after migration.
+            <strong>9. Cloud Sync Validation:</strong> checked Microsoft Entra ID to confirm
+            migrated accounts matched existing cloud identities and did not create duplicate accounts.
           </p>
 
           <p>
             <strong>10. Documentation:</strong> documented the migration approach, key checks,
-            commands, validation steps, and post-migration notes for internal use.
+            commands, validation steps, decisions, and post-migration notes for internal use.
           </p>
         </div>
       </section>
@@ -265,7 +272,7 @@
           The Active Directory structure was organised so users, computers, groups,
           service accounts, and inactive accounts were easier to manage after migration.
           The aim was to avoid placing everything in default containers and create a
-          cleaner structure for administration and future changes.
+          cleaner structure for administration, reviews, and future changes.
         </p>
 
         <div class="project">
@@ -307,7 +314,7 @@
               <li>Make department-based account placement clearer.</li>
               <li>Create a predictable location for Windows 11 Pro laptops.</li>
               <li>Keep inactive accounts away from active accounts.</li>
-              <li>Make future reviews easier.</li>
+              <li>Make future access and account reviews easier.</li>
             </ul>
           </div>
 
@@ -328,25 +335,24 @@
 
       <section class="content-section">
         <p class="section-label">Replication</p>
-        <h2>Active Directory Replication and Sync Validation</h2>
+        <h2>Active Directory Replication and Health Checks</h2>
 
         <p>
           Replication checks were included because directory changes must be consistent
-          across domain controllers before user migration, endpoint migration, and cloud
+          across domain controllers before account migration, endpoint migration, and cloud
           identity synchronisation can be trusted. If replication fails, user accounts,
           computer objects, DNS records, group membership, and policy-related data can become
           inconsistent.
         </p>
 
         <p>
-          During the migration, replication health was checked around key changes such as
-          domain controller promotion, OU creation, user account migration, DNS updates,
-          and Windows 11 Pro domain joins.
+          Replication health was checked around key changes such as domain controller promotion,
+          OU creation, user account migration, DNS updates, and Windows 11 Pro domain joins.
         </p>
 
         <div class="grid">
           <div class="card">
-            <h3>Replication Areas Checked</h3>
+            <h3>Areas Checked</h3>
             <ul>
               <li>Domain controller replication status</li>
               <li>DNS replication consistency</li>
@@ -358,10 +364,10 @@
           </div>
 
           <div class="card">
-            <h3>Why It Mattered</h3>
+            <h3>Reason For The Checks</h3>
             <ul>
               <li>Prevented stale directory information.</li>
-              <li>Reduced migration risk before joining laptops.</li>
+              <li>Reduced risk before joining laptops.</li>
               <li>Confirmed account changes were visible across the domain.</li>
               <li>Improved confidence before Microsoft Entra ID sync checks.</li>
               <li>Made post-migration validation more reliable.</li>
@@ -370,7 +376,7 @@
         </div>
 
         <div class="project">
-          <h3>Example Sanitised Replication Checks</h3>
+          <h3>Example Sanitised Replication Commands</h3>
           <p class="tags">Replication • DCDIAG • REPADMIN • DNS • SYSVOL</p>
 
           <pre><code>repadmin /replsummary
@@ -378,30 +384,23 @@ repadmin /showrepl
 dcdiag /test:replications
 dcdiag /test:dns</code></pre>
         </div>
-
-        <ul>
-          <li>Checked replication summary for failures or delays.</li>
-          <li>Reviewed domain controller health using diagnostic checks.</li>
-          <li>Confirmed DNS records were available after changes.</li>
-          <li>Checked that user and computer objects appeared correctly.</li>
-          <li>Reviewed Event Viewer for directory service and replication warnings.</li>
-        </ul>
       </section>
 
       <section class="content-section">
         <p class="section-label">User Accounts</p>
-        <h2>Department-Based User Account Migration</h2>
+        <h2>User Account Migration and Attribute Alignment</h2>
 
         <p>
           User accounts were migrated into department-based organisational units so the
-          new directory reflected how accounts were used across the business. This made
-          account placement, group reviews, and post-migration checks easier to follow.
+          new directory reflected how accounts were used across the business. Account
+          attributes were checked carefully because existing Microsoft Entra ID users
+          already existed in the cloud.
         </p>
 
         <p>
-          ADManager Plus was used for user account migration, attribute matching, account
-          detail checks, and bulk updates. This helped keep account records consistent
-          during the move into the new Active Directory structure.
+          ADManager Plus was used to review and update user details so on-premises accounts
+          matched the existing cloud identities. This reduced the risk of duplicate cloud
+          accounts and helped create a cleaner synced identity model.
         </p>
 
         <div class="project">
@@ -421,8 +420,9 @@ DC=local</code></pre>
             <h3>Attributes Checked</h3>
             <ul>
               <li>Username</li>
-              <li>Display name</li>
+              <li>User principal name</li>
               <li>Email address</li>
+              <li>Display name</li>
               <li>Department</li>
               <li>Job title</li>
               <li>Manager</li>
@@ -437,6 +437,7 @@ DC=local</code></pre>
               <li>Checked department information after migration.</li>
               <li>Reviewed group membership.</li>
               <li>Checked account status.</li>
+              <li>Compared on-premises account details with existing cloud users.</li>
               <li>Validated synced users in Microsoft Entra ID.</li>
             </ul>
           </div>
@@ -642,37 +643,50 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
 
       <section class="content-section">
         <p class="section-label">Hybrid Identity</p>
-        <h2>Microsoft Entra ID Sync</h2>
+        <h2>Microsoft Entra ID Sync and Password Alignment</h2>
 
         <p>
-          The on-premises Active Directory environment was synced with Microsoft Entra ID
-          to enable hybrid identity. This allowed migrated user accounts to appear in the
-          cloud directory after the on-premises migration.
+          Before the migration, users had local Active Directory accounts and Microsoft
+          Entra ID cloud accounts, but the identity relationship needed to be cleaned up
+          through the new on-premises domain controller. The migration aligned the
+          on-premises accounts with the existing cloud identities before validating sync.
         </p>
 
         <p>
-          Because cloud identity depended on on-premises directory data, replication and
-          sync status were checked before validating Microsoft Entra ID records.
+          ADManager Plus was used to check and update user attributes such as usernames,
+          user principal names, email addresses, display names, departments, and group
+          membership. Matching these details reduced the risk of duplicate cloud accounts
+          and helped the synced identity model work correctly.
+        </p>
+
+        <p>
+          After synchronisation, users could work with a single synced password experience
+          across local domain sign-in and Microsoft 365 services instead of managing
+          separate local and cloud passwords.
         </p>
 
         <div class="grid">
           <div class="card">
-            <h3>Sync Checks</h3>
+            <h3>Identity Matching Checks</h3>
             <ul>
-              <li>Confirmed on-premises users synced to Microsoft Entra ID.</li>
-              <li>Checked synced user status in the Entra admin centre.</li>
-              <li>Reviewed user details after migration.</li>
-              <li>Confirmed identity information matched between AD and Entra ID.</li>
+              <li>Compared local AD users with existing Microsoft Entra ID users.</li>
+              <li>Checked user principal names and sign-in names.</li>
+              <li>Reviewed email addresses and display names.</li>
+              <li>Checked department, job title, and manager fields.</li>
+              <li>Reviewed account status and group membership.</li>
+              <li>Completed bulk attribute updates using ADManager Plus.</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Why It Mattered</h3>
+            <h3>Sync Validation</h3>
             <ul>
-              <li>Enabled hybrid identity visibility.</li>
-              <li>Improved consistency between on-premises and cloud records.</li>
-              <li>Validated user account migration results.</li>
-              <li>Connected the migration with Microsoft 365 identity management.</li>
+              <li>Confirmed on-premises accounts matched existing cloud identities.</li>
+              <li>Checked synced user status in the Microsoft Entra admin centre.</li>
+              <li>Verified that duplicate cloud accounts were not created.</li>
+              <li>Confirmed identity details matched between AD and Entra ID.</li>
+              <li>Checked Microsoft 365 sign-in after password alignment.</li>
+              <li>Reviewed sync results after replication checks.</li>
             </ul>
           </div>
         </div>
@@ -685,7 +699,8 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
         <p>
           The migration work was documented for internal reference. The documentation
           captured the structure of the new environment, key configuration decisions,
-          migration steps, replication checks, validation checks, and post-migration notes.
+          migration steps, replication checks, identity matching checks, validation checks,
+          and post-migration notes.
         </p>
 
         <div class="grid">
@@ -722,8 +737,8 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
 
         <p>
           After the migration was completed, the environment was tested to confirm that
-          user accounts, laptops, network services, shared data, replication, and identity
-          sync were working correctly.
+          user accounts, laptops, network services, shared data, replication, identity sync,
+          and password alignment were working correctly.
         </p>
 
         <div class="grid">
@@ -746,6 +761,7 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
               <li>Reviewed group membership.</li>
               <li>Checked Robocopy logs.</li>
               <li>Confirmed Microsoft Entra ID sync status.</li>
+              <li>Checked cloud identity matching.</li>
               <li>Reviewed user details after migration.</li>
               <li>Checked computer objects after domain join.</li>
             </ul>
@@ -760,13 +776,15 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
         <p>
           The migration was completed for 50+ user accounts. The new Windows Server 2022
           domain controller provided Active Directory, DNS, DHCP, shared resource access,
-          replication validation, and Microsoft Entra ID sync for Windows 11 Pro laptops.
+          replication validation, Microsoft Entra ID synchronisation, and Windows 11 Pro
+          domain join automation.
         </p>
 
         <p>
-          ADManager Plus was used for user account migration, attribute matching, and bulk
-          updates. ManageEngine and PowerShell were used to automate the Windows 11 Pro
-          domain join process and reduce manual endpoint migration work.
+          User accounts were aligned with existing Microsoft Entra ID identities, reducing
+          the risk of duplicate cloud accounts and creating a cleaner single-password model.
+          ADManager Plus was used for account migration, attribute matching, and bulk updates.
+          ManageEngine and PowerShell were used to automate endpoint migration.
         </p>
 
         <div class="grid">
@@ -776,8 +794,8 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
               <li>Newer Windows Server foundation.</li>
               <li>Cleaner Active Directory structure.</li>
               <li>Clearer user account and computer placement.</li>
+              <li>On-premises accounts aligned with existing cloud identities.</li>
               <li>Replication and sync validation included in the migration process.</li>
-              <li>More repeatable Windows 11 Pro domain join workflow.</li>
               <li>Documented internal migration process.</li>
             </ul>
           </div>
@@ -789,8 +807,8 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
               <li>Shared data migrated using Robocopy.</li>
               <li>50+ user accounts migrated with attribute checks.</li>
               <li>Directory replication checked during migration stages.</li>
-              <li>On-premises identity synced with Microsoft Entra ID.</li>
-              <li>Endpoint migration automated through ManageEngine and PowerShell.</li>
+              <li>Microsoft Entra ID sync validated against existing cloud accounts.</li>
+              <li>Windows 11 Pro domain joins automated through ManageEngine and PowerShell.</li>
             </ul>
           </div>
         </div>
@@ -803,15 +821,14 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
         <p>
           This project demonstrates practical infrastructure migration experience across
           server build, Active Directory design, replication validation, user account
-          migration, network services, data migration, endpoint migration, cloud identity
-          sync, internal documentation, and post-migration validation.
+          migration, identity matching, network services, data migration, endpoint migration,
+          cloud identity synchronisation, internal documentation, and post-migration checks.
         </p>
 
         <p>
-          It also shows the importance of planning, structure, replication health, testing,
-          and repeatable processes when moving accounts and devices into a new infrastructure
-          environment. The project connects directly with infrastructure operations,
-          endpoint management, hybrid identity, security, and technical documentation.
+          It also shows the importance of planning, directory structure, replication health,
+          attribute accuracy, testing, and repeatable processes when moving accounts and
+          devices into a new infrastructure environment.
         </p>
       </section>
 
@@ -823,8 +840,8 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
           Windows Server 2022 • Active Directory • AD DS • OU Design • DNS • DHCP •
           Active Directory Replication • Microsoft Entra ID • Hybrid Identity •
           ADManager Plus • ManageEngine • PowerShell • Robocopy • Windows 11 Pro •
-          User Account Migration • Security Groups • Domain Join • Shared Data Migration •
-          Internal Documentation • Post-Migration Validation
+          User Account Migration • Attribute Matching • Security Groups • Domain Join •
+          Shared Data Migration • Internal Documentation • Post-Migration Validation
         </p>
 
         <p>
