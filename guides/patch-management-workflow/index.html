@@ -1,192 +1,260 @@
-```html id="patch-management-guide"
-<section class="content-section">
-  <p class="section-label">Guide</p>
-  <h2>Patch Management Workflow</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <p>
-    This guide shows a practical patch management workflow for a small lab environment.
-    The goal is to check patch status, identify missing updates, prioritise risk,
-    apply patches, validate the result, and save evidence.
-  </p>
+  <title>Patch Management Workflow | Alex Mateescu</title>
 
-  <p>
-    Patch management is not only about installing updates. A proper workflow includes
-    asset tracking, risk decisions, rollback planning, testing, validation, and documentation.
-  </p>
+  <link rel="stylesheet" href="../../style.css" />
 
-  <div class="grid">
-    <div class="card">
-      <h3>Lab Goal</h3>
-      <p>
-        Complete a full patch cycle from update discovery to validation.
-      </p>
-    </div>
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
 
-    <div class="card">
-      <h3>Final Output</h3>
-      <p>
-        Asset notes, missing update records, patch plan, validation output, and evidence.
-      </p>
-    </div>
-  </div>
-</section>
+  <div class="page">
 
-<section class="content-section">
-  <p class="section-label">Lab Setup</p>
-  <h2>Example Environment</h2>
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
 
-  <p>
-    This lab uses one Windows workstation and one Ubuntu server. The same workflow can be used
-    for a larger environment with more assets.
-  </p>
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
 
-  <div class="grid">
-    <div class="card">
-      <h3>Windows Target</h3>
-      <p class="tags">LAB-001 · Workstation · Internal</p>
+        <div class="contact">
+          <p>al3ksmatee@gmail.com</p>
 
-      <pre><code>Hostname: LAB-WIN11
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          A practical patch management workflow covering update discovery,
+          risk prioritisation, rollback planning, validation, and evidence.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../../#guides" class="active">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Security Guide</p>
+        <h2>Patch Management Workflow</h2>
+
+        <p>
+          This guide shows a practical patch management workflow for a small lab environment.
+          The goal is to check patch status, identify missing updates, prioritise risk,
+          apply patches, validate the result, and save evidence.
+        </p>
+
+        <p>
+          Patch management is not only about installing updates. A proper workflow includes
+          asset tracking, risk decisions, rollback planning, testing, validation, and documentation.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Lab Goal</h3>
+            <p>
+              Complete a full patch cycle from update discovery to validation.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Final Output</h3>
+            <p>
+              Asset notes, missing update records, patch plan, validation output, and evidence.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Lab Setup</p>
+        <h2>Example Environment</h2>
+
+        <p>
+          This lab uses one Windows workstation and one Ubuntu server. The same workflow can be used
+          for a larger environment with more assets.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Windows Target</h3>
+            <p class="tags">LAB-001 · Workstation · Internal</p>
+
+            <pre><code>Hostname: LAB-WIN11
 IP Address: 192.168.56.20
 Operating System: Windows 11
 Role: Test workstation
 Exposure: Internal lab only
 Criticality: Medium</code></pre>
-    </div>
+          </div>
 
-    <div class="card">
-      <h3>Linux Target</h3>
-      <p class="tags">LAB-002 · Server · Internal</p>
+          <div class="card">
+            <h3>Linux Target</h3>
+            <p class="tags">LAB-002 · Server · Internal</p>
 
-      <pre><code>Hostname: LAB-UBUNTU01
+            <pre><code>Hostname: LAB-UBUNTU01
 IP Address: 192.168.56.30
 Operating System: Ubuntu Server
 Role: Test server
 Exposure: Internal lab only
 Criticality: Medium</code></pre>
-    </div>
-  </div>
-</section>
+          </div>
+        </div>
+      </section>
 
-<section class="content-section">
-  <p class="section-label">Step 1</p>
-  <h2>Check Current Patch Status</h2>
+      <section class="content-section">
+        <p class="section-label">Step 1</p>
+        <h2>Check Current Patch Status</h2>
 
-  <p>
-    Start by checking the current system version, installed updates, and available updates.
-    This gives you a baseline before making changes.
-  </p>
+        <p>
+          Start by checking the current system version, installed updates, and available updates.
+          This gives you a baseline before making changes.
+        </p>
 
-  <div class="project">
-    <h3>Windows Checks</h3>
-    <p class="tags">PowerShell · Build Number · Hotfixes</p>
+        <div class="project">
+          <h3>Windows Checks</h3>
+          <p class="tags">PowerShell · Build Number · Hotfixes</p>
 
-    <pre><code>Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, OsBuildNumber
+          <pre><code>Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, OsBuildNumber
 
 Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 10</code></pre>
 
-    <p>
-      <strong>Note:</strong> <code>Get-HotFix</code> is useful, but it may not show every Windows update type.
-      Windows Update history or endpoint management reports may also be needed.
-    </p>
-  </div>
+          <p>
+            <strong>Note:</strong> <code>Get-HotFix</code> is useful, but it may not show every Windows update type.
+            Windows Update history or endpoint management reports may also be needed.
+          </p>
+        </div>
 
-  <div class="project">
-    <h3>Ubuntu Checks</h3>
-    <p class="tags">Terminal · Kernel · Upgradable Packages</p>
+        <div class="project">
+          <h3>Ubuntu Checks</h3>
+          <p class="tags">Terminal · Kernel · Upgradable Packages</p>
 
-    <pre><code>lsb_release -a
+          <pre><code>lsb_release -a
 
 uname -r
 
 apt list --upgradable</code></pre>
 
-    <p>
-      Save this output before patching. It helps prove what changed after the update.
-    </p>
-  </div>
-</section>
+          <p>
+            Save this output before patching. It helps prove what changed after the update.
+          </p>
+        </div>
+      </section>
 
-<section class="content-section">
-  <p class="section-label">Step 2</p>
-  <h2>Identify Missing Updates</h2>
+      <section class="content-section">
+        <p class="section-label">Step 2</p>
+        <h2>Identify Missing Updates</h2>
 
-  <p>
-    Missing updates can be found using Windows Update, Linux package managers,
-    vendor advisories, vulnerability scanners, or patch management tools.
-  </p>
+        <p>
+          Missing updates can be found using Windows Update, Linux package managers,
+          vendor advisories, vulnerability scanners, or patch management tools.
+        </p>
 
-  <div class="project">
-    <h3>Ubuntu Update Check</h3>
-    <p class="tags">APT · Package Updates · Security Fixes</p>
+        <div class="project">
+          <h3>Ubuntu Update Check</h3>
+          <p class="tags">APT · Package Updates · Security Fixes</p>
 
-    <pre><code>sudo apt update
+          <pre><code>sudo apt update
 
 apt list --upgradable</code></pre>
-  </div>
+        </div>
 
-  <div class="project">
-    <h3>Example Finding</h3>
-    <p class="tags">Finding Record · Patch Tracker</p>
+        <div class="project">
+          <h3>Example Finding</h3>
+          <p class="tags">Finding Record · Patch Tracker</p>
 
-    <pre><code>Finding ID: PATCH-001
+          <pre><code>Finding ID: PATCH-001
 Asset: LAB-UBUNTU01
 Package: openssl
 Finding Source: apt list --upgradable
 Issue: Security update available
 Risk: Security update pending
 Status: Open</code></pre>
-  </div>
+        </div>
 
-  <p>
-    For security updates, record the affected software, version, CVE if available,
-    severity, affected asset, and source of the finding.
-  </p>
-</section>
+        <p>
+          For security updates, record the affected software, version, CVE if available,
+          severity, affected asset, and source of the finding.
+        </p>
+      </section>
 
-<section class="content-section">
-  <p class="section-label">Step 3</p>
-  <h2>Prioritise Patches By Risk</h2>
+      <section class="content-section">
+        <p class="section-label">Step 3</p>
+        <h2>Prioritise Patches By Risk</h2>
 
-  <p>
-    Not every patch has the same priority. Rank patches based on severity, exploit activity,
-    asset importance, exposure, and disruption risk.
-  </p>
+        <p>
+          Not every patch has the same priority. Rank patches based on severity, exploit activity,
+          asset importance, exposure, and disruption risk.
+        </p>
 
-  <div class="grid">
-    <div class="card">
-      <h3>Urgent</h3>
-      <p>
-        Exploited vulnerability on an internet-facing system.
-      </p>
-    </div>
+        <div class="grid">
+          <div class="card">
+            <h3>Urgent</h3>
+            <p>
+              Exploited vulnerability on an internet-facing system.
+            </p>
+          </div>
 
-    <div class="card">
-      <h3>High</h3>
-      <p>
-        Security update for an important internal server.
-      </p>
-    </div>
+          <div class="card">
+            <h3>High</h3>
+            <p>
+              Security update for an important internal server.
+            </p>
+          </div>
 
-    <div class="card">
-      <h3>Medium</h3>
-      <p>
-        Standard monthly security update for a workstation.
-      </p>
-    </div>
+          <div class="card">
+            <h3>Medium</h3>
+            <p>
+              Standard monthly security update for a workstation.
+            </p>
+          </div>
 
-    <div class="card">
-      <h3>Low</h3>
-      <p>
-        Non-security update with low operational impact.
-      </p>
-    </div>
-  </div>
+          <div class="card">
+            <h3>Low</h3>
+            <p>
+              Non-security update with low operational impact.
+            </p>
+          </div>
+        </div>
 
-  <div class="project">
-    <h3>Example Priority Decision</h3>
-    <p class="tags">Risk Based Patching</p>
+        <div class="project">
+          <h3>Example Priority Decision</h3>
+          <p class="tags">Risk Based Patching</p>
 
-    <pre><code>Patch Item: OpenSSL security update
+          <pre><code>Patch Item: OpenSSL security update
 Asset: LAB-UBUNTU01
 Exposure: Internal lab only
 Asset Criticality: Medium
@@ -194,23 +262,23 @@ Severity: High
 Disruption Risk: Low
 Priority: High
 Action: Patch during next maintenance window</code></pre>
-  </div>
-</section>
+        </div>
+      </section>
 
-<section class="content-section">
-  <p class="section-label">Step 4</p>
-  <h2>Plan The Change</h2>
+      <section class="content-section">
+        <p class="section-label">Step 4</p>
+        <h2>Plan The Change</h2>
 
-  <p>
-    Before applying the patch, write a short change plan. This shows what will change,
-    when it will happen, what the impact could be, and how rollback would work.
-  </p>
+        <p>
+          Before applying the patch, write a short change plan. This shows what will change,
+          when it will happen, what the impact could be, and how rollback would work.
+        </p>
 
-  <div class="project">
-    <h3>Example Change Plan</h3>
-    <p class="tags">Change Planning · Rollback · Validation</p>
+        <div class="project">
+          <h3>Example Change Plan</h3>
+          <p class="tags">Change Planning · Rollback · Validation</p>
 
-    <pre><code>Change ID: CHG-001
+          <pre><code>Change ID: CHG-001
 Asset: LAB-UBUNTU01
 Patch Type: Security update
 Reason: OpenSSL update available
@@ -219,95 +287,95 @@ Expected Impact: Reboot may be required
 Rollback Plan: Restore VM snapshot
 Validation Method: Confirm package version and check services
 Owner: Lab</code></pre>
-  </div>
+        </div>
 
-  <div class="grid">
-    <div class="card">
-      <h3>Before Patching</h3>
-      <ul>
-        <li>Confirm the asset is in scope.</li>
-        <li>Check the maintenance window.</li>
-        <li>Confirm rollback method.</li>
-        <li>Prepare validation checks.</li>
-      </ul>
-    </div>
+        <div class="grid">
+          <div class="card">
+            <h3>Before Patching</h3>
+            <ul>
+              <li>Confirm the asset is in scope.</li>
+              <li>Check the maintenance window.</li>
+              <li>Confirm rollback method.</li>
+              <li>Prepare validation checks.</li>
+            </ul>
+          </div>
 
-    <div class="card">
-      <h3>Possible Impact</h3>
-      <ul>
-        <li>Service restart</li>
-        <li>System reboot</li>
-        <li>Temporary downtime</li>
-        <li>Application compatibility issue</li>
-      </ul>
-    </div>
-  </div>
-</section>
+          <div class="card">
+            <h3>Possible Impact</h3>
+            <ul>
+              <li>Service restart</li>
+              <li>System reboot</li>
+              <li>Temporary downtime</li>
+              <li>Application compatibility issue</li>
+            </ul>
+          </div>
+        </div>
+      </section>
 
-<section class="content-section">
-  <p class="section-label">Step 5</p>
-  <h2>Take A Snapshot Or Backup</h2>
+      <section class="content-section">
+        <p class="section-label">Step 5</p>
+        <h2>Take A Snapshot Or Backup</h2>
 
-  <p>
-    Before patching, create a rollback point. In a virtual lab, this is normally a VM snapshot.
-  </p>
+        <p>
+          Before patching, create a rollback point. In a virtual lab, this is normally a VM snapshot.
+        </p>
 
-  <div class="project">
-    <h3>Example Snapshot Record</h3>
-    <p class="tags">Rollback Point · VM Snapshot</p>
+        <div class="project">
+          <h3>Example Snapshot Record</h3>
+          <p class="tags">Rollback Point · VM Snapshot</p>
 
-    <pre><code>Asset: LAB-UBUNTU01
+          <pre><code>Asset: LAB-UBUNTU01
 Snapshot Name: pre-patch-openssl
 Reason: Rollback point before security update
 Status: Completed</code></pre>
-  </div>
+        </div>
 
-  <p>
-    In a business environment, follow the approved backup and change process.
-  </p>
-</section>
+        <p>
+          In a business environment, follow the approved backup and change process.
+        </p>
+      </section>
 
-<section class="content-section">
-  <p class="section-label">Step 6</p>
-  <h2>Apply The Patch</h2>
+      <section class="content-section">
+        <p class="section-label">Step 6</p>
+        <h2>Apply The Patch</h2>
 
-  <p>
-    Apply the patch during the planned maintenance window and record what happened.
-  </p>
+        <p>
+          Apply the patch during the planned maintenance window and record what happened.
+        </p>
 
-  <div class="project">
-    <h3>Ubuntu Patch Commands</h3>
-    <p class="tags">APT · Update · Upgrade</p>
+        <div class="project">
+          <h3>Ubuntu Patch Commands</h3>
+          <p class="tags">APT · Update · Upgrade</p>
 
-    <pre><code>sudo apt update
+          <pre><code>sudo apt update
 
 sudo apt upgrade</code></pre>
 
-    <p>
-      Check if a reboot is required:
-    </p>
+          <p>
+            Check if a reboot is required:
+          </p>
 
-    <pre><code>test -f /var/run/reboot-required && cat /var/run/reboot-required</code></pre>
-  </div>
+          <pre><code>test -f /var/run/reboot-required && cat /var/run/reboot-required</code></pre>
+        </div>
 
-  <div class="project">
-    <h3>Windows Patching Options</h3>
-    <p class="tags">Windows Update · Intune · WSUS</p>
+        <div class="project">
+          <h3>Windows Patching Options</h3>
+          <p class="tags">Windows Update · Intune · WSUS</p>
 
-    <ul>
-      <li>Windows Update</li>
-      <li>Microsoft Intune</li>
-      <li>WSUS</li>
-      <li>Microsoft Configuration Manager</li>
-      <li>Approved business patching tool</li>
-    </ul>
-  </div>
+          <ul>
+            <li>Windows Update</li>
+            <li>Microsoft Intune</li>
+            <li>WSUS</li>
+            <li>Microsoft Configuration Manager</li>
+            <li>Approved business patching tool</li>
+          </ul>
+        </div>
 
-  <div class="project">
-    <h3>Example Deployment Record</h3>
-    <p class="tags">Patch Record · Deployment Notes</p>
+        <div class="project">
+          <h3>Example Deployment Record</h3>
+          <p class="tags">Patch Record · Deployment Notes</p>
 
-    <pre><code>Asset: LAB-UBUNTU01
+          <pre><code>Asset: LAB-UBUNTU01
 Patch Window: Saturday 12:00-14:00
 Command Used: sudo apt update && sudo apt upgrade
 Result: Updates installed successfully
@@ -315,114 +383,114 @@ Reboot Required: Yes
 Reboot Completed: Yes
 Issues Found: None
 Status: Patched</code></pre>
-  </div>
-</section>
+        </div>
+      </section>
 
-<section class="content-section">
-  <p class="section-label">Step 7</p>
-  <h2>Validate The Result</h2>
+      <section class="content-section">
+        <p class="section-label">Step 7</p>
+        <h2>Validate The Result</h2>
 
-  <p>
-    Validation confirms the update installed correctly and the system still works.
-    Do not close the patch item until validation is complete.
-  </p>
+        <p>
+          Validation confirms the update installed correctly and the system still works.
+          Do not close the patch item until validation is complete.
+        </p>
 
-  <div class="project">
-    <h3>Ubuntu Validation</h3>
-    <p class="tags">Package Check · Kernel Check · Service Check</p>
+        <div class="project">
+          <h3>Ubuntu Validation</h3>
+          <p class="tags">Package Check · Kernel Check · Service Check</p>
 
-    <pre><code>apt list --upgradable
+          <pre><code>apt list --upgradable
 
 dpkg -l | grep openssl
 
 uname -r
 
 systemctl --failed</code></pre>
-  </div>
+        </div>
 
-  <div class="project">
-    <h3>Windows Validation</h3>
-    <p class="tags">Hotfix Check · Build Check</p>
+        <div class="project">
+          <h3>Windows Validation</h3>
+          <p class="tags">Hotfix Check · Build Check</p>
 
-    <pre><code>Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 10
+          <pre><code>Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 10
 
 Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, OsBuildNumber</code></pre>
-  </div>
+        </div>
 
-  <div class="project">
-    <h3>Example Validation Record</h3>
-    <p class="tags">Validated · Evidence Saved</p>
+        <div class="project">
+          <h3>Example Validation Record</h3>
+          <p class="tags">Validated · Evidence Saved</p>
 
-    <pre><code>Patch Item: OpenSSL security update
+          <pre><code>Patch Item: OpenSSL security update
 Asset: LAB-UBUNTU01
 Validation Method: Package check and service check
 Result: Update installed and no failed services found
 Evidence: dpkg output and systemctl output saved
 Status: Validated</code></pre>
-  </div>
-</section>
+        </div>
+      </section>
 
-<section class="content-section">
-  <p class="section-label">Step 8</p>
-  <h2>Handle Failed Or Delayed Patches</h2>
+      <section class="content-section">
+        <p class="section-label">Step 8</p>
+        <h2>Handle Failed Or Delayed Patches</h2>
 
-  <p>
-    Failed and delayed patches should stay visible until they are fixed, accepted as risk,
-    or reduced with another control.
-  </p>
+        <p>
+          Failed and delayed patches should stay visible until they are fixed, accepted as risk,
+          or reduced with another control.
+        </p>
 
-  <div class="grid">
-    <div class="card">
-      <h3>Common Issues</h3>
-      <ul>
-        <li>Patch fails to install.</li>
-        <li>System needs a reboot.</li>
-        <li>Service fails after patching.</li>
-        <li>Disk space is too low.</li>
-        <li>Repository or network issue blocks the update.</li>
-      </ul>
-    </div>
+        <div class="grid">
+          <div class="card">
+            <h3>Common Issues</h3>
+            <ul>
+              <li>Patch fails to install.</li>
+              <li>System needs a reboot.</li>
+              <li>Service fails after patching.</li>
+              <li>Disk space is too low.</li>
+              <li>Repository or network issue blocks the update.</li>
+            </ul>
+          </div>
 
-    <div class="card">
-      <h3>Temporary Controls</h3>
-      <ul>
-        <li>Restrict network access.</li>
-        <li>Disable vulnerable service.</li>
-        <li>Increase monitoring.</li>
-        <li>Apply a configuration workaround.</li>
-        <li>Set a review date.</li>
-      </ul>
-    </div>
-  </div>
+          <div class="card">
+            <h3>Temporary Controls</h3>
+            <ul>
+              <li>Restrict network access.</li>
+              <li>Disable vulnerable service.</li>
+              <li>Increase monitoring.</li>
+              <li>Apply a configuration workaround.</li>
+              <li>Set a review date.</li>
+            </ul>
+          </div>
+        </div>
 
-  <div class="project">
-    <h3>Example Deferred Patch Record</h3>
-    <p class="tags">Deferred · Risk Tracked</p>
+        <div class="project">
+          <h3>Example Deferred Patch Record</h3>
+          <p class="tags">Deferred · Risk Tracked</p>
 
-    <pre><code>Patch Item: Application security update
+          <pre><code>Patch Item: Application security update
 Asset: LAB-SERVER01
 Reason Not Applied: Compatibility issue
 Temporary Control: Restricted access to internal subnet
 Owner: Lab
 Review Date: 2026-07-27
 Status: Deferred</code></pre>
-  </div>
-</section>
+        </div>
+      </section>
 
-<section class="content-section">
-  <p class="section-label">Step 9</p>
-  <h2>Update The Patch Tracker</h2>
+      <section class="content-section">
+        <p class="section-label">Step 9</p>
+        <h2>Update The Patch Tracker</h2>
 
-  <p>
-    A patch tracker gives a clear view of what is open, scheduled, patched, validated,
-    failed, or deferred.
-  </p>
+        <p>
+          A patch tracker gives a clear view of what is open, scheduled, patched, validated,
+          failed, or deferred.
+        </p>
 
-  <div class="project">
-    <h3>Example Tracker Entry</h3>
-    <p class="tags">PATCH-001 · Validated</p>
+        <div class="project">
+          <h3>Example Tracker Entry</h3>
+          <p class="tags">PATCH-001 · Validated</p>
 
-    <pre><code>ID: PATCH-001
+          <pre><code>ID: PATCH-001
 Asset: LAB-UBUNTU01
 Patch Type: Security update
 Package or KB: OpenSSL update
@@ -431,119 +499,125 @@ Owner: Lab
 Status: Validated
 Evidence: dpkg output and service check
 Notes: No issues after reboot</code></pre>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Open</h3>
+            <p>Patch identified but not planned yet.</p>
+          </div>
+
+          <div class="card">
+            <h3>Scheduled</h3>
+            <p>Patch planned for a maintenance window.</p>
+          </div>
+
+          <div class="card">
+            <h3>Patched</h3>
+            <p>Patch installed but not validated yet.</p>
+          </div>
+
+          <div class="card">
+            <h3>Validated</h3>
+            <p>Patch confirmed and system checked.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Evidence</p>
+        <h2>Evidence To Save</h2>
+
+        <p>
+          Save enough evidence to show what was checked, what changed, and how the result was validated.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Before Patching</h3>
+            <ul>
+              <li>Asset inventory entry</li>
+              <li>Pre-patch OS version</li>
+              <li>Pre-patch update list</li>
+              <li>Missing update finding</li>
+              <li>Patch priority decision</li>
+              <li>Change plan</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>After Patching</h3>
+            <ul>
+              <li>Patch command output</li>
+              <li>Reboot confirmation</li>
+              <li>Post-patch version check</li>
+              <li>Service health check</li>
+              <li>Scanner result if used</li>
+              <li>Patch tracker entry</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Common Mistakes</p>
+        <h2>Things To Avoid</h2>
+
+        <div class="project">
+          <h3>Patch Management Mistakes</h3>
+          <p class="tags">Operational Risk · Poor Evidence · Missed Validation</p>
+
+          <ul>
+            <li>Patching without knowing which assets are in scope.</li>
+            <li>Skipping snapshots before risky updates.</li>
+            <li>Ignoring reboot requirements.</li>
+            <li>Marking patches complete without validation.</li>
+            <li>Not recording failed patches.</li>
+            <li>Delaying patches without a reason or review date.</li>
+            <li>Saving screenshots but no structured notes.</li>
+            <li>Not comparing before and after results.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Summary</p>
+        <h2>Quick Workflow</h2>
+
+        <ol>
+          <li>List the assets in scope.</li>
+          <li>Check the current patch status.</li>
+          <li>Identify missing updates.</li>
+          <li>Prioritise patches by risk.</li>
+          <li>Plan the change.</li>
+          <li>Take a snapshot or backup.</li>
+          <li>Apply the patch.</li>
+          <li>Validate the result.</li>
+          <li>Record failed or delayed patches.</li>
+          <li>Update the patch tracker.</li>
+          <li>Save evidence.</li>
+        </ol>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Why It Matters</p>
+        <h2>Why Patch Management Matters</h2>
+
+        <p>
+          Patch management reduces the risk of known vulnerabilities being abused.
+          It also supports system stability, change control, vulnerability management,
+          and reliable IT operations.
+        </p>
+
+        <p>
+          This lab shows the full patch cycle: finding missing updates, planning the change,
+          applying patches, validating the result, and documenting the evidence.
+        </p>
+      </section>
+
+    </main>
+
   </div>
 
-  <div class="grid">
-    <div class="card">
-      <h3>Open</h3>
-      <p>Patch identified but not planned yet.</p>
-    </div>
-
-    <div class="card">
-      <h3>Scheduled</h3>
-      <p>Patch planned for a maintenance window.</p>
-    </div>
-
-    <div class="card">
-      <h3>Patched</h3>
-      <p>Patch installed but not validated yet.</p>
-    </div>
-
-    <div class="card">
-      <h3>Validated</h3>
-      <p>Patch confirmed and system checked.</p>
-    </div>
-  </div>
-</section>
-
-<section class="content-section">
-  <p class="section-label">Evidence</p>
-  <h2>Evidence To Save</h2>
-
-  <p>
-    Save enough evidence to show what was checked, what changed, and how the result was validated.
-  </p>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Before Patching</h3>
-      <ul>
-        <li>Asset inventory entry</li>
-        <li>Pre-patch OS version</li>
-        <li>Pre-patch update list</li>
-        <li>Missing update finding</li>
-        <li>Patch priority decision</li>
-        <li>Change plan</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h3>After Patching</h3>
-      <ul>
-        <li>Patch command output</li>
-        <li>Reboot confirmation</li>
-        <li>Post-patch version check</li>
-        <li>Service health check</li>
-        <li>Scanner result if used</li>
-        <li>Patch tracker entry</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="content-section">
-  <p class="section-label">Common Mistakes</p>
-  <h2>Things To Avoid</h2>
-
-  <div class="project">
-    <h3>Patch Management Mistakes</h3>
-    <p class="tags">Operational Risk · Poor Evidence · Missed Validation</p>
-
-    <ul>
-      <li>Patching without knowing which assets are in scope.</li>
-      <li>Skipping snapshots before risky updates.</li>
-      <li>Ignoring reboot requirements.</li>
-      <li>Marking patches complete without validation.</li>
-      <li>Not recording failed patches.</li>
-      <li>Delaying patches without a reason or review date.</li>
-      <li>Saving screenshots but no structured notes.</li>
-      <li>Not comparing before and after results.</li>
-    </ul>
-  </div>
-</section>
-
-<section class="content-section">
-  <p class="section-label">Summary</p>
-  <h2>Quick Workflow</h2>
-
-  <ol>
-    <li>List the assets in scope.</li>
-    <li>Check the current patch status.</li>
-    <li>Identify missing updates.</li>
-    <li>Prioritise patches by risk.</li>
-    <li>Plan the change.</li>
-    <li>Take a snapshot or backup.</li>
-    <li>Apply the patch.</li>
-    <li>Validate the result.</li>
-    <li>Record failed or delayed patches.</li>
-    <li>Update the patch tracker.</li>
-    <li>Save evidence.</li>
-  </ol>
-</section>
-
-<section class="content-section">
-  <p class="section-label">Why It Matters</p>
-  <h2>Why Patch Management Matters</h2>
-
-  <p>
-    Patch management reduces the risk of known vulnerabilities being abused.
-    It also supports system stability, change control, vulnerability management,
-    and reliable IT operations.
-  </p>
-
-  <p>
-    This lab shows the full patch cycle: finding missing updates, planning the change,
-    applying patches, validating the result, and documenting the evidence.
-  </p>
-</section>
-```
+</body>
+</html>
