@@ -8,21 +8,48 @@
 
   <link rel="stylesheet" href="../../style.css" />
 
+  <!-- Font Awesome icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
   <div class="page">
 
+    <!-- LEFT PANEL -->
     <aside class="sidebar">
+
       <section class="sidebar-block intro">
         <h1>Alex Mateescu</h1>
         <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p>al3ksmatee@gmail.com</p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
       </section>
 
       <section class="sidebar-block">
         <h2>Guide</h2>
-        <p>MFA, account security, permissions, and access troubleshooting.</p>
+        <p>
+          Basic notes on MFA, sign-in protection, permissions, and access troubleshooting.
+        </p>
       </section>
 
       <nav class="sidebar-block menu">
@@ -33,8 +60,10 @@
         <a href="../../#certifications">Certifications</a>
         <a href="../../#cv">CV</a>
       </nav>
+
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="content">
 
       <section class="content-section">
@@ -42,11 +71,253 @@
         <h2>MFA and Access Control Notes</h2>
 
         <p>
-          If you can see this page, the MFA guide page is working correctly.
+          This guide explains the basics of multi-factor authentication, access control,
+          account security, and common sign-in troubleshooting checks.
         </p>
 
         <p>
-          Next we can replace this test page with the full MFA guide content.
+          The goal is to understand how MFA helps protect accounts, how access decisions are made,
+          and what to check when a user cannot sign in.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 1</p>
+        <h2>What is MFA?</h2>
+
+        <p>
+          MFA stands for multi-factor authentication. It adds an extra verification step when a user signs in.
+        </p>
+
+        <p>
+          Instead of using only a password, the user must also prove their identity with another method.
+        </p>
+
+        <div class="list">
+          <p><strong>Something you know:</strong> password or PIN.</p>
+          <p><strong>Something you have:</strong> phone, authenticator app, security key, or registered device.</p>
+          <p><strong>Something you are:</strong> fingerprint or face recognition.</p>
+        </div>
+
+        <p>
+          MFA is important because passwords can be guessed, reused, leaked, or stolen.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 2</p>
+        <h2>Common MFA methods</h2>
+
+        <p>
+          Different organisations use different MFA methods. Some methods are stronger than others.
+        </p>
+
+        <div class="list">
+          <p><strong>Authenticator app:</strong> approval notification or one-time code from an app.</p>
+          <p><strong>SMS code:</strong> code sent by text message.</p>
+          <p><strong>Phone call:</strong> automated call to confirm sign-in.</p>
+          <p><strong>Security key:</strong> physical key used to verify identity.</p>
+          <p><strong>Windows Hello:</strong> PIN, fingerprint, or face sign-in on a trusted device.</p>
+        </div>
+
+        <p>
+          Authenticator apps and security keys are usually preferred over SMS because they are stronger options.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 3</p>
+        <h2>Understand access control</h2>
+
+        <p>
+          Access control decides who can access a system, application, file, or service.
+        </p>
+
+        <p>
+          In a workplace, access is usually based on user identity, group membership,
+          permissions, device state, and security policies.
+        </p>
+
+        <div class="list">
+          <p><strong>User account:</strong> the identity used to sign in.</p>
+          <p><strong>Groups:</strong> collections of users used to assign access.</p>
+          <p><strong>Permissions:</strong> what the user is allowed to do.</p>
+          <p><strong>Roles:</strong> admin or service permissions assigned to an account.</p>
+          <p><strong>Policies:</strong> rules that control sign-in and access behaviour.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 4</p>
+        <h2>Check the user account status</h2>
+
+        <p>
+          When a user cannot access a system, first check the account itself.
+        </p>
+
+        <div class="list">
+          <p><strong>Is the account enabled?</strong> Disabled accounts cannot sign in.</p>
+          <p><strong>Is the account locked?</strong> Too many failed attempts can lock an account.</p>
+          <p><strong>Has the password expired?</strong> The user may need to reset or change it.</p>
+          <p><strong>Is MFA registered?</strong> The user may not have completed MFA setup.</p>
+          <p><strong>Is the user using the correct username?</strong> Check spelling and domain.</p>
+        </div>
+
+        <p>
+          These checks are common in Active Directory, Microsoft 365, and Entra ID environments.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 5</p>
+        <h2>Check MFA registration</h2>
+
+        <p>
+          If MFA is required but the user has not registered a method, sign-in may fail
+          or the user may be asked to complete setup.
+        </p>
+
+        <div class="list">
+          <p><strong>Registered method:</strong> confirm the user has at least one valid MFA method.</p>
+          <p><strong>Old phone:</strong> the user may have changed phone and lost access to the authenticator app.</p>
+          <p><strong>Wrong number:</strong> phone-based MFA may fail if the number is outdated.</p>
+          <p><strong>Backup method:</strong> check whether another sign-in method is available.</p>
+        </div>
+
+        <p>
+          In a support role, always follow company process before resetting MFA methods.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 6</p>
+        <h2>Check permissions and groups</h2>
+
+        <p>
+          Sometimes the user can sign in but cannot access a file, app, mailbox, shared drive,
+          or admin area. This is usually a permissions issue.
+        </p>
+
+        <div class="list">
+          <p><strong>Group membership:</strong> confirm the user is in the correct security group.</p>
+          <p><strong>Licence assignment:</strong> some cloud apps require the correct licence.</p>
+          <p><strong>Shared mailbox access:</strong> check if the user has been granted access.</p>
+          <p><strong>Folder permissions:</strong> check read, write, modify, or owner permissions.</p>
+          <p><strong>Role assignment:</strong> check whether admin roles are required.</p>
+        </div>
+
+        <p>
+          Access should follow least privilege: users should only receive the access they need.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 7</p>
+        <h2>Check sign-in conditions</h2>
+
+        <p>
+          Modern access decisions may depend on more than just username and password.
+        </p>
+
+        <div class="list">
+          <p><strong>Location:</strong> sign-ins from unusual countries or networks may be blocked.</p>
+          <p><strong>Device:</strong> unmanaged or non-compliant devices may be restricted.</p>
+          <p><strong>Risk:</strong> suspicious sign-ins may trigger extra checks.</p>
+          <p><strong>Application:</strong> some apps may require stronger sign-in methods.</p>
+          <p><strong>Browser or session:</strong> cached sessions can sometimes cause access issues.</p>
+        </div>
+
+        <p>
+          These checks are common in Microsoft Entra ID and conditional access environments.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 8</p>
+        <h2>Common sign-in issues</h2>
+
+        <div class="list">
+          <p><strong>User changed phone:</strong> authenticator app is no longer available.</p>
+          <p><strong>MFA prompt not appearing:</strong> notification blocked, phone offline, or app issue.</p>
+          <p><strong>Access denied:</strong> user may not have the correct permission or group membership.</p>
+          <p><strong>Account locked:</strong> repeated failed password attempts.</p>
+          <p><strong>Licence missing:</strong> cloud service access may fail.</p>
+          <p><strong>Wrong account used:</strong> user may be signed into a personal account instead of work account.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 9</p>
+        <h2>Basic troubleshooting questions</h2>
+
+        <p>
+          Ask clear questions before changing account settings.
+        </p>
+
+        <div class="list">
+          <p><strong>What application or service are you trying to access?</strong></p>
+          <p><strong>What error message do you see?</strong></p>
+          <p><strong>Can you sign in anywhere else?</strong></p>
+          <p><strong>Did you recently change your password or phone?</strong></p>
+          <p><strong>Are you using a work account or personal account?</strong></p>
+          <p><strong>Are you connected from office, home, VPN, or public Wi-Fi?</strong></p>
+        </div>
+
+        <p>
+          Good questions help separate password issues, MFA issues, permissions issues,
+          and network or device issues.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 10</p>
+        <h2>Document the access issue</h2>
+
+        <p>
+          Access issues should be documented clearly, especially if they need escalation.
+        </p>
+
+        <div class="list">
+          <p><strong>User:</strong> affected account or username.</p>
+          <p><strong>Service:</strong> application, mailbox, file share, VPN, or cloud service.</p>
+          <p><strong>Error:</strong> exact message or screenshot if available.</p>
+          <p><strong>MFA method:</strong> authenticator app, SMS, phone call, or security key.</p>
+          <p><strong>Account checks:</strong> enabled, locked, password status, MFA registration.</p>
+          <p><strong>Permission checks:</strong> groups, roles, licences, shared access.</p>
+          <p><strong>Action taken:</strong> what was changed or tested.</p>
+          <p><strong>Escalation:</strong> who it was passed to and why.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Summary</p>
+        <h2>Quick MFA and access checklist</h2>
+
+        <div class="list">
+          <p><strong>1.</strong> Confirm the user, service, and error message.</p>
+          <p><strong>2.</strong> Check if the account is enabled, locked, or expired.</p>
+          <p><strong>3.</strong> Confirm the user has a valid MFA method registered.</p>
+          <p><strong>4.</strong> Check if the user recently changed phone or password.</p>
+          <p><strong>5.</strong> Check group membership, permissions, roles, and licences.</p>
+          <p><strong>6.</strong> Check whether location, device, or policy conditions may block access.</p>
+          <p><strong>7.</strong> Reset MFA only if allowed by company process.</p>
+          <p><strong>8.</strong> Test sign-in again.</p>
+          <p><strong>9.</strong> Document the issue and action taken.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Why It Matters</p>
+        <h2>Why this matters in IT and security</h2>
+
+        <p>
+          MFA and access control are important parts of account security.
+          They help protect users, company data, cloud services, and internal systems.
+        </p>
+
+        <p>
+          Understanding MFA, permissions, and sign-in checks helps with 1st/2nd line support,
+          Microsoft 365 administration, Entra ID, endpoint security, and basic identity protection.
         </p>
       </section>
 
