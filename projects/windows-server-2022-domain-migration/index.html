@@ -48,8 +48,9 @@
       <section class="sidebar-block">
         <h2>Project</h2>
         <p>
-          A practical infrastructure migration project covering Windows Server 2022,
-          Active Directory, DNS, DHCP, Entra ID sync, data migration, and endpoint domain join automation.
+          A work-related infrastructure migration project covering Windows Server 2022,
+          Active Directory, DNS, DHCP, Microsoft Entra ID sync, shared data migration,
+          and endpoint domain join automation.
         </p>
       </section>
 
@@ -68,102 +69,177 @@
     <main class="content">
 
       <section class="content-section">
-        <p class="section-label">Infrastructure Project</p>
+        <p class="section-label">Work Project</p>
         <h2>Windows Server 2022 Domain Controller Migration</h2>
 
         <p>
           This project involved building a new Windows Server 2022 domain controller
-          and migrating users, laptops, network services, and shared data from an older
-          environment.
+          and migrating core infrastructure services, user accounts, Windows 11 Pro laptops,
+          shared data, and identity synchronisation from an older environment.
         </p>
 
         <p>
           The new environment included Active Directory Domain Services, DNS, DHCP,
-          Microsoft Entra ID sync, data migration with Robocopy, user migration support
-          with ADManager Plus, and PowerShell automation deployed through ManageEngine.
+          Microsoft Entra ID sync, Robocopy data migration, user migration and attribute
+          matching with ADManager Plus, and PowerShell-based domain join automation deployed
+          through ManageEngine.
         </p>
 
         <p>
-          <strong>Privacy note:</strong> All names, domains, IP addresses, paths,
-          screenshots, usernames, and company details are sanitised or recreated in a
-          lab format.
+          <strong>Privacy note:</strong> Real company names, domains, IP addresses,
+          usernames, server names, file paths, screenshots, and internal references
+          have been removed or recreated in a sanitised format.
         </p>
       </section>
 
       <section class="content-section">
-        <p class="section-label">Environment</p>
-        <h2>Project Environment</h2>
+        <p class="section-label">Project Snapshot</p>
+        <h2>Overview</h2>
 
         <div class="grid">
           <div class="card">
-            <h3>Server and Identity</h3>
+            <h3>Environment</h3>
             <ul>
-              <li><strong>Domain Controller:</strong> Windows Server 2022</li>
-              <li><strong>Directory Service:</strong> Active Directory Domain Services</li>
-              <li><strong>Cloud Identity:</strong> Microsoft Entra ID</li>
-              <li><strong>Network Services:</strong> DNS and DHCP</li>
+              <li>Windows Server 2022 domain controller</li>
+              <li>Active Directory Domain Services</li>
+              <li>DNS and DHCP services</li>
+              <li>Microsoft Entra ID sync</li>
+              <li>Windows 11 Pro endpoints</li>
             </ul>
           </div>
 
           <div class="card">
-            <h3>Migration and Management</h3>
+            <h3>Migration Scope</h3>
             <ul>
-              <li><strong>Client Devices:</strong> Windows 11 Pro laptops</li>
-              <li><strong>User Migration:</strong> ADManager Plus</li>
-              <li><strong>Script Deployment:</strong> ManageEngine</li>
-              <li><strong>Data Migration:</strong> Robocopy</li>
-              <li><strong>Users Migrated:</strong> 50+ users</li>
+              <li>50+ user accounts migrated</li>
+              <li>Shared data migrated using Robocopy</li>
+              <li>User attributes matched with ADManager Plus</li>
+              <li>Windows 11 Pro laptops joined to the new domain</li>
+              <li>Domain sign-in and services validated after migration</li>
             </ul>
           </div>
         </div>
       </section>
 
       <section class="content-section">
-        <p class="section-label">Objectives</p>
-        <h2>Project Objectives</h2>
-
-        <ul>
-          <li>Build a new Windows Server 2022 domain controller.</li>
-          <li>Install and configure Active Directory Domain Services.</li>
-          <li>Install and configure DNS.</li>
-          <li>Create and test DNS records.</li>
-          <li>Install and configure DHCP.</li>
-          <li>Create DHCP scopes and network options.</li>
-          <li>Migrate shared data using Robocopy.</li>
-          <li>Use ADManager Plus to support 50+ user migrations and attribute matching.</li>
-          <li>Sync on-premises Active Directory users with Microsoft Entra ID.</li>
-          <li>Deploy a PowerShell script through ManageEngine to join Windows 11 Pro laptops to the new domain.</li>
-          <li>Test domain sign-in, DNS, DHCP, shared folder access, and cloud sync after migration.</li>
-        </ul>
-      </section>
-
-      <section class="content-section">
-        <p class="section-label">Domain Controller</p>
-        <h2>Windows Server 2022 Build</h2>
+        <p class="section-label">Problem</p>
+        <h2>Why This Project Was Needed</h2>
 
         <p>
-          I installed Windows Server 2022 and configured it as the new domain controller.
-          This included setting up Active Directory Domain Services and preparing the
-          environment for users, laptops, DNS, DHCP, and identity sync.
+          The environment needed a newer and more structured Windows Server foundation
+          for directory services, network services, user management, shared data access,
+          endpoint migration, and identity synchronisation.
         </p>
 
-        <ul>
-          <li>Installed Windows Server 2022.</li>
-          <li>Installed Active Directory Domain Services.</li>
-          <li>Promoted the server to a domain controller.</li>
-          <li>Created and organised the domain structure.</li>
-          <li>Created organisational units for users and devices.</li>
-          <li>Checked domain health after setup.</li>
-        </ul>
+        <div class="grid">
+          <div class="card">
+            <h3>Before</h3>
+            <ul>
+              <li>Core services were running in an older environment.</li>
+              <li>User accounts required careful migration and attribute matching.</li>
+              <li>Shared data needed to be moved in a controlled way.</li>
+              <li>Windows 11 Pro laptops needed to be joined to the new domain.</li>
+              <li>Hybrid identity needed validation after migration.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Target State</h3>
+            <ul>
+              <li>New Windows Server 2022 domain controller.</li>
+              <li>Configured AD DS, DNS, and DHCP services.</li>
+              <li>Cleaner user and device structure.</li>
+              <li>On-premises users synced with Microsoft Entra ID.</li>
+              <li>Repeatable endpoint domain join process.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section class="content-section">
-        <p class="section-label">DNS and DHCP</p>
-        <h2>Network Services Configuration</h2>
+        <p class="section-label">Migration Plan</p>
+        <h2>Migration Workflow</h2>
+
+        <div class="list">
+          <p>
+            <strong>1. Planning:</strong> reviewed the existing environment, user accounts,
+            devices, shared data, and infrastructure services that needed to move.
+          </p>
+
+          <p>
+            <strong>2. Server Build:</strong> installed Windows Server 2022, added required
+            roles, and promoted the server as a domain controller.
+          </p>
+
+          <p>
+            <strong>3. Network Services:</strong> configured DNS and DHCP so clients could
+            resolve domain resources and receive correct network settings.
+          </p>
+
+          <p>
+            <strong>4. Data Migration:</strong> used Robocopy to migrate shared data while
+            preserving structure and permissions where required.
+          </p>
+
+          <p>
+            <strong>5. User Migration:</strong> migrated 50+ user accounts, matched attributes,
+            and completed bulk updates using ADManager Plus.
+          </p>
+
+          <p>
+            <strong>6. Endpoint Migration:</strong> used PowerShell and ManageEngine to automate
+            Windows 11 Pro laptop domain joins.
+          </p>
+
+          <p>
+            <strong>7. Validation:</strong> checked sign-in, DNS, DHCP, shared folders,
+            group membership, Entra ID sync, and event logs.
+          </p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Server Build</p>
+        <h2>Windows Server 2022 Domain Controller</h2>
 
         <p>
-          DNS and DHCP were configured on the new server so Windows 11 Pro laptops
-          could resolve domain resources and receive the correct network settings.
+          I installed and configured Windows Server 2022 as the new domain controller.
+          This provided the foundation for Active Directory, DNS, DHCP, users, laptops,
+          shared resource access, and hybrid identity.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Build Tasks</h3>
+            <ul>
+              <li>Installed Windows Server 2022.</li>
+              <li>Configured the server for domain controller use.</li>
+              <li>Installed Active Directory Domain Services.</li>
+              <li>Promoted the server to a domain controller.</li>
+              <li>Checked domain health after setup.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Directory Structure</h3>
+            <ul>
+              <li>Organised users and devices.</li>
+              <li>Created organisational units where required.</li>
+              <li>Prepared the structure for Windows 11 Pro laptops.</li>
+              <li>Reviewed user and group information.</li>
+              <li>Prepared accounts for sync validation.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Network Services</p>
+        <h2>DNS and DHCP Configuration</h2>
+
+        <p>
+          DNS and DHCP were configured so client devices could locate domain services,
+          resolve names correctly, and receive the right network configuration.
         </p>
 
         <div class="grid">
@@ -171,9 +247,9 @@
             <h3>DNS Tasks</h3>
             <ul>
               <li>Configured DNS zones.</li>
-              <li>Created required DNS records.</li>
-              <li>Tested name resolution from client laptops.</li>
+              <li>Created and checked required DNS records.</li>
               <li>Confirmed clients used the correct DNS server.</li>
+              <li>Tested name resolution from Windows 11 Pro laptops.</li>
             </ul>
           </div>
 
@@ -183,8 +259,8 @@
               <li>Installed the DHCP role.</li>
               <li>Created DHCP scopes.</li>
               <li>Configured lease ranges.</li>
-              <li>Added default gateway and DNS options.</li>
-              <li>Tested DHCP lease assignment on Windows 11 Pro laptops.</li>
+              <li>Added gateway and DNS options.</li>
+              <li>Tested lease assignment on client devices.</li>
             </ul>
           </div>
         </div>
@@ -196,20 +272,25 @@
 
         <p>
           Robocopy was used to migrate shared data from the old server to the new
-          Windows Server 2022 environment. This helped copy folder structures, files,
-          and permissions in a controlled way.
+          Windows Server 2022 environment. This allowed folder structures, files,
+          and permissions to be copied in a controlled and repeatable way.
         </p>
 
-        <pre><code>robocopy "\\OLD-SERVER\SharedData" "\\NEW-SERVER\SharedData" /E /COPYALL /R:2 /W:5 /LOG:C:\MigrationLogs\shared-data-migration.log</code></pre>
+        <div class="project">
+          <h3>Sanitised Robocopy Example</h3>
+          <p class="tags">Robocopy • Shared Data • Permissions • Migration Logs</p>
+
+          <pre><code>robocopy "\\OLD-SERVER\SharedData" "\\NEW-SERVER\SharedData" /E /COPYALL /R:2 /W:5 /LOG:C:\MigrationLogs\shared-data-migration.log</code></pre>
+        </div>
 
         <ul>
           <li>Planned source and destination paths.</li>
           <li>Ran test copies before final migration.</li>
-          <li>Migrated shared folders.</li>
+          <li>Migrated shared folders and files.</li>
           <li>Reviewed Robocopy logs.</li>
           <li>Checked folder structure and file counts.</li>
           <li>Tested user access after migration.</li>
-          <li>Fixed permission issues where required.</li>
+          <li>Corrected permission issues where needed.</li>
         </ul>
       </section>
 
@@ -218,19 +299,34 @@
         <h2>User Migration with ADManager Plus</h2>
 
         <p>
-          ADManager Plus was used to support the migration of 50+ users into the new
-          Active Directory environment. It helped with user attribute matching, account
-          detail checks, and bulk updates during the migration.
+          ADManager Plus was used to migrate 50+ user accounts into the new Active Directory
+          environment. It helped with user attribute review, account detail checks, and bulk
+          updates during the migration.
         </p>
 
-        <ul>
-          <li>Reviewed existing user account details.</li>
-          <li>Matched user attributes between the old and new environment.</li>
-          <li>Checked fields such as department, job title, manager, username, and group membership.</li>
-          <li>Updated user details in bulk where required.</li>
-          <li>Confirmed migrated users appeared correctly in Active Directory.</li>
-          <li>Checked synced users in Microsoft Entra ID after on-premises sync.</li>
-        </ul>
+        <div class="grid">
+          <div class="card">
+            <h3>User Account Checks</h3>
+            <ul>
+              <li>Reviewed existing account details.</li>
+              <li>Checked usernames and account information.</li>
+              <li>Matched attributes between environments.</li>
+              <li>Reviewed department, title, manager, and group details.</li>
+              <li>Confirmed migrated accounts appeared correctly in Active Directory.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Migration Value</h3>
+            <ul>
+              <li>Completed bulk user updates.</li>
+              <li>Improved consistency of account records.</li>
+              <li>Reduced manual checking effort.</li>
+              <li>Prepared users for cloud identity sync.</li>
+              <li>Improved post-migration review.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section class="content-section">
@@ -238,24 +334,30 @@
         <h2>Windows 11 Pro Domain Join Automation</h2>
 
         <p>
-          I created a PowerShell script to join Windows 11 Pro laptops to the new
-          domain. The script was uploaded into ManageEngine so it could be run more
-          easily across devices instead of manually joining each laptop one by one.
+          A PowerShell script was created to join Windows 11 Pro laptops to the new
+          domain. The script was uploaded into ManageEngine so the domain join process
+          could be deployed more consistently across devices instead of joining every
+          laptop manually.
         </p>
 
-        <pre><code>$DomainName = "example.local"
+        <div class="project">
+          <h3>Sanitised PowerShell Example</h3>
+          <p class="tags">PowerShell • Domain Join • ManageEngine • Windows 11 Pro</p>
+
+          <pre><code>$DomainName = "example.local"
 $OUPath = "OU=Laptops,DC=example,DC=local"
 
 Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
+        </div>
 
         <ul>
           <li>Created a PowerShell domain-join script.</li>
-          <li>Uploaded the script into ManageEngine for easier execution.</li>
+          <li>Uploaded the script into ManageEngine.</li>
           <li>Joined Windows 11 Pro laptops to the new domain.</li>
           <li>Confirmed laptops appeared in Active Directory.</li>
           <li>Checked user sign-in after domain join.</li>
           <li>Verified DNS and DHCP settings after migration.</li>
-          <li>Troubleshot failed joins where needed.</li>
+          <li>Troubleshot failed joins where required.</li>
         </ul>
       </section>
 
@@ -265,33 +367,66 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
 
         <p>
           The on-premises Active Directory environment was synced with Microsoft Entra ID
-          to support hybrid identity. This allowed migrated users to appear in the cloud
+          to enable hybrid identity. This allowed migrated users to appear in the cloud
           directory after the on-premises migration.
         </p>
 
-        <ul>
-          <li>Confirmed on-premises users synced to Microsoft Entra ID.</li>
-          <li>Checked synced user status in the Entra admin centre.</li>
-          <li>Reviewed user details after migration.</li>
-          <li>Confirmed identity information matched between on-premises AD and Entra ID.</li>
-        </ul>
+        <div class="grid">
+          <div class="card">
+            <h3>Sync Checks</h3>
+            <ul>
+              <li>Confirmed on-premises users synced to Microsoft Entra ID.</li>
+              <li>Checked synced user status in the Entra admin centre.</li>
+              <li>Reviewed user details after migration.</li>
+              <li>Confirmed identity information matched between AD and Entra ID.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Why It Mattered</h3>
+            <ul>
+              <li>Enabled hybrid identity visibility.</li>
+              <li>Improved consistency between on-premises and cloud records.</li>
+              <li>Validated user migration success.</li>
+              <li>Connected the migration with Microsoft 365 identity management.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section class="content-section">
         <p class="section-label">Validation</p>
-        <h2>Testing and Checks</h2>
+        <h2>Testing and Post-Migration Checks</h2>
 
-        <ul>
-          <li>Confirmed users could sign in to the new domain.</li>
-          <li>Confirmed Windows 11 Pro laptops joined the domain correctly.</li>
-          <li>Tested DNS name resolution.</li>
-          <li>Confirmed DHCP leases were issued correctly.</li>
-          <li>Tested shared folder access.</li>
-          <li>Reviewed group membership.</li>
-          <li>Checked Robocopy logs.</li>
-          <li>Reviewed Event Viewer for errors.</li>
-          <li>Checked Microsoft Entra ID sync status.</li>
-        </ul>
+        <p>
+          After the migration work was completed, the environment was tested to confirm
+          that users, laptops, network services, shared data, and identity sync were
+          functioning correctly.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Technical Validation</h3>
+            <ul>
+              <li>Confirmed users could sign in to the new domain.</li>
+              <li>Confirmed Windows 11 Pro laptops joined correctly.</li>
+              <li>Tested DNS name resolution.</li>
+              <li>Confirmed DHCP leases were issued correctly.</li>
+              <li>Reviewed Event Viewer for errors.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Access Validation</h3>
+            <ul>
+              <li>Tested shared folder access.</li>
+              <li>Reviewed group membership.</li>
+              <li>Checked Robocopy logs.</li>
+              <li>Confirmed Entra ID sync status.</li>
+              <li>Reviewed user details after migration.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section class="content-section">
@@ -299,15 +434,57 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
         <h2>Project Outcome</h2>
 
         <p>
-          The migration was completed for 50+ users. The new Windows Server 2022 domain
-          controller provided Active Directory, DNS, DHCP, shared resource access, and
-          Microsoft Entra ID sync for Windows 11 Pro laptops.
+          The migration was completed for 50+ user accounts. The new Windows Server 2022
+          domain controller provided Active Directory, DNS, DHCP, shared resource access,
+          and Microsoft Entra ID sync for Windows 11 Pro laptops.
         </p>
 
         <p>
-          ADManager Plus helped keep user attributes accurate during migration, while
-          ManageEngine and PowerShell reduced the manual work needed to join laptops
-          to the new domain.
+          ADManager Plus was used for user migration, attribute checks, and bulk updates.
+          ManageEngine and PowerShell were used to automate the Windows 11 Pro domain join
+          process, reducing the amount of manual endpoint migration work.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Operational Improvements</h3>
+            <ul>
+              <li>Newer Windows Server foundation.</li>
+              <li>Clearer Active Directory structure.</li>
+              <li>Improved user account migration process.</li>
+              <li>More repeatable laptop domain join workflow.</li>
+              <li>Better post-migration validation process.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Technical Value</h3>
+            <ul>
+              <li>AD DS, DNS, and DHCP configured and tested.</li>
+              <li>Shared data migrated using Robocopy.</li>
+              <li>50+ user accounts migrated with attribute checks.</li>
+              <li>On-premises identity synced with Microsoft Entra ID.</li>
+              <li>Endpoint migration automated through ManageEngine and PowerShell.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reflection</p>
+        <h2>What This Project Demonstrates</h2>
+
+        <p>
+          This project demonstrates practical infrastructure migration experience across
+          server build, identity, networking services, data migration, endpoint migration,
+          cloud identity sync, and post-migration validation.
+        </p>
+
+        <p>
+          It also shows the importance of planning, documentation, staged testing, and
+          repeatable processes when moving accounts and devices into a new infrastructure
+          environment. The project connects directly with infrastructure operations,
+          endpoint management, hybrid identity, security, and technical documentation.
         </p>
       </section>
 
@@ -316,9 +493,10 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
         <h2>Skills Demonstrated</h2>
 
         <p class="tags">
-          Windows Server 2022 • Active Directory • DNS • DHCP • Microsoft Entra ID •
-          ADManager Plus • ManageEngine • PowerShell • Robocopy • Windows 11 Pro •
-          User Migration • Domain Join • Infrastructure Documentation
+          Windows Server 2022 • Active Directory • AD DS • DNS • DHCP • Microsoft Entra ID •
+          Hybrid Identity • ADManager Plus • ManageEngine • PowerShell • Robocopy •
+          Windows 11 Pro • User Migration • Domain Join • Shared Data Migration •
+          Infrastructure Documentation • Post-Migration Validation
         </p>
 
         <p>
@@ -332,4 +510,3 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
 
 </body>
 </html>
-
