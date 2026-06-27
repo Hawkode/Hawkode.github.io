@@ -9,69 +9,60 @@ html {
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background:
-    radial-gradient(circle at 70% 20%, rgba(34, 197, 94, 0.08), transparent 28%),
-    radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.05), transparent 30%),
-    #050505;
+  background: #050505;
   color: #d1fae5;
   line-height: 1.6;
   position: relative;
   overflow-x: hidden;
 }
 
-/* Matrix canvas background */
+/* Subtle right-side matrix background */
 
-.matrix-canvas {
+body::before {
+  content: "";
   position: fixed;
   top: 0;
+  right: 0;
+  width: 380px;
   height: 100vh;
   pointer-events: none;
   z-index: 0;
-  display: block;
+  opacity: 0.42;
+
+  background:
+    radial-gradient(circle at 70% 20%, rgba(34, 197, 94, 0.18), transparent 30%),
+    radial-gradient(circle at 80% 75%, rgba(34, 197, 94, 0.12), transparent 35%),
+    repeating-linear-gradient(
+      180deg,
+      rgba(34, 197, 94, 0.12) 0px,
+      rgba(34, 197, 94, 0.12) 1px,
+      transparent 1px,
+      transparent 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(34, 197, 94, 0.08) 0px,
+      rgba(34, 197, 94, 0.08) 1px,
+      transparent 1px,
+      transparent 24px
+    );
 }
 
-/* Left Matrix strip */
+body::after {
+  content: "0101\A1010\A0110\A1101\A0011\A1011\A0101\A1110\A0010\A1001";
+  white-space: pre;
+  position: fixed;
+  top: 80px;
+  right: 50px;
+  pointer-events: none;
+  z-index: 0;
 
-#matrix-left {
-  left: 0;
-  width: 88px;
-  opacity: 0.64;
-
-  -webkit-mask-image: linear-gradient(
-    to right,
-    #000 0%,
-    #000 92%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    #000 0%,
-    #000 92%,
-    transparent 100%
-  );
-}
-
-/* Right Matrix panel */
-
-#matrix-right {
-  right: -120px;
-  width: 620px;
-  opacity: 0.72;
-
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(0, 0, 0, 0.85) 4%,
-    #000 10%,
-    #000 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(0, 0, 0, 0.85) 4%,
-    #000 10%,
-    #000 100%
-  );
+  color: rgba(34, 197, 94, 0.22);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 20px;
+  line-height: 1.9;
+  letter-spacing: 12px;
+  text-shadow: 0 0 14px rgba(34, 197, 94, 0.28);
 }
 
 /* Page layout */
@@ -203,7 +194,7 @@ body {
 }
 
 .content-section {
-  max-width: 920px;
+  max-width: 980px;
   background: transparent;
   border: none;
   border-radius: 0;
@@ -425,27 +416,20 @@ code {
 /* Medium screens */
 
 @media (max-width: 1200px) {
+  body::before,
+  body::after {
+    display: none;
+  }
+
   #skills .grid,
   .guide-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Hide right Matrix if screen is not wide enough */
-
-@media (max-width: 1900px) {
-  #matrix-right {
-    display: none;
-  }
-}
-
 /* Mobile */
 
 @media (max-width: 900px) {
-  .matrix-canvas {
-    display: none;
-  }
-
   .page {
     flex-direction: column;
   }
