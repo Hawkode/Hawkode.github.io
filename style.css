@@ -53,21 +53,21 @@ body {
 /* Right Matrix panel */
 #matrix-right {
   right: 0;
-  width: clamp(260px, calc(100vw - 1530px), 390px);
-  opacity: 0.52;
+  width: 340px;
+  opacity: 0.50;
 
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.85) 10%,
-    #000 20%,
+    rgba(0, 0, 0, 0.9) 12%,
+    #000 22%,
     #000 100%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.85) 10%,
-    #000 20%,
+    rgba(0, 0, 0, 0.9) 12%,
+    #000 22%,
     #000 100%
   );
 }
@@ -431,7 +431,7 @@ code {
 
 /* Hide right Matrix if screen is not wide enough */
 
-@media (max-width: 1760px) {
+@media (max-width: 1850px) {
   #matrix-right {
     display: none;
   }
