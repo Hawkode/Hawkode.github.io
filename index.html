@@ -6,12 +6,16 @@
 
   <title>Alex Mateescu | Infrastructure, Networking & Security</title>
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=matrix-fix-5" />
 
   <!-- Font Awesome icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
+
+  <!-- Matrix animation panels -->
+  <canvas id="matrix-left" class="matrix-canvas" aria-hidden="true"></canvas>
+  <canvas id="matrix-right" class="matrix-canvas" aria-hidden="true"></canvas>
 
   <div class="page">
 
@@ -390,6 +394,142 @@
     </main>
 
   </div>
+
+  <script>
+    const matrixCanvases = [
+      document.getElementById("matrix-left"),
+      document.getElementById("matrix-right")
+    ];
+
+    const matrixCharacters = ["0", "1"];
+    const matrixFontSize = 10;
+    const matrixAnimations = [];
+
+    function randomMatrixCharacter() {
+      return matrixCharacters[Math.floor(Math.random() * matrixCharacters.length)];
+    }
+
+    function createMatrix(canvas) {
+      const ctx = canvas.getContext("2d");
+
+      const matrix = {
+        canvas,
+        ctx,
+        columns: [],
+        width: 0,
+        height: 0
+      };
+
+      function createColumn(index) {
+        const length = 42 + Math.floor(Math.random() * 55);
+
+        return {
+          x: index * matrixFontSize + matrixFontSize / 2,
+          y: Math.random() * window.innerHeight,
+          speed: 0.22 + Math.random() * 0.38,
+          length: length,
+          brightness: 0.52 + Math.random() * 0.26,
+          characters: Array.from({ length: length }, randomMatrixCharacter)
+        };
+      }
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+
+        matrix.width = Math.floor(rect.width);
+        matrix.height = Math.floor(rect.height);
+
+        if (matrix.width <= 0 || matrix.height <= 0) {
+          return;
+        }
+
+        const ratio = window.devicePixelRatio || 1;
+
+        canvas.width = matrix.width * ratio;
+        canvas.height = matrix.height * ratio;
+
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        ctx.imageSmoothingEnabled = false;
+
+        const columnCount = Math.ceil(matrix.width / matrixFontSize) + 2;
+
+        matrix.columns = Array.from({ length: columnCount }, function (_, index) {
+          return createColumn(index);
+        });
+      }
+
+      function draw() {
+        if (matrix.width <= 0 || matrix.height <= 0) {
+          requestAnimationFrame(draw);
+          return;
+        }
+
+        ctx.clearRect(0, 0, matrix.width, matrix.height);
+
+        ctx.font = matrixFontSize + "px Consolas, 'Lucida Console', 'Courier New', monospace";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+
+        matrix.columns.forEach(function (column) {
+          for (let i = 0; i < column.length; i++) {
+            const character = column.characters[i];
+            const y = Math.round(column.y - i * matrixFontSize);
+
+            if (y < -matrixFontSize || y > matrix.height + matrixFontSize) {
+              continue;
+            }
+
+            const fade = 1 - i / column.length;
+            const opacity = Math.max(0.18, column.brightness * fade);
+
+            if (i === 0) {
+              ctx.fillStyle = "rgba(187, 247, 208, 0.82)";
+            } else if (i < 8) {
+              ctx.fillStyle = "rgba(134, 239, 172, " + opacity + ")";
+            } else {
+              ctx.fillStyle = "rgba(34, 197, 94, " + opacity + ")";
+            }
+
+            ctx.fillText(character, column.x, y);
+          }
+
+          column.y += column.speed;
+
+          if (column.y - column.length * matrixFontSize > matrix.height + matrixFontSize) {
+            const columnIndex = Math.round((column.x - matrixFontSize / 2) / matrixFontSize);
+            const newColumn = createColumn(columnIndex);
+
+            column.y = -Math.random() * 500;
+            column.speed = newColumn.speed;
+            column.length = newColumn.length;
+            column.brightness = newColumn.brightness;
+            column.characters = newColumn.characters;
+          }
+        });
+
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      draw();
+
+      return resize;
+    }
+
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      matrixCanvases.forEach(function (canvas) {
+        if (canvas) {
+          matrixAnimations.push(createMatrix(canvas));
+        }
+      });
+
+      window.addEventListener("resize", function () {
+        matrixAnimations.forEach(function (resize) {
+          resize();
+        });
+      });
+    }
+  </script>
 
 </body>
 </html>
