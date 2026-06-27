@@ -443,15 +443,15 @@
 
         ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-        const columnCount = Math.floor(matrix.width / matrixFontSize);
+        const columnCount = Math.ceil(matrix.width / matrixFontSize) + 2;
 
         matrix.columns = Array.from({ length: columnCount }, function (_, index) {
           return {
-            x: index * matrixFontSize,
+            x: index * matrixFontSize + matrixFontSize / 2,
             y: Math.random() * matrix.height,
             speed: 0.28 + Math.random() * 0.62,
             length: 28 + Math.floor(Math.random() * 62),
-            brightness: 0.12 + Math.random() * 0.18
+            brightness: 0.18 + Math.random() * 0.24
           };
         });
       }
@@ -465,7 +465,7 @@
         ctx.fillStyle = "rgba(5, 5, 5, 0.10)";
         ctx.fillRect(0, 0, matrix.width, matrix.height);
 
-        ctx.font = matrixFontSize + "px Courier New";
+        ctx.font = matrixFontSize + "px Consolas, Monaco, Courier New, monospace";
         ctx.textAlign = "center";
 
         matrix.columns.forEach(function (column) {
@@ -481,7 +481,7 @@
             const opacity = Math.max(0, column.brightness * fade);
 
             if (i === 0) {
-              ctx.fillStyle = "rgba(187, 247, 208, 0.34)";
+              ctx.fillStyle = "rgba(187, 247, 208, 0.46)";
             } else if (i < 6) {
               ctx.fillStyle = "rgba(134, 239, 172, " + opacity + ")";
             } else {
@@ -497,7 +497,7 @@
             column.y = -Math.random() * 900;
             column.speed = 0.28 + Math.random() * 0.62;
             column.length = 28 + Math.floor(Math.random() * 62);
-            column.brightness = 0.12 + Math.random() * 0.18;
+            column.brightness = 0.18 + Math.random() * 0.24;
           }
         });
 
