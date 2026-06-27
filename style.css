@@ -33,19 +33,19 @@ body {
 /* Left Matrix strip */
 #matrix-left {
   left: 0;
-  width: 78px;
-  opacity: 0.38;
+  width: 96px;
+  opacity: 0.46;
 
   -webkit-mask-image: linear-gradient(
     to right,
     #000 0%,
-    #000 65%,
+    #000 82%,
     transparent 100%
   );
   mask-image: linear-gradient(
     to right,
     #000 0%,
-    #000 65%,
+    #000 82%,
     transparent 100%
   );
 }
@@ -53,21 +53,21 @@ body {
 /* Right Matrix panel */
 #matrix-right {
   right: 0;
-  width: 430px;
-  opacity: 0.46;
+  width: 520px;
+  opacity: 0.56;
 
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.55) 18%,
-    #000 38%,
+    rgba(0, 0, 0, 0.75) 8%,
+    #000 18%,
     #000 100%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.55) 18%,
-    #000 38%,
+    rgba(0, 0, 0, 0.75) 8%,
+    #000 18%,
     #000 100%
   );
 }
