@@ -1,1 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Splunk Security Log Analysis Lab | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p>al3ksmatee@gmail.com</p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          A practical Splunk security log analysis lab covering centralised log collection,
+          Windows and Linux forwarding, SPL searches, dashboards, alert logic, and reporting.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../../#guides" class="active">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Security Lab</p>
+        <h2>Splunk Security Log Analysis Lab</h2>
+
+        <p>
+          This guide documents a practical Splunk security log analysis lab focused on
+          collecting, searching, and reviewing security events from Windows and Linux systems.
+          The lab covered Splunk Enterprise setup, log forwarding, SPL searches, dashboard
+          ideas, alert logic, and reporting.
+        </p>
+
+        <p>
+          The aim was to understand how security logs can be centralised and analysed to
+          improve visibility into authentication activity, account changes, SSH access,
+          system events, and possible security incidents.
+        </p>
+
+        <p>
+          <a class="button" href="https://github.com/Hawkode/splunk-security-logs" target="_blank">
+            View GitHub Lab Repository
+          </a>
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Scope</p>
+        <h2>Lab Scope and Objective</h2>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Lab Objectives</h3>
+            <ul>
+              <li>Install and run Splunk Enterprise.</li>
+              <li>Collect Windows security logs.</li>
+              <li>Forward Linux syslog and auditd events.</li>
+              <li>Create a dedicated security index.</li>
+              <li>Search failed logins, SSH access, and account changes.</li>
+              <li>Build dashboard and alert ideas.</li>
+              <li>Document findings and reporting notes.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Technologies Used</h3>
+            <ul>
+              <li>Splunk Enterprise</li>
+              <li>Splunk Universal Forwarder</li>
+              <li>Windows Event Logs</li>
+              <li>Linux syslog</li>
+              <li>Linux auditd</li>
+              <li>SPL searches</li>
+              <li>SIEM-style investigation workflow</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="project">
+          <h3>Lab Note</h3>
+          <p>
+            This was a controlled security monitoring lab. The goal was to practise log
+            collection, searching, alert logic, and reporting methods using lab or sample
+            security events.
+          </p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Installation</p>
+        <h2>Installing Splunk Enterprise</h2>
+
+        <p>
+          Splunk Enterprise was installed as the central platform for collecting and
+          analysing security logs. After installation, Splunk was started and configured
+          so it could be used as the main search and monitoring interface.
+        </p>
+
+        <div class="project">
+          <h3>Example Installation Flow</h3>
+          <p class="tags">Splunk Enterprise • Linux • Installation</p>
+
+          <pre><code># Download Splunk Enterprise from the official Splunk downloads page
+# Example package name:
+# splunk-&lt;version&gt;-Linux-x86_64.tgz
+
+tar -xvzf splunk-&lt;version&gt;-Linux-x86_64.tgz -C /opt
+cd /opt/splunk/bin
+./splunk start --accept-license</code></pre>
+        </div>
+
+        <p>
+          Splunk was also configured to start automatically when the system boots.
+        </p>
+
+        <pre><code>cd /opt/splunk/bin
+./splunk enable boot-start</code></pre>
+
+        <p>
+          After Splunk was running, the web interface could be accessed through the browser.
+        </p>
+
+        <pre><code>http://splunk-server:8000</code></pre>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Architecture</p>
+        <h2>Log Collection Design</h2>
+
+        <p>
+          The lab used Splunk as a central log analysis platform. Windows and Linux machines
+          were treated as log sources, and their events were forwarded into Splunk for search,
+          investigation, and reporting.
+        </p>
+
+        <div class="project">
+          <h3>Example Lab Flow</h3>
+          <p class="tags">Log Sources • Forwarding • Splunk Indexing</p>
+
+          <pre><code>Windows machine  ── Universal Forwarder ──► Splunk Enterprise
+Linux machine    ── syslog / auditd ─────► Splunk Enterprise
+
+Splunk Enterprise
+├── receives logs
+├── indexes events
+├── runs SPL searches
+├── creates dashboards
+└── triggers alert logic</code></pre>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Data Sources</h3>
+            <ul>
+              <li>Windows Security logs</li>
+              <li>Windows System logs</li>
+              <li>Linux syslog events</li>
+              <li>Linux authentication logs</li>
+              <li>Linux auditd events</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Security Visibility</h3>
+            <ul>
+              <li>Failed logins</li>
+              <li>Successful logins</li>
+              <li>SSH access</li>
+              <li>User account changes</li>
+              <li>Command execution activity</li>
+              <li>Repeated suspicious patterns</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Windows Logs</p>
+        <h2>Windows Security Log Forwarding</h2>
+
+        <p>
+          Windows security logs were collected using the Splunk Universal Forwarder.
+          This allowed important Windows events, such as logon activity and account-related
+          events, to be sent into Splunk for centralised searching.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Windows Logs Collected</h3>
+            <ul>
+              <li>Security event logs</li>
+              <li>System event logs</li>
+              <li>Authentication events</li>
+              <li>Failed logon activity</li>
+              <li>Successful logon activity</li>
+              <li>Account-related events</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Why This Was Useful</h3>
+            <ul>
+              <li>Centralised Windows security visibility.</li>
+              <li>Made authentication events searchable.</li>
+              <li>Allowed failed logon patterns to be reviewed.</li>
+              <li>Created a base for security dashboards.</li>
+              <li>Made reporting easier.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="project">
+          <h3>Example Windows Log Monitoring</h3>
+          <p class="tags">Windows Event Logs • Universal Forwarder • Security Index</p>
+
+          <pre><code>splunk add monitor 'WinEventLog://Security'
+splunk add monitor 'WinEventLog://System'</code></pre>
+        </div>
+
+        <div class="project">
+          <h3>Example inputs.conf Entry</h3>
+          <p class="tags">inputs.conf • WinEventLog • Security Logs</p>
+
+          <pre><code>[WinEventLog://Security]
+disabled = 0
+index = security
+
+[WinEventLog://System]
+disabled = 0
+index = security</code></pre>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Linux Logs</p>
+        <h2>Linux Syslog and Auditd Collection</h2>
+
+        <p>
+          Linux logs were included so the lab covered more than one operating system.
+          Syslog forwarding was used for general Linux event collection, and auditd was
+          used to record command execution activity.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Linux Sources</h3>
+            <ul>
+              <li>Syslog events</li>
+              <li>Authentication logs</li>
+              <li>SSH access events</li>
+              <li>Auditd command execution events</li>
+              <li>User account activity</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Security Value</h3>
+            <ul>
+              <li>Reviewed SSH access activity.</li>
+              <li>Tracked accepted and failed authentication events.</li>
+              <li>Recorded command execution events.</li>
+              <li>Added Linux visibility into the same Splunk workflow.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="project">
+          <h3>Example Syslog Forwarding</h3>
+          <p class="tags">Linux • rsyslog • Log Forwarding</p>
+
+          <pre><code>sudo nano /etc/rsyslog.conf
+
+# Example forwarding rule:
+*.* @@splunk-server:514
+
+sudo systemctl restart rsyslog</code></pre>
+        </div>
+
+        <div class="project">
+          <h3>Example auditd Rule</h3>
+          <p class="tags">Linux • auditd • Command Execution</p>
+
+          <pre><code>sudo auditctl -a always,exit -F arch=b64 -S execve -k command_exec</code></pre>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Indexing</p>
+        <h2>Security Index and Data Inputs</h2>
+
+        <p>
+          A dedicated security index was used so security events could be searched more
+          easily. Keeping logs in a consistent index made searches cleaner and helped
+          separate security events from unrelated data.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Data Input Areas</h3>
+            <ul>
+              <li>Windows Event Logs</li>
+              <li>Linux syslog</li>
+              <li>Linux auditd</li>
+              <li>Files and directories</li>
+              <li>Forwarded endpoint logs</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Indexing Benefits</h3>
+            <ul>
+              <li>Cleaner searches.</li>
+              <li>Consistent query structure.</li>
+              <li>Better dashboard organisation.</li>
+              <li>Easier reporting.</li>
+              <li>Improved investigation workflow.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="project">
+          <h3>Example Security Index Search</h3>
+          <p class="tags">Splunk • Index • Security Logs</p>
+
+          <pre><code>index=security</code></pre>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">SPL Searches</p>
+        <h2>Failed Login Detection</h2>
+
+        <p>
+          Failed login activity was one of the main areas reviewed. Repeated failed logins
+          can indicate incorrect saved credentials, user mistakes, brute-force attempts,
+          or password spraying. Splunk searches were used to group events by account and
+          source address.
+        </p>
+
+        <div class="project">
+          <h3>Windows Failed Login Search</h3>
+          <p class="tags">Windows Security Logs • EventCode 4625 • Failed Logins</p>
+
+          <pre><code>index=security sourcetype="WinEventLog:Security" EventCode=4625
+| stats count by Account_Name, Source_Network_Address
+| sort - count</code></pre>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>What This Search Shows</h3>
+            <ul>
+              <li>Accounts with failed logins.</li>
+              <li>Source addresses linked to failures.</li>
+              <li>Repeated authentication failures.</li>
+              <li>Possible brute-force or password spraying patterns.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Investigation Questions</h3>
+            <ul>
+              <li>Is one account failing repeatedly?</li>
+              <li>Are many accounts failing from the same source?</li>
+              <li>Is the source expected?</li>
+              <li>Did a successful login happen after many failures?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Linux Security</p>
+        <h2>SSH Access Tracking</h2>
+
+        <p>
+          SSH access was reviewed to understand which users authenticated successfully
+          and which source addresses were involved. This is useful for checking expected
+          administration activity and identifying unusual remote access patterns.
+        </p>
+
+        <div class="project">
+          <h3>SSH Successful Access Search</h3>
+          <p class="tags">Linux • SSH • Authentication Logs</p>
+
+          <pre><code>index=security sourcetype=linux_secure "Accepted password"
+| stats count by user, src_ip
+| sort - count</code></pre>
+        </div>
+
+        <div class="project">
+          <h3>SSH Failed Access Search</h3>
+          <p class="tags">Linux • Failed Passwords • SSH Monitoring</p>
+
+          <pre><code>index=security sourcetype=linux_secure "Failed password"
+| stats count by src_ip, user
+| sort - count</code></pre>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>SSH Fields Reviewed</h3>
+            <ul>
+              <li>User</li>
+              <li>Source IP address</li>
+              <li>Authentication result</li>
+              <li>Host</li>
+              <li>Time of access</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Useful Checks</h3>
+            <ul>
+              <li>Unexpected source addresses.</li>
+              <li>Repeated SSH activity.</li>
+              <li>Root or admin-style access.</li>
+              <li>Access outside expected time windows.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Account Changes</p>
+        <h2>User Account Change Monitoring</h2>
+
+        <p>
+          Account changes were included because user creation, deletion, or privilege
+          changes can be important during security investigations.
+        </p>
+
+        <div class="project">
+          <h3>Linux User Account Change Search</h3>
+          <p class="tags">Linux Audit • User Changes • Security Monitoring</p>
+
+          <pre><code>index=security sourcetype=linux_audit action=add_user OR action=delete_user
+| stats count by user, host
+| sort - count</code></pre>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Events To Review</h3>
+            <ul>
+              <li>User creation</li>
+              <li>User deletion</li>
+              <li>Privilege changes</li>
+              <li>Unexpected account activity</li>
+              <li>Changes on sensitive systems</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Why It Matters</h3>
+            <ul>
+              <li>Helps detect unauthorised account changes.</li>
+              <li>Creates an audit trail.</li>
+              <li>Improves visibility into admin activity.</li>
+              <li>Helps with incident investigation.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Dashboards</p>
+        <h2>Dashboard Ideas</h2>
+
+        <p>
+          Dashboards were planned to make security activity easier to review at a glance.
+          Instead of running every search manually, dashboard panels can summarise login
+          activity, failed logins, source addresses, affected users, and account changes.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Dashboard Panels</h3>
+            <ul>
+              <li>Real-time login activity</li>
+              <li>Failed login counts</li>
+              <li>Top source addresses</li>
+              <li>Top affected users</li>
+              <li>Admin privilege escalation events</li>
+              <li>Firewall or malware-related events</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Dashboard Value</h3>
+            <ul>
+              <li>Faster review of repeated events.</li>
+              <li>Clearer visibility for investigations.</li>
+              <li>Useful summaries for reporting.</li>
+              <li>Better understanding of normal and abnormal activity.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="project">
+          <h3>Example Dashboard Search</h3>
+          <p class="tags">Dashboard Panel • Failed Logins • Top Sources</p>
+
+          <pre><code>index=security (EventCode=4625 OR "Failed password")
+| stats count by host
+| sort - count</code></pre>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Alerting</p>
+        <h2>Security Alert Logic</h2>
+
+        <p>
+          Alert logic was included to show how searches can move from manual review to
+          detection logic. One example was detecting repeated failed SSH login attempts
+          from the same source or against the same user.
+        </p>
+
+        <div class="project">
+          <h3>Example Brute Force Alert Search</h3>
+          <p class="tags">Alerting • Failed Passwords • Brute Force Detection</p>
+
+          <pre><code>index=security sourcetype=linux_secure "Failed password"
+| stats count by src_ip, user
+| where count &gt; 5</code></pre>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Alert Ideas</h3>
+            <ul>
+              <li>Multiple failed login attempts.</li>
+              <li>Admin or root login from a new IP address.</li>
+              <li>Changes to sensitive files such as /etc/passwd.</li>
+              <li>Repeated failed SSH activity.</li>
+              <li>Unusual account changes.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Alert Review</h3>
+            <ul>
+              <li>Check whether the source is expected.</li>
+              <li>Review the affected account.</li>
+              <li>Check for successful login after failures.</li>
+              <li>Confirm whether the event is normal lab activity.</li>
+              <li>Document the investigation decision.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reporting</p>
+        <h2>Compliance and Reporting Notes</h2>
+
+        <p>
+          Reporting was included to show how security logs can be used for audit and
+          review activities. The lab connected log retention, incident monitoring,
+          investigation notes, and reporting ideas with frameworks such as ISO 27001
+          and NIST.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Reporting Areas</h3>
+            <ul>
+              <li>Login activity reports</li>
+              <li>Failed authentication summaries</li>
+              <li>Security incident summaries</li>
+              <li>Account change reports</li>
+              <li>Dashboard exports</li>
+              <li>Investigation notes</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Why Reporting Matters</h3>
+            <ul>
+              <li>Creates evidence of monitoring activity.</li>
+              <li>Helps with security reviews.</li>
+              <li>Makes incidents easier to explain.</li>
+              <li>Links technical logs to security controls.</li>
+              <li>Improves repeatability of investigations.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Investigation Notes</p>
+        <h2>Example Investigation Record</h2>
+
+        <p>
+          A useful Splunk lab should not only show searches. It should also show how findings
+          would be documented during an investigation or review.
+        </p>
+
+        <div class="project">
+          <h3>Example Finding Note</h3>
+          <p class="tags">Security Notes • Log Analysis • Documentation</p>
+
+          <pre><code>Finding: Repeated failed SSH login attempts
+Source: Linux authentication logs
+Search Used: index=security sourcetype=linux_secure "Failed password"
+Review: Check source IP, affected user, time range, and follow-up successful logins
+Next Step: Confirm whether the source is expected or should be blocked / investigated</code></pre>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>What Was Documented</h3>
+            <ul>
+              <li>Search queries</li>
+              <li>Fields used for filtering</li>
+              <li>Event patterns observed</li>
+              <li>Possible explanations</li>
+              <li>Follow-up checks</li>
+              <li>Lessons learned</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Why Documentation Matters</h3>
+            <ul>
+              <li>Makes searches reusable.</li>
+              <li>Explains investigation decisions.</li>
+              <li>Creates a record of findings.</li>
+              <li>Improves future analysis.</li>
+              <li>Turns lab work into portfolio evidence.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Future Improvements</p>
+        <h2>Future Enhancements</h2>
+
+        <p>
+          The lab can be extended by adding more data sources, threat intelligence,
+          anomaly detection, and automated response workflows.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Possible Enhancements</h3>
+            <ul>
+              <li>Threat intelligence feeds</li>
+              <li>More Windows event sources</li>
+              <li>Firewall logs</li>
+              <li>Endpoint security logs</li>
+              <li>Anomaly detection</li>
+              <li>SOAR-style response actions</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Learning Value</h3>
+            <ul>
+              <li>Improves SIEM understanding.</li>
+              <li>Builds stronger SPL skills.</li>
+              <li>Creates better detection logic.</li>
+              <li>Connects logs with security operations.</li>
+              <li>Improves investigation documentation.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Lessons Learned</p>
+        <h2>Key Takeaways</h2>
+
+        <p>
+          This lab showed how Splunk can centralise security events and turn raw logs
+          into useful investigation data. The key skill is not only collecting logs, but
+          knowing how to search, filter, summarise, and document what the events mean.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Technical Takeaways</h3>
+            <ul>
+              <li>Splunk Enterprise can collect and search security logs centrally.</li>
+              <li>Universal Forwarder can send Windows events into Splunk.</li>
+              <li>Linux syslog and auditd add useful visibility.</li>
+              <li>SPL searches can reveal repeated failures and account activity.</li>
+              <li>Dashboards make recurring review easier.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Security Takeaways</h3>
+            <ul>
+              <li>Failed logins need context before conclusions are made.</li>
+              <li>SSH activity should be reviewed for unusual sources.</li>
+              <li>Account changes are important security events.</li>
+              <li>Alerts need thresholds to reduce noise.</li>
+              <li>Reporting turns technical logs into useful records.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Skills</p>
+        <h2>Skills Demonstrated</h2>
+
+        <p class="tags">
+          Splunk Enterprise • Splunk Universal Forwarder • Windows Event Logs • Linux Syslog •
+          Auditd • SIEM Basics • Security Logs • SPL • Failed Login Detection • SSH Monitoring •
+          Account Change Monitoring • Dashboards • Alert Logic • Compliance Reporting •
+          Security Documentation
+        </p>
+
+        <p>
+          <a class="button" href="../../#guides">Back to Guides</a>
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
