@@ -54,22 +54,22 @@ body {
 /* Right Matrix panel */
 
 #matrix-right {
-  right: -72px;
-  width: 572px;
-  opacity: 0.68;
+  right: -120px;
+  width: 620px;
+  opacity: 0.72;
 
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.85) 6%,
-    #000 14%,
+    rgba(0, 0, 0, 0.85) 4%,
+    #000 10%,
     #000 100%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.85) 6%,
-    #000 14%,
+    rgba(0, 0, 0, 0.85) 4%,
+    #000 10%,
     #000 100%
   );
 }
