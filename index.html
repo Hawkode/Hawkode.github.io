@@ -412,7 +412,7 @@
     ];
 
     const matrixCharacters = "01";
-    const matrixFontSize = 9;
+    const matrixFontSize = 14;
     const matrixAnimations = [];
 
     function createMatrix(canvas) {
@@ -450,7 +450,7 @@
             x: index * matrixFontSize + matrixFontSize / 2,
             y: Math.random() * matrix.height,
             speed: 0.28 + Math.random() * 0.62,
-            length: 28 + Math.floor(Math.random() * 62),
+            length: 18 + Math.floor(Math.random() * 36),
             brightness: 0.18 + Math.random() * 0.24
           };
         });
@@ -465,8 +465,9 @@
         ctx.fillStyle = "rgba(5, 5, 5, 0.10)";
         ctx.fillRect(0, 0, matrix.width, matrix.height);
 
-        ctx.font = matrixFontSize + "px Consolas, Monaco, Courier New, monospace";
+        ctx.font = "700 " + matrixFontSize + "px Consolas, 'Lucida Console', 'Courier New', monospace";
         ctx.textAlign = "center";
+        ctx.textBaseline = "top";
 
         matrix.columns.forEach(function (column) {
           for (let i = 0; i < column.length; i++) {
@@ -481,7 +482,7 @@
             const opacity = Math.max(0, column.brightness * fade);
 
             if (i === 0) {
-              ctx.fillStyle = "rgba(187, 247, 208, 0.46)";
+              ctx.fillStyle = "rgba(187, 247, 208, 0.48)";
             } else if (i < 6) {
               ctx.fillStyle = "rgba(134, 239, 172, " + opacity + ")";
             } else {
@@ -496,7 +497,7 @@
           if (column.y - column.length * matrixFontSize > matrix.height) {
             column.y = -Math.random() * 900;
             column.speed = 0.28 + Math.random() * 0.62;
-            column.length = 28 + Math.floor(Math.random() * 62);
+            column.length = 18 + Math.floor(Math.random() * 36);
             column.brightness = 0.18 + Math.random() * 0.24;
           }
         });
