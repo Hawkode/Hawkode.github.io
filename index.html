@@ -412,7 +412,7 @@
     ];
 
     const matrixCharacters = "01";
-    const matrixFontSize = 14;
+    const matrixFontSize = 11;
     const matrixAnimations = [];
 
     function createMatrix(canvas) {
@@ -449,9 +449,9 @@
           return {
             x: index * matrixFontSize + matrixFontSize / 2,
             y: Math.random() * matrix.height,
-            speed: 0.28 + Math.random() * 0.62,
-            length: 18 + Math.floor(Math.random() * 36),
-            brightness: 0.18 + Math.random() * 0.24
+            speed: 0.26 + Math.random() * 0.54,
+            length: 24 + Math.floor(Math.random() * 46),
+            brightness: 0.18 + Math.random() * 0.22
           };
         });
       }
@@ -462,10 +462,10 @@
           return;
         }
 
-        ctx.fillStyle = "rgba(5, 5, 5, 0.10)";
+        ctx.fillStyle = "rgba(5, 5, 5, 0.11)";
         ctx.fillRect(0, 0, matrix.width, matrix.height);
 
-        ctx.font = "700 " + matrixFontSize + "px Consolas, 'Lucida Console', 'Courier New', monospace";
+        ctx.font = matrixFontSize + "px Consolas, 'Lucida Console', 'Courier New', monospace";
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
 
@@ -482,8 +482,8 @@
             const opacity = Math.max(0, column.brightness * fade);
 
             if (i === 0) {
-              ctx.fillStyle = "rgba(187, 247, 208, 0.48)";
-            } else if (i < 6) {
+              ctx.fillStyle = "rgba(187, 247, 208, 0.42)";
+            } else if (i < 5) {
               ctx.fillStyle = "rgba(134, 239, 172, " + opacity + ")";
             } else {
               ctx.fillStyle = "rgba(34, 197, 94, " + opacity + ")";
@@ -495,10 +495,10 @@
           column.y += column.speed;
 
           if (column.y - column.length * matrixFontSize > matrix.height) {
-            column.y = -Math.random() * 900;
-            column.speed = 0.28 + Math.random() * 0.62;
-            column.length = 18 + Math.floor(Math.random() * 36);
-            column.brightness = 0.18 + Math.random() * 0.24;
+            column.y = -Math.random() * 700;
+            column.speed = 0.26 + Math.random() * 0.54;
+            column.length = 24 + Math.floor(Math.random() * 46);
+            column.brightness = 0.18 + Math.random() * 0.22;
           }
         });
 
