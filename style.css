@@ -24,20 +24,6 @@ content: none;
 display: none;
 }
 
-/* Matrix rain canvas - right side only */
-
-#matrix-rain {
-position: fixed;
-top: 0;
-left: calc(440px + 60px + 980px + 30px);
-right: 20px;
-height: 100vh;
-pointer-events: none;
-z-index: 0;
-opacity: 0.55;
-display: block;
-}
-
 /* Page layout */
 
 .page {
@@ -387,12 +373,6 @@ font-size: 14px;
 }
 
 /* Medium screens */
-
-@media (max-width: 1580px) {
-#matrix-rain {
-display: none;
-}
-}
 
 @media (max-width: 1200px) {
 #skills .grid,
