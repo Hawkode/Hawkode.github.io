@@ -19,81 +19,16 @@ body {
   overflow-x: hidden;
 }
 
-/* Animated right-side matrix background */
+/* Continuous right-side matrix background.
+   Hidden by default so it never sits behind readable text on smaller screens. */
 
-body::before {
+body::before,
+body::after {
   content: "";
   position: fixed;
-  top: 0;
-  right: 0;
-  width: 400px;
-  height: 100vh;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.35;
-
-  background:
-    radial-gradient(circle at 70% 20%, rgba(34, 197, 94, 0.16), transparent 30%),
-    radial-gradient(circle at 80% 75%, rgba(34, 197, 94, 0.10), transparent 35%),
-    linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(34, 197, 94, 0.04) 45%,
-      rgba(34, 197, 94, 0.10) 100%
-    );
-}
-
-body::after {
-  content:
-    "0101   1010   0110   1101\A"
-    "1011   0010   1110   0101\A"
-    "0011   1100   1001   0111\A"
-    "1110   0101   1011   0010\A"
-    "0100   1010   0111   1101\A"
-    "1001   0011   1110   0101\A"
-    "0110   1101   0010   1011\A"
-    "1010   0101   1100   0111\A"
-    "0011   1110   1001   0100\A"
-    "1101   0110   1011   0010\A"
-    "0101   1010   0110   1101\A"
-    "1011   0010   1110   0101\A"
-    "0011   1100   1001   0111\A"
-    "1110   0101   1011   0010\A"
-    "0100   1010   0111   1101";
-
-  white-space: pre;
-  position: fixed;
-  top: -260px;
-  right: 35px;
-  pointer-events: none;
-  z-index: 0;
-
-  color: rgba(34, 197, 94, 0.16);
-  font-family: "Courier New", Courier, monospace;
-  font-size: 18px;
-  line-height: 1.8;
-  letter-spacing: 10px;
-  text-shadow: 0 0 12px rgba(34, 197, 94, 0.24);
-
-  animation: matrix-rain 18s linear infinite;
-}
-
-@keyframes matrix-rain {
-  0% {
-    transform: translateY(-120px);
-  }
-
-  100% {
-    transform: translateY(520px);
-  }
-}
-
-/* Respect reduced motion settings */
-
-@media (prefers-reduced-motion: reduce) {
-  body::after {
-    animation: none;
-  }
+  display: none;
 }
 
 /* Page layout */
@@ -444,14 +379,81 @@ code {
   font-size: 14px;
 }
 
+/* Large desktop only: seamless matrix rain in empty right space */
+
+@media (min-width: 1860px) {
+  body::before {
+    display: block;
+    top: 0;
+    right: 0;
+    width: 430px;
+    height: 100vh;
+    opacity: 0.42;
+
+    background:
+      radial-gradient(circle at 72% 18%, rgba(34, 197, 94, 0.16), transparent 32%),
+      radial-gradient(circle at 82% 76%, rgba(34, 197, 94, 0.10), transparent 36%),
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(34, 197, 94, 0.035) 38%,
+        rgba(34, 197, 94, 0.10) 100%
+      );
+
+    -webkit-mask-image:
+      linear-gradient(to left, #000 0%, #000 75%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    mask-image:
+      linear-gradient(to left, #000 0%, #000 75%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  }
+
+  body::after {
+    display: block;
+    top: 0;
+    right: 16px;
+    width: 390px;
+    height: 100vh;
+    opacity: 0.20;
+
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22360%22%20height%3D%22360%22%20viewBox%3D%220%200%20360%20360%22%3E%0A%20%20%3Cstyle%3E%0A%20%20%20%20text%20%7B%20font-family%3A%20%27Courier%20New%27%2C%20monospace%3B%20font-size%3A%2017px%3B%20fill%3A%20%2322c55e%3B%20fill-opacity%3A%20.50%3B%20%7D%0A%20%20%20%20.d1%20%7B%20fill-opacity%3A%20.18%3B%20%7D%0A%20%20%20%20.d2%20%7B%20fill-opacity%3A%20.32%3B%20%7D%0A%20%20%20%20.d3%20%7B%20fill-opacity%3A%20.62%3B%20%7D%0A%20%20%20%20.d4%20%7B%20fill-opacity%3A%20.78%3B%20%7D%0A%20%20%3C/style%3E%0A%0A%20%20%3Cg%3E%0A%20%20%20%20%3Ctext%20x%3D%220%22%20y%3D%2218%22%20class%3D%22d4%22%3E0101%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%2242%22%20class%3D%22d2%22%3E1010%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%2266%22%20class%3D%22d1%22%3E0110%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%2290%22%20class%3D%22d3%22%3E1101%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22114%22%20class%3D%22d2%22%3E0011%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22138%22%20class%3D%22d4%22%3E1011%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22162%22%20class%3D%22d1%22%3E0101%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22186%22%20class%3D%22d3%22%3E1110%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22210%22%20class%3D%22d2%22%3E0010%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22234%22%20class%3D%22d4%22%3E1001%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22258%22%20class%3D%22d1%22%3E0110%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22282%22%20class%3D%22d2%22%3E1100%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22306%22%20class%3D%22d3%22%3E1011%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22330%22%20class%3D%22d1%22%3E0100%3C/text%3E%3Ctext%20x%3D%220%22%20y%3D%22354%22%20class%3D%22d2%22%3E1111%3C/text%3E%0A%0A%20%20%20%20%3Ctext%20x%3D%2272%22%20y%3D%226%22%20class%3D%22d1%22%3E1011%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%2230%22%20class%3D%22d3%22%3E0010%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%2254%22%20class%3D%22d4%22%3E1110%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%2278%22%20class%3D%22d2%22%3E0101%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22102%22%20class%3D%22d1%22%3E1001%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22126%22%20class%3D%22d3%22%3E0111%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22150%22%20class%3D%22d4%22%3E1100%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22174%22%20class%3D%22d2%22%3E0011%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22198%22%20class%3D%22d1%22%3E0100%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22222%22%20class%3D%22d3%22%3E1010%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22246%22%20class%3D%22d2%22%3E0111%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22270%22%20class%3D%22d4%22%3E1101%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22294%22%20class%3D%22d1%22%3E0010%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22318%22%20class%3D%22d3%22%3E1001%3C/text%3E%3Ctext%20x%3D%2272%22%20y%3D%22342%22%20class%3D%22d2%22%3E0110%3C/text%3E%0A%0A%20%20%20%20%3Ctext%20x%3D%22144%22%20y%3D%2218%22%20class%3D%22d3%22%3E0011%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%2242%22%20class%3D%22d1%22%3E1100%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%2266%22%20class%3D%22d2%22%3E1001%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%2290%22%20class%3D%22d4%22%3E0111%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22114%22%20class%3D%22d3%22%3E1110%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22138%22%20class%3D%22d1%22%3E0101%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22162%22%20class%3D%22d2%22%3E1011%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22186%22%20class%3D%22d3%22%3E0010%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22210%22%20class%3D%22d4%22%3E0101%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22234%22%20class%3D%22d2%22%3E1010%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22258%22%20class%3D%22d1%22%3E0110%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22282%22%20class%3D%22d3%22%3E1101%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22306%22%20class%3D%22d2%22%3E1000%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22330%22%20class%3D%22d4%22%3E0111%3C/text%3E%3Ctext%20x%3D%22144%22%20y%3D%22354%22%20class%3D%22d1%22%3E1010%3C/text%3E%0A%0A%20%20%20%20%3Ctext%20x%3D%22216%22%20y%3D%226%22%20class%3D%22d2%22%3E1101%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%2230%22%20class%3D%22d4%22%3E0110%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%2254%22%20class%3D%22d1%22%3E1011%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%2278%22%20class%3D%22d3%22%3E0010%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22102%22%20class%3D%22d2%22%3E0101%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22126%22%20class%3D%22d1%22%3E1010%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22150%22%20class%3D%22d4%22%3E0110%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22174%22%20class%3D%22d3%22%3E1101%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22198%22%20class%3D%22d2%22%3E0011%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22222%22%20class%3D%22d1%22%3E1011%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22246%22%20class%3D%22d3%22%3E0101%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22270%22%20class%3D%22d4%22%3E1110%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22294%22%20class%3D%22d1%22%3E0010%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22318%22%20class%3D%22d2%22%3E1001%3C/text%3E%3Ctext%20x%3D%22216%22%20y%3D%22342%22%20class%3D%22d3%22%3E1100%3C/text%3E%0A%0A%20%20%20%20%3Ctext%20x%3D%22288%22%20y%3D%2218%22%20class%3D%22d1%22%3E1001%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%2242%22%20class%3D%22d3%22%3E0111%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%2266%22%20class%3D%22d2%22%3E1110%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%2290%22%20class%3D%22d4%22%3E0101%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22114%22%20class%3D%22d1%22%3E1011%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22138%22%20class%3D%22d2%22%3E0010%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22162%22%20class%3D%22d3%22%3E0100%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22186%22%20class%3D%22d1%22%3E1010%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22210%22%20class%3D%22d4%22%3E0111%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22234%22%20class%3D%22d2%22%3E1101%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22258%22%20class%3D%22d1%22%3E0011%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22282%22%20class%3D%22d3%22%3E1100%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22306%22%20class%3D%22d2%22%3E1001%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22330%22%20class%3D%22d4%22%3E0111%3C/text%3E%3Ctext%20x%3D%22288%22%20y%3D%22354%22%20class%3D%22d1%22%3E1110%3C/text%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E");
+    background-repeat: repeat-y;
+    background-size: 360px 360px;
+    background-position: 0 0;
+
+    filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.22));
+    animation: matrix-scroll 14s linear infinite;
+
+    -webkit-mask-image:
+      linear-gradient(to left, #000 0%, #000 78%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    mask-image:
+      linear-gradient(to left, #000 0%, #000 78%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  }
+}
+
+@keyframes matrix-scroll {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 0 360px;
+  }
+}
+
+/* Respect reduced motion settings */
+
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    animation: none;
+  }
+}
+
 /* Medium screens */
 
 @media (max-width: 1200px) {
-  body::before,
-  body::after {
-    display: none;
-  }
-
   #skills .grid,
   .guide-grid {
     grid-template-columns: repeat(2, 1fr);
