@@ -10,32 +10,12 @@
 
   <!-- Font Awesome icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-  <!-- Matrix canvas positioning -->
-  <style>
-    #matrix-rain {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 390px;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.48;
-      display: block;
-    }
-
-    @media (max-width: 1600px) {
-      #matrix-rain {
-        display: none;
-      }
-    }
-  </style>
 </head>
 <body>
 
-  <!-- Animated Matrix background for the empty right-side area -->
-  <canvas id="matrix-rain" aria-hidden="true"></canvas>
+  <!-- Matrix animation panels -->
+  <canvas id="matrix-left" class="matrix-canvas" aria-hidden="true"></canvas>
+  <canvas id="matrix-right" class="matrix-canvas" aria-hidden="true"></canvas>
 
   <div class="page">
 
@@ -426,116 +406,123 @@
   </div>
 
   <script>
-    const matrixCanvas = document.getElementById("matrix-rain");
-    const matrixContext = matrixCanvas.getContext("2d");
-
-    let matrixColumns = [];
-    let matrixWidth = 0;
-    let matrixHeight = 0;
-    let animationId = null;
+    const matrixCanvases = [
+      document.getElementById("matrix-left"),
+      document.getElementById("matrix-right")
+    ];
 
     const matrixCharacters = "01";
-    const matrixFontSize = 10;
+    const matrixFontSize = 9;
+    const matrixAnimations = [];
 
-    function resizeMatrixCanvas() {
-      const rect = matrixCanvas.getBoundingClientRect();
+    function createMatrix(canvas) {
+      const ctx = canvas.getContext("2d");
 
-      matrixWidth = Math.floor(rect.width);
-      matrixHeight = Math.floor(rect.height);
+      const matrix = {
+        canvas,
+        ctx,
+        columns: [],
+        width: 0,
+        height: 0
+      };
 
-      if (matrixWidth <= 0 || matrixHeight <= 0) {
-        return;
-      }
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
 
-      const devicePixelRatioValue = window.devicePixelRatio || 1;
+        matrix.width = Math.floor(rect.width);
+        matrix.height = Math.floor(rect.height);
 
-      matrixCanvas.width = matrixWidth * devicePixelRatioValue;
-      matrixCanvas.height = matrixHeight * devicePixelRatioValue;
-
-      matrixContext.setTransform(
-        devicePixelRatioValue,
-        0,
-        0,
-        devicePixelRatioValue,
-        0,
-        0
-      );
-
-      const columnCount = Math.floor(matrixWidth / matrixFontSize);
-
-      matrixColumns = Array.from({ length: columnCount }, function (_, index) {
-        return {
-          x: index * matrixFontSize,
-          y: Math.random() * matrixHeight,
-          speed: 0.35 + Math.random() * 0.75,
-          length: 24 + Math.floor(Math.random() * 52),
-          brightness: 0.12 + Math.random() * 0.20
-        };
-      });
-    }
-
-    function drawMatrixRain() {
-      if (matrixWidth <= 0 || matrixHeight <= 0) {
-        animationId = requestAnimationFrame(drawMatrixRain);
-        return;
-      }
-
-      matrixContext.fillStyle = "rgba(5, 5, 5, 0.11)";
-      matrixContext.fillRect(0, 0, matrixWidth, matrixHeight);
-
-      matrixContext.font = matrixFontSize + "px Courier New";
-      matrixContext.textAlign = "center";
-
-      matrixColumns.forEach(function (column) {
-        for (let i = 0; i < column.length; i++) {
-          const character = matrixCharacters[Math.floor(Math.random() * matrixCharacters.length)];
-          const y = column.y - i * matrixFontSize;
-
-          if (y < 0 || y > matrixHeight) {
-            continue;
-          }
-
-          const fade = 1 - i / column.length;
-          const opacity = Math.max(0, column.brightness * fade);
-
-          if (i === 0) {
-            matrixContext.fillStyle = "rgba(187, 247, 208, 0.36)";
-          } else if (i < 5) {
-            matrixContext.fillStyle = "rgba(134, 239, 172, " + opacity + ")";
-          } else {
-            matrixContext.fillStyle = "rgba(34, 197, 94, " + opacity + ")";
-          }
-
-          matrixContext.fillText(character, column.x, y);
+        if (matrix.width <= 0 || matrix.height <= 0) {
+          return;
         }
 
-        column.y += column.speed;
+        const ratio = window.devicePixelRatio || 1;
 
-        if (column.y - column.length * matrixFontSize > matrixHeight) {
-          column.y = -Math.random() * 600;
-          column.speed = 0.35 + Math.random() * 0.75;
-          column.length = 24 + Math.floor(Math.random() * 52);
-          column.brightness = 0.12 + Math.random() * 0.20;
+        canvas.width = matrix.width * ratio;
+        canvas.height = matrix.height * ratio;
+
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+        const columnCount = Math.floor(matrix.width / matrixFontSize);
+
+        matrix.columns = Array.from({ length: columnCount }, function (_, index) {
+          return {
+            x: index * matrixFontSize,
+            y: Math.random() * matrix.height,
+            speed: 0.28 + Math.random() * 0.62,
+            length: 28 + Math.floor(Math.random() * 62),
+            brightness: 0.12 + Math.random() * 0.18
+          };
+        });
+      }
+
+      function draw() {
+        if (matrix.width <= 0 || matrix.height <= 0) {
+          requestAnimationFrame(draw);
+          return;
+        }
+
+        ctx.fillStyle = "rgba(5, 5, 5, 0.10)";
+        ctx.fillRect(0, 0, matrix.width, matrix.height);
+
+        ctx.font = matrixFontSize + "px Courier New";
+        ctx.textAlign = "center";
+
+        matrix.columns.forEach(function (column) {
+          for (let i = 0; i < column.length; i++) {
+            const character = matrixCharacters[Math.floor(Math.random() * matrixCharacters.length)];
+            const y = column.y - i * matrixFontSize;
+
+            if (y < 0 || y > matrix.height) {
+              continue;
+            }
+
+            const fade = 1 - i / column.length;
+            const opacity = Math.max(0, column.brightness * fade);
+
+            if (i === 0) {
+              ctx.fillStyle = "rgba(187, 247, 208, 0.34)";
+            } else if (i < 6) {
+              ctx.fillStyle = "rgba(134, 239, 172, " + opacity + ")";
+            } else {
+              ctx.fillStyle = "rgba(34, 197, 94, " + opacity + ")";
+            }
+
+            ctx.fillText(character, column.x, y);
+          }
+
+          column.y += column.speed;
+
+          if (column.y - column.length * matrixFontSize > matrix.height) {
+            column.y = -Math.random() * 900;
+            column.speed = 0.28 + Math.random() * 0.62;
+            column.length = 28 + Math.floor(Math.random() * 62);
+            column.brightness = 0.12 + Math.random() * 0.18;
+          }
+        });
+
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      draw();
+
+      return resize;
+    }
+
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      matrixCanvases.forEach(function (canvas) {
+        if (canvas) {
+          matrixAnimations.push(createMatrix(canvas));
         }
       });
 
-      animationId = requestAnimationFrame(drawMatrixRain);
+      window.addEventListener("resize", function () {
+        matrixAnimations.forEach(function (resize) {
+          resize();
+        });
+      });
     }
-
-    function startMatrixRain() {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        return;
-      }
-
-      resizeMatrixCanvas();
-
-      if (!animationId) {
-        drawMatrixRain();
-      }
-    }
-
-    window.addEventListener("resize", resizeMatrixCanvas);
-    startMatrixRain();
   </script>
 
 </body>
