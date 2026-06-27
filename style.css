@@ -16,99 +16,53 @@ body {
   overflow-x: hidden;
 }
 
-/* CSS-only falling binary rain */
-
-/* CSS-only falling binary rain */
+/* Subtle right-side matrix background */
 
 body::before {
-  content:
-    "010101010101010101010101010101\A"
-    "101010101010101010101010101010\A"
-    "011001100110011001100110011001\A"
-    "110110110110110110110110110110\A"
-    "001100110011001100110011001100\A"
-    "101101101101101101101101101101\A"
-    "010101010101010101010101010101\A"
-    "111000111000111000111000111000\A"
-    "001000100010001000100010001001\A"
-    "100110011001100110011001100110\A"
-    "010101010101010101010101010101\A"
-    "101010101010101010101010101010\A"
-    "011001100110011001100110011001\A"
-    "110110110110110110110110110110\A"
-    "001100110011001100110011001100\A"
-    "101101101101101101101101101101\A"
-    "010101010101010101010101010101\A"
-    "111000111000111000111000111000\A"
-    "001000100010001000100010001001\A"
-    "100110011001100110011001100110\A"
-    "010101010101010101010101010101\A"
-    "101010101010101010101010101010\A"
-    "011001100110011001100110011001\A"
-    "110110110110110110110110110110\A"
-    "001100110011001100110011001100\A"
-    "101101101101101101101101101101\A"
-    "010101010101010101010101010101\A"
-    "111000111000111000111000111000\A"
-    "001000100010001000100010001001\A"
-    "100110011001100110011001100110\A"
-    "010101010101010101010101010101\A"
-    "101010101010101010101010101010\A"
-    "011001100110011001100110011001\A"
-    "110110110110110110110110110110\A"
-    "001100110011001100110011001100\A"
-    "101101101101101101101101101101\A"
-    "010101010101010101010101010101\A"
-    "111000111000111000111000111000\A"
-    "001000100010001000100010001001\A"
-    "100110011001100110011001100110";
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.42;
+
+  background:
+    radial-gradient(circle at 70% 20%, rgba(34, 197, 94, 0.18), transparent 30%),
+    radial-gradient(circle at 80% 75%, rgba(34, 197, 94, 0.12), transparent 35%),
+    repeating-linear-gradient(
+      180deg,
+      rgba(34, 197, 94, 0.12) 0px,
+      rgba(34, 197, 94, 0.12) 1px,
+      transparent 1px,
+      transparent 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(34, 197, 94, 0.08) 0px,
+      rgba(34, 197, 94, 0.08) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+}
+
+body::after {
+  content: "0101\A1010\A0110\A1101\A0011\A1011\A0101\A1110\A0010\A1001";
   white-space: pre;
   position: fixed;
-  top: -100vh;
-  right: 0;
-  width: 420px;
-  height: 220vh;
-  overflow: hidden;
+  top: 80px;
+  right: 50px;
   pointer-events: none;
   z-index: 0;
 
-  color: rgba(34, 197, 94, 0.18);
+  color: rgba(34, 197, 94, 0.22);
   font-family: "Courier New", Courier, monospace;
-  font-size: 10px;
-  line-height: 18px;
-  letter-spacing: 4px;
-  text-shadow: 0 0 8px rgba(34, 197, 94, 0.22);
-
-  animation: binary-rain 30s linear infinite;
-  will-change: transform;
-}
-
-body::after {
-  display: none;
-}
-
-@keyframes binary-rain {
-  from {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(100vh);
-  }
-}
-
-body::after {
-  display: none;
-}
-
-@keyframes binary-rain {
-  from {
-    transform: translateY(-50%);
-  }
-
-  to {
-    transform: translateY(0);
-  }
+  font-size: 20px;
+  line-height: 1.9;
+  letter-spacing: 12px;
+  text-shadow: 0 0 14px rgba(34, 197, 94, 0.28);
 }
 
 /* Page layout */
@@ -234,7 +188,7 @@ body::after {
 .content {
   margin-left: 440px;
   width: calc(100% - 440px);
-  padding: 70px 250px 70px 60px;
+  padding: 70px 0 70px 60px;
   position: relative;
   z-index: 1;
 }
@@ -294,7 +248,7 @@ li {
   gap: 18px;
 }
 
-/* Skills section: 3 cards per row on large desktop */
+/* Skills section: 3 cards per row on desktop */
 
 #skills .grid {
   grid-template-columns: repeat(3, 1fr);
@@ -461,21 +415,15 @@ code {
 
 /* Medium screens */
 
-@media (max-width: 1500px) {
-  #skills .grid,
-  .guide-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @media (max-width: 1200px) {
   body::before,
   body::after {
     display: none;
   }
 
-  .content {
-    padding-right: 0;
+  #skills .grid,
+  .guide-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
