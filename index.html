@@ -10,8 +10,32 @@
 
   <!-- Font Awesome icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Matrix canvas positioning -->
+  <style>
+    #matrix-rain {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 390px;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.48;
+      display: block;
+    }
+
+    @media (max-width: 1600px) {
+      #matrix-rain {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Animated Matrix background for the empty right-side area -->
+  <canvas id="matrix-rain" aria-hidden="true"></canvas>
 
   <div class="page">
 
@@ -156,35 +180,35 @@
         </p>
 
         <article class="project">
-  <h3>Windows Server 2022 Domain Controller Migration</h3>
+          <h3>Windows Server 2022 Domain Controller Migration</h3>
 
-  <p>
-    Built and configured a new Windows Server 2022 domain controller with
-    Active Directory Domain Services, DNS, DHCP, OU structure, replication checks,
-    and Windows 11 Pro domain join preparation.
-  </p>
+          <p>
+            Built and configured a new Windows Server 2022 domain controller with
+            Active Directory Domain Services, DNS, DHCP, OU structure, replication checks,
+            and Windows 11 Pro domain join preparation.
+          </p>
 
-  <p>
-    Migrated shared data using Robocopy, migrated 50+ user accounts with ADManager Plus,
-    aligned on-premises user attributes with existing Microsoft Entra ID identities,
-    and deployed a PowerShell domain-join script through ManageEngine.
-  </p>
+          <p>
+            Migrated shared data using Robocopy, migrated 50+ user accounts with ADManager Plus,
+            aligned on-premises user attributes with existing Microsoft Entra ID identities,
+            and deployed a PowerShell domain-join script through ManageEngine.
+          </p>
 
-  <p>
-    The migration created a cleaner on-premises Active Directory structure and helped move
-    users toward a single synced identity and password experience across local domain
-    sign-in and Microsoft 365.
-  </p>
+          <p>
+            The migration created a cleaner on-premises Active Directory structure and helped move
+            users toward a single synced identity and password experience across local domain
+            sign-in and Microsoft 365.
+          </p>
 
-  <p class="tags">
-    Windows Server 2022 • Active Directory • OU Design • DNS • DHCP • Replication •
-    Microsoft Entra ID • ADManager Plus • ManageEngine • PowerShell • Robocopy
-  </p>
+          <p class="tags">
+            Windows Server 2022 • Active Directory • OU Design • DNS • DHCP • Replication •
+            Microsoft Entra ID • ADManager Plus • ManageEngine • PowerShell • Robocopy
+          </p>
 
-  <p>
-    <a href="projects/windows-server-2022-domain-migration/">Read project details</a>
-  </p>
-</article>
+          <p>
+            <a href="projects/windows-server-2022-domain-migration/">Read project details</a>
+          </p>
+        </article>
 
         <article class="project">
           <h3>IT Asset Inventory and Site Tracking System using Snipe-IT</h3>
@@ -243,6 +267,10 @@
           <p class="tags">
             OpenVAS • Vulnerability Assessment • Security Lab • Remediation Notes
           </p>
+
+          <p>
+            <a href="guides/openvas-vulnerability-scanning/">Read guide</a>
+          </p>
         </article>
 
         <article class="project">
@@ -255,6 +283,10 @@
 
           <p class="tags">
             Splunk • Logs • Security Monitoring • Analysis
+          </p>
+
+          <p>
+            <a href="guides/splunk-security-logs-lab/">Read guide</a>
           </p>
         </article>
 
@@ -337,26 +369,28 @@
               <p>Checking updates, testing patches, applying fixes, and validating systems.</p>
             </div>
           </a>
+
           <a class="guide-card" href="guides/openvas-vulnerability-scanning/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-magnifying-glass-chart"></i>
-  </div>
+            <div class="guide-icon-box">
+              <i class="fa-solid fa-magnifying-glass-chart"></i>
+            </div>
 
-  <div class="guide-text">
-    <h3>OpenVAS Vulnerability Scanning Lab</h3>
-    <p>Installing OpenVAS, creating scan tasks, reviewing findings, and documenting remediation notes.</p>
-  </div>
-</a>
+            <div class="guide-text">
+              <h3>OpenVAS Vulnerability Scanning Lab</h3>
+              <p>Installing OpenVAS, creating scan tasks, reviewing findings, and documenting remediation notes.</p>
+            </div>
+          </a>
+
           <a class="guide-card" href="guides/splunk-security-logs-lab/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-chart-line"></i>
-  </div>
+            <div class="guide-icon-box">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
 
-  <div class="guide-text">
-    <h3>Splunk Security Logs Lab</h3>
-    <p>Searching security logs, filtering events, reviewing failed logons, and documenting investigation notes.</p>
-  </div>
-</a>
+            <div class="guide-text">
+              <h3>Splunk Security Logs Lab</h3>
+              <p>Searching security logs, filtering events, reviewing failed logons, and documenting investigation notes.</p>
+            </div>
+          </a>
 
         </div>
       </section>
@@ -390,6 +424,119 @@
     </main>
 
   </div>
+
+  <script>
+    const matrixCanvas = document.getElementById("matrix-rain");
+    const matrixContext = matrixCanvas.getContext("2d");
+
+    let matrixColumns = [];
+    let matrixWidth = 0;
+    let matrixHeight = 0;
+    let animationId = null;
+
+    const matrixCharacters = "01";
+    const matrixFontSize = 10;
+
+    function resizeMatrixCanvas() {
+      const rect = matrixCanvas.getBoundingClientRect();
+
+      matrixWidth = Math.floor(rect.width);
+      matrixHeight = Math.floor(rect.height);
+
+      if (matrixWidth <= 0 || matrixHeight <= 0) {
+        return;
+      }
+
+      const devicePixelRatioValue = window.devicePixelRatio || 1;
+
+      matrixCanvas.width = matrixWidth * devicePixelRatioValue;
+      matrixCanvas.height = matrixHeight * devicePixelRatioValue;
+
+      matrixContext.setTransform(
+        devicePixelRatioValue,
+        0,
+        0,
+        devicePixelRatioValue,
+        0,
+        0
+      );
+
+      const columnCount = Math.floor(matrixWidth / matrixFontSize);
+
+      matrixColumns = Array.from({ length: columnCount }, function (_, index) {
+        return {
+          x: index * matrixFontSize,
+          y: Math.random() * matrixHeight,
+          speed: 0.35 + Math.random() * 0.75,
+          length: 24 + Math.floor(Math.random() * 52),
+          brightness: 0.12 + Math.random() * 0.20
+        };
+      });
+    }
+
+    function drawMatrixRain() {
+      if (matrixWidth <= 0 || matrixHeight <= 0) {
+        animationId = requestAnimationFrame(drawMatrixRain);
+        return;
+      }
+
+      matrixContext.fillStyle = "rgba(5, 5, 5, 0.11)";
+      matrixContext.fillRect(0, 0, matrixWidth, matrixHeight);
+
+      matrixContext.font = matrixFontSize + "px Courier New";
+      matrixContext.textAlign = "center";
+
+      matrixColumns.forEach(function (column) {
+        for (let i = 0; i < column.length; i++) {
+          const character = matrixCharacters[Math.floor(Math.random() * matrixCharacters.length)];
+          const y = column.y - i * matrixFontSize;
+
+          if (y < 0 || y > matrixHeight) {
+            continue;
+          }
+
+          const fade = 1 - i / column.length;
+          const opacity = Math.max(0, column.brightness * fade);
+
+          if (i === 0) {
+            matrixContext.fillStyle = "rgba(187, 247, 208, 0.36)";
+          } else if (i < 5) {
+            matrixContext.fillStyle = "rgba(134, 239, 172, " + opacity + ")";
+          } else {
+            matrixContext.fillStyle = "rgba(34, 197, 94, " + opacity + ")";
+          }
+
+          matrixContext.fillText(character, column.x, y);
+        }
+
+        column.y += column.speed;
+
+        if (column.y - column.length * matrixFontSize > matrixHeight) {
+          column.y = -Math.random() * 600;
+          column.speed = 0.35 + Math.random() * 0.75;
+          column.length = 24 + Math.floor(Math.random() * 52);
+          column.brightness = 0.12 + Math.random() * 0.20;
+        }
+      });
+
+      animationId = requestAnimationFrame(drawMatrixRain);
+    }
+
+    function startMatrixRain() {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+
+      resizeMatrixCanvas();
+
+      if (!animationId) {
+        drawMatrixRain();
+      }
+    }
+
+    window.addEventListener("resize", resizeMatrixCanvas);
+    startMatrixRain();
+  </script>
 
 </body>
 </html>
