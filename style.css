@@ -194,7 +194,7 @@ body::after {
 }
 
 .content-section {
-  max-width: 880px;
+  max-width: 980px;
   background: transparent;
   border: none;
   border-radius: 0;
@@ -246,6 +246,12 @@ li {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 18px;
+}
+
+/* Skills section: 3 cards per row on desktop */
+
+#skills .grid {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .card {
@@ -337,7 +343,7 @@ a:hover {
 
 .guide-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 18px;
   margin-top: 10px;
 }
@@ -345,9 +351,9 @@ a:hover {
 .guide-card {
   display: flex;
   align-items: center;
-  gap: 18px;
-  min-height: 110px;
-  padding: 18px;
+  gap: 16px;
+  min-height: 120px;
+  padding: 16px;
   border: 1px solid rgba(34, 197, 94, 0.16);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.03);
@@ -366,8 +372,8 @@ a:hover {
 }
 
 .guide-icon-box {
-  width: 54px;
-  height: 54px;
+  width: 48px;
+  height: 48px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -375,19 +381,19 @@ a:hover {
   border-radius: 8px;
   background: rgba(34, 197, 94, 0.08);
   color: #4ade80;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .guide-text h3 {
   margin: 0 0 6px;
-  font-size: 20px;
+  font-size: 18px;
   color: #f3f4f6;
 }
 
 .guide-text p {
   margin: 0;
   color: #d1fae5;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* Code blocks */
@@ -407,14 +413,23 @@ code {
   font-size: 14px;
 }
 
-/* Mobile */
+/* Medium screens */
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   body::before,
   body::after {
     display: none;
   }
 
+  #skills .grid,
+  .guide-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 900px) {
   .page {
     flex-direction: column;
   }
@@ -434,24 +449,18 @@ code {
     padding: 22px;
   }
 
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
+  .grid,
+  #skills .grid,
   .guide-grid {
     grid-template-columns: 1fr;
   }
 
   .content-section {
+    max-width: 100%;
     padding: 0 0 36px;
   }
-}
 
-/* Hide right-side visual on smaller desktop screens */
-
-@media (max-width: 1200px) {
-  body::before,
-  body::after {
-    display: none;
+  .guide-card {
+    min-height: 110px;
   }
 }
