@@ -9,60 +9,91 @@ html {
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: #050505;
+  background:
+    radial-gradient(circle at 70% 20%, rgba(34, 197, 94, 0.08), transparent 28%),
+    radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.05), transparent 30%),
+    #050505;
   color: #d1fae5;
   line-height: 1.6;
   position: relative;
   overflow-x: hidden;
 }
 
-/* Subtle right-side matrix background */
+/* Animated right-side matrix background */
 
 body::before {
   content: "";
   position: fixed;
   top: 0;
   right: 0;
-  width: 380px;
+  width: 400px;
   height: 100vh;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.42;
+  opacity: 0.35;
 
   background:
-    radial-gradient(circle at 70% 20%, rgba(34, 197, 94, 0.18), transparent 30%),
-    radial-gradient(circle at 80% 75%, rgba(34, 197, 94, 0.12), transparent 35%),
-    repeating-linear-gradient(
-      180deg,
-      rgba(34, 197, 94, 0.12) 0px,
-      rgba(34, 197, 94, 0.12) 1px,
-      transparent 1px,
-      transparent 24px
-    ),
-    repeating-linear-gradient(
+    radial-gradient(circle at 70% 20%, rgba(34, 197, 94, 0.16), transparent 30%),
+    radial-gradient(circle at 80% 75%, rgba(34, 197, 94, 0.10), transparent 35%),
+    linear-gradient(
       90deg,
-      rgba(34, 197, 94, 0.08) 0px,
-      rgba(34, 197, 94, 0.08) 1px,
-      transparent 1px,
-      transparent 24px
+      transparent 0%,
+      rgba(34, 197, 94, 0.04) 45%,
+      rgba(34, 197, 94, 0.10) 100%
     );
 }
 
 body::after {
-  content: "0101\A1010\A0110\A1101\A0011\A1011\A0101\A1110\A0010\A1001";
+  content:
+    "0101   1010   0110   1101\A"
+    "1011   0010   1110   0101\A"
+    "0011   1100   1001   0111\A"
+    "1110   0101   1011   0010\A"
+    "0100   1010   0111   1101\A"
+    "1001   0011   1110   0101\A"
+    "0110   1101   0010   1011\A"
+    "1010   0101   1100   0111\A"
+    "0011   1110   1001   0100\A"
+    "1101   0110   1011   0010\A"
+    "0101   1010   0110   1101\A"
+    "1011   0010   1110   0101\A"
+    "0011   1100   1001   0111\A"
+    "1110   0101   1011   0010\A"
+    "0100   1010   0111   1101";
+
   white-space: pre;
   position: fixed;
-  top: 80px;
-  right: 50px;
+  top: -260px;
+  right: 35px;
   pointer-events: none;
   z-index: 0;
 
-  color: rgba(34, 197, 94, 0.22);
+  color: rgba(34, 197, 94, 0.16);
   font-family: "Courier New", Courier, monospace;
-  font-size: 20px;
-  line-height: 1.9;
-  letter-spacing: 12px;
-  text-shadow: 0 0 14px rgba(34, 197, 94, 0.28);
+  font-size: 18px;
+  line-height: 1.8;
+  letter-spacing: 10px;
+  text-shadow: 0 0 12px rgba(34, 197, 94, 0.24);
+
+  animation: matrix-rain 18s linear infinite;
+}
+
+@keyframes matrix-rain {
+  0% {
+    transform: translateY(-120px);
+  }
+
+  100% {
+    transform: translateY(520px);
+  }
+}
+
+/* Respect reduced motion settings */
+
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    animation: none;
+  }
 }
 
 /* Page layout */
