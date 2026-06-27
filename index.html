@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -9,153 +10,159 @@
   <link rel="stylesheet" href="style.css" />
 
   <!-- Font Awesome icons -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
+<canvas id="matrix-rain" aria-hidden="true"></canvas>
+
   <div class="page">
 
-    <!-- LEFT PANEL -->
-    <aside class="sidebar">
+```
+<!-- LEFT PANEL -->
+<aside class="sidebar">
 
-      <section class="sidebar-block intro">
-        <h1>Alex Mateescu</h1>
-        <p class="role">Infrastructure, Networking & Security</p>
+  <section class="sidebar-block intro">
+    <h1>Alex Mateescu</h1>
+    <p class="role">Infrastructure, Networking & Security</p>
 
-        <div class="contact">
-          <p>al3ksmatee@gmail.com</p>
+    <div class="contact">
+      <p>al3ksmatee@gmail.com</p>
 
-          <div class="social-icons">
-            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
-              <i class="fa-brands fa-linkedin"></i>
-            </a>
+      <div class="social-icons">
+        <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
 
-            <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
-              <i class="fa-brands fa-github"></i>
-            </a>
+        <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
 
-            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
-              <i class="fa-solid fa-certificate"></i>
-            </a>
+        <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
+          <i class="fa-solid fa-certificate"></i>
+        </a>
 
-            <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
-              <i class="fa-solid fa-user-secret"></i>
-            </a>
-          </div>
-        </div>
-      </section>
+        <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
+          <i class="fa-solid fa-user-secret"></i>
+        </a>
+      </div>
+    </div>
+  </section>
 
-      <section class="sidebar-block">
-        <h2>About</h2>
+  <section class="sidebar-block">
+    <h2>About</h2>
+    <p>
+      I’m Alex, focused on infrastructure, networking and security. This is my technical
+      space for labs, guides and practical learning built around curiosity, troubleshooting
+      and hands-on experimentation.
+    </p>
+  </section>
+
+  <nav class="sidebar-block menu">
+    <a href="#about">About Me</a>
+    <a href="#skills">Core Skills</a>
+    <a href="projects/">Projects & Labs</a>
+    <a href="#guides">Guides</a>
+    <a href="#certifications">Certifications</a>
+    <a href="#cv">CV</a>
+  </nav>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="content">
+
+  <section id="about" class="content-section">
+    <p class="section-label">Profile</p>
+    <h2>About Me</h2>
+
+    <p>
+      My interest in computers started when I was around nine years old, after building my first PC
+      and getting my first internet connection. From that point, I became curious about how systems
+      worked, how networks connected devices, and what was happening behind the screen.
+    </p>
+
+    <p>
+      I spent a lot of time searching for technical material, experimenting, breaking things,
+      fixing them, and learning how different parts of a computer and network fit together.
+      That curiosity developed into a serious interest in infrastructure, networking,
+      security, and troubleshooting.
+    </p>
+  </section>
+
+  <section id="skills" class="content-section">
+    <p class="section-label">Technical Focus</p>
+    <h2>Core Skills</h2>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Infrastructure & Cloud</h3>
         <p>
-          I’m Alex, focused on infrastructure, networking and security. This is my technical
-          space for labs, guides and practical learning built around curiosity, troubleshooting
-          and hands-on experimentation.
+          Windows Server, Active Directory, domain controllers, DNS, DHCP,
+          Microsoft 365, Microsoft Entra ID, Azure, hybrid identity, and remote access.
         </p>
-      </section>
+      </div>
 
-      <nav class="sidebar-block menu">
-        <a href="#about">About Me</a>
-        <a href="#skills">Core Skills</a>
-        <a href="projects/">Projects & Labs</a>
-        <a href="#guides">Guides</a>
-        <a href="#certifications">Certifications</a>
-        <a href="#cv">CV</a>
-      </nav>
-
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="content">
-
-      <section id="about" class="content-section">
-        <p class="section-label">Profile</p>
-        <h2>About Me</h2>
-
+      <div class="card">
+        <h3>Networking</h3>
         <p>
-          My interest in computers started when I was around nine years old, after building my first PC
-          and getting my first internet connection. From that point, I became curious about how systems
-          worked, how networks connected devices, and what was happening behind the screen.
+          VLANs, Wi-Fi, IP configuration, DNS checks, DHCP troubleshooting,
+          patch panels, port mapping, physical connectivity, and network troubleshooting.
         </p>
+      </div>
 
+      <div class="card">
+        <h3>Security & Operations</h3>
         <p>
-          I spent a lot of time searching for technical material, experimenting, breaking things,
-          fixing them, and learning how different parts of a computer and network fit together.
-          That curiosity developed into a serious interest in infrastructure, networking,
-          security, and troubleshooting.
+          Endpoint security, access control, MFA, patch management,
+          vulnerability management, firewall rules, remediation tracking,
+          and security documentation.
         </p>
-      </section>
+      </div>
 
-      <section id="skills" class="content-section">
-        <p class="section-label">Technical Focus</p>
-        <h2>Core Skills</h2>
-
-        <div class="grid">
-          <div class="card">
-            <h3>Infrastructure & Cloud</h3>
-            <p>
-              Windows Server, Active Directory, domain controllers, DNS, DHCP,
-              Microsoft 365, Microsoft Entra ID, Azure, hybrid identity, and remote access.
-            </p>
-          </div>
-
-          <div class="card">
-            <h3>Networking</h3>
-            <p>
-              VLANs, Wi-Fi, IP configuration, DNS checks, DHCP troubleshooting,
-              patch panels, port mapping, physical connectivity, and network troubleshooting.
-            </p>
-          </div>
-
-          <div class="card">
-            <h3>Security & Operations</h3>
-            <p>
-              Endpoint security, access control, MFA, patch management,
-              vulnerability management, firewall rules, remediation tracking,
-              and security documentation.
-            </p>
-          </div>
-
-          <div class="card">
-            <h3>Endpoint Management</h3>
-            <p>
-              Windows devices, Windows 11 Pro, domain join, troubleshooting,
-              patching, drivers, asset checks, device controls, ManageEngine Endpoint Central,
-              ADManager Plus, and PowerShell automation.
-            </p>
-          </div>
-
-          <div class="card">
-            <h3>Documentation & Knowledge Base</h3>
-            <p>
-              SOPs, troubleshooting guides, infrastructure notes, technical write-ups,
-              knowledge base management, migration notes, process documentation,
-              and repeatable workflows.
-            </p>
-          </div>
-
-          <div class="card">
-            <h3>Asset & Site Visibility</h3>
-            <p>
-              Asset records, desk locations, naming standards, lifecycle status,
-              site maps, port-to-location records, inventory structure,
-              equipment visibility, and migration tracking.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section id="projects" class="content-section">
-        <p class="section-label">Portfolio Work</p>
-        <h2>Featured Projects & Labs</h2>
-
+      <div class="card">
+        <h3>Endpoint Management</h3>
         <p>
-          Selected infrastructure, networking, security, and documentation projects.
-          These include work-related projects, practical lab work, and technical notes
-          focused on real operational problems.
+          Windows devices, Windows 11 Pro, domain join, troubleshooting,
+          patching, drivers, asset checks, device controls, ManageEngine Endpoint Central,
+          ADManager Plus, and PowerShell automation.
         </p>
+      </div>
 
-        <article class="project">
+      <div class="card">
+        <h3>Documentation & Knowledge Base</h3>
+        <p>
+          SOPs, troubleshooting guides, infrastructure notes, technical write-ups,
+          knowledge base management, migration notes, process documentation,
+          and repeatable workflows.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Asset & Site Visibility</h3>
+        <p>
+          Asset records, desk locations, naming standards, lifecycle status,
+          site maps, port-to-location records, inventory structure,
+          equipment visibility, and migration tracking.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="content-section">
+    <p class="section-label">Portfolio Work</p>
+    <h2>Featured Projects & Labs</h2>
+
+    <p>
+      Selected infrastructure, networking, security, and documentation projects.
+      These include work-related projects, practical lab work, and technical notes
+      focused on real operational problems.
+    </p>
+
+    <article class="project">
+```
+
   <h3>Windows Server 2022 Domain Controller Migration</h3>
 
   <p>
@@ -186,210 +193,216 @@
   </p>
 </article>
 
-        <article class="project">
-          <h3>IT Asset Inventory and Site Tracking System using Snipe-IT</h3>
+```
+    <article class="project">
+      <h3>IT Asset Inventory and Site Tracking System using Snipe-IT</h3>
 
-          <p>
-            Built and organised an IT asset inventory structure in Snipe-IT to improve
-            visibility of equipment across multiple sites, users, desk locations,
-            accessories, lifecycle statuses, and hardware availability.
-          </p>
+      <p>
+        Built and organised an IT asset inventory structure in Snipe-IT to improve
+        visibility of equipment across multiple sites, users, desk locations,
+        accessories, lifecycle statuses, and hardware availability.
+      </p>
 
-          <p>
-            The project helped make onboarding, offboarding, stock checks, troubleshooting,
-            audits, equipment assignment, and site planning more accurate and easier to manage.
-          </p>
+      <p>
+        The project helped make onboarding, offboarding, stock checks, troubleshooting,
+        audits, equipment assignment, and site planning more accurate and easier to manage.
+      </p>
 
-          <p class="tags">
-            Snipe-IT • Asset Management • Inventory • Site Tracking • Desk Mapping • Lifecycle Management
-          </p>
+      <p class="tags">
+        Snipe-IT • Asset Management • Inventory • Site Tracking • Desk Mapping • Lifecycle Management
+      </p>
 
-          <p>
-            <a href="projects/snipe-it-asset-inventory/">Read project details</a>
-          </p>
-        </article>
+      <p>
+        <a href="projects/snipe-it-asset-inventory/">Read project details</a>
+      </p>
+    </article>
 
-        <article class="project">
-          <h3>Network Cabling & Port Mapping</h3>
+    <article class="project">
+      <h3>Network Cabling & Port Mapping</h3>
 
-          <p>
-            Traced network cables from server room patch panels to wall sockets,
-            matched patch panel ports with office wall sockets, applied clear labels,
-            and documented port-to-location records.
-          </p>
+      <p>
+        Traced network cables from server room patch panels to wall sockets,
+        matched patch panel ports with office wall sockets, applied clear labels,
+        and documented port-to-location records.
+      </p>
 
-          <p>
-            This created a more reliable reference for troubleshooting, hardware setup,
-            office changes, asset tracking, and physical network visibility.
-          </p>
+      <p>
+        This created a more reliable reference for troubleshooting, hardware setup,
+        office changes, asset tracking, and physical network visibility.
+      </p>
 
-          <p class="tags">
-            Networking • Patch Panels • Structured Cabling • Port Mapping • Site Documentation
-          </p>
+      <p class="tags">
+        Networking • Patch Panels • Structured Cabling • Port Mapping • Site Documentation
+      </p>
 
-          <p>
-            <a href="projects/network-cabling-port-mapping/">Read project details</a>
-          </p>
-        </article>
+      <p>
+        <a href="projects/network-cabling-port-mapping/">Read project details</a>
+      </p>
+    </article>
 
-        <article class="project">
-          <h3>OpenVAS Vulnerability Scanning Lab</h3>
+    <article class="project">
+      <h3>OpenVAS Vulnerability Scanning Lab</h3>
 
-          <p>
-            Practised vulnerability scanning, reviewed exposed services, documented findings,
-            and recorded remediation steps in a controlled lab environment.
-          </p>
+      <p>
+        Practised vulnerability scanning, reviewed exposed services, documented findings,
+        and recorded remediation steps in a controlled lab environment.
+      </p>
 
-          <p class="tags">
-            OpenVAS • Vulnerability Assessment • Security Lab • Remediation Notes
-          </p>
-        </article>
+      <p class="tags">
+        OpenVAS • Vulnerability Assessment • Security Lab • Remediation Notes
+      </p>
+    </article>
 
-        <article class="project">
-          <h3>Splunk Security Logs Lab</h3>
+    <article class="project">
+      <h3>Splunk Security Logs Lab</h3>
 
-          <p>
-            Analysed security logs and practised using Splunk to search, filter,
-            and understand events from a security monitoring perspective.
-          </p>
+      <p>
+        Analysed security logs and practised using Splunk to search, filter,
+        and understand events from a security monitoring perspective.
+      </p>
 
-          <p class="tags">
-            Splunk • Logs • Security Monitoring • Analysis
-          </p>
-        </article>
+      <p class="tags">
+        Splunk • Logs • Security Monitoring • Analysis
+      </p>
+    </article>
 
-        <a class="button" href="projects/">View All Projects & Labs</a>
-      </section>
+    <a class="button" href="projects/">View All Projects & Labs</a>
+  </section>
 
-      <section id="guides" class="content-section">
-        <p class="section-label">Knowledge Base</p>
-        <h2>Guides</h2>
+  <section id="guides" class="content-section">
+    <p class="section-label">Knowledge Base</p>
+    <h2>Guides</h2>
 
-        <p>
-          Practical guides and notes across infrastructure, networking, troubleshooting,
-          Linux, Microsoft 365, and security.
-        </p>
+    <p>
+      Practical guides and notes across infrastructure, networking, troubleshooting,
+      Linux, Microsoft 365, and security.
+    </p>
 
-        <div class="guide-grid">
+    <div class="guide-grid">
 
-          <a class="guide-card" href="guides/command-line-basics/">
-            <div class="guide-icon-box">
-              <i class="fa-solid fa-terminal"></i>
-            </div>
-
-            <div class="guide-text">
-              <h3>Linux Terminal Basics</h3>
-              <p>Beginner-friendly command line basics for IT, networking and security.</p>
-            </div>
-          </a>
-
-          <a class="guide-card" href="guides/network-troubleshooting-basics/">
-            <div class="guide-icon-box">
-              <i class="fa-solid fa-network-wired"></i>
-            </div>
-
-            <div class="guide-text">
-              <h3>Network Troubleshooting Basics</h3>
-              <p>Ping, IP configuration, DNS, DHCP, Wi-Fi, VLANs, and physical checks.</p>
-            </div>
-          </a>
-
-          <a class="guide-card" href="guides/windows-defender-firewall-basics/">
-            <div class="guide-icon-box">
-              <i class="fa-solid fa-shield-halved"></i>
-            </div>
-
-            <div class="guide-text">
-              <h3>Windows Defender Firewall Basics</h3>
-              <p>Firewall rules, traffic filtering, inbound/outbound access, and host security.</p>
-            </div>
-          </a>
-
-          <a class="guide-card" href="guides/mfa-access-control-notes/">
-            <div class="guide-icon-box">
-              <i class="fa-solid fa-user-shield"></i>
-            </div>
-
-            <div class="guide-text">
-              <h3>MFA and Access Control Notes</h3>
-              <p>Identity checks, account security, permissions, and access troubleshooting.</p>
-            </div>
-          </a>
-
-          <a class="guide-card" href="guides/vulnerability-management-workflow/">
-            <div class="guide-icon-box">
-              <i class="fa-solid fa-bug"></i>
-            </div>
-
-            <div class="guide-text">
-              <h3>Vulnerability Management Workflow</h3>
-              <p>Asset scope, scanning, risk rating, remediation tracking, and validation.</p>
-            </div>
-          </a>
-
-          <a class="guide-card" href="guides/patch-management-workflow/">
-            <div class="guide-icon-box">
-              <i class="fa-solid fa-screwdriver-wrench"></i>
-            </div>
-
-            <div class="guide-text">
-              <h3>Patch Management Workflow</h3>
-              <p>Checking updates, testing patches, applying fixes, and validating systems.</p>
-            </div>
-          </a>
-          <a class="guide-card" href="guides/openvas-vulnerability-scanning/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-magnifying-glass-chart"></i>
-  </div>
-
-  <div class="guide-text">
-    <h3>OpenVAS Vulnerability Scanning Lab</h3>
-    <p>Installing OpenVAS, creating scan tasks, reviewing findings, and documenting remediation notes.</p>
-  </div>
-</a>
-          <a class="guide-card" href="guides/splunk-security-logs-lab/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-chart-line"></i>
-  </div>
-
-  <div class="guide-text">
-    <h3>Splunk Security Logs Lab</h3>
-    <p>Searching security logs, filtering events, reviewing failed logons, and documenting investigation notes.</p>
-  </div>
-</a>
-
+      <a class="guide-card" href="guides/command-line-basics/">
+        <div class="guide-icon-box">
+          <i class="fa-solid fa-terminal"></i>
         </div>
-      </section>
 
-      <section id="certifications" class="content-section">
-        <p class="section-label">Learning</p>
-        <h2>Certifications</h2>
+        <div class="guide-text">
+          <h3>Linux Terminal Basics</h3>
+          <p>Beginner-friendly command line basics for IT, networking and security.</p>
+        </div>
+      </a>
 
-        <ul>
-          <li>CompTIA A+</li>
-          <li>CompTIA Network+</li>
-          <li>CompTIA Security+</li>
-          <li>Cisco Certified Network Associate (CCNA)</li>
-          <li>Microsoft Certified: Azure Fundamentals</li>
-          <li>Microsoft Certified: Security, Compliance, and Identity Fundamentals</li>
-          <li>Cyber Security 101 Certificate - TryHackMe</li>
-        </ul>
-      </section>
+      <a class="guide-card" href="guides/network-troubleshooting-basics/">
+        <div class="guide-icon-box">
+          <i class="fa-solid fa-network-wired"></i>
+        </div>
 
-      <section id="cv" class="content-section">
-        <p class="section-label">Resume</p>
-        <h2>CV</h2>
+        <div class="guide-text">
+          <h3>Network Troubleshooting Basics</h3>
+          <p>Ping, IP configuration, DNS, DHCP, Wi-Fi, VLANs, and physical checks.</p>
+        </div>
+      </a>
 
-        <p>
-          Download my CV to view my full work history, education, certifications, and technical background.
-        </p>
+      <a class="guide-card" href="guides/windows-defender-firewall-basics/">
+        <div class="guide-icon-box">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
 
-        <a class="button" href="Alex.Mateescu-CV.pdf" target="_blank">Download CV</a>
-      </section>
+        <div class="guide-text">
+          <h3>Windows Defender Firewall Basics</h3>
+          <p>Firewall rules, traffic filtering, inbound/outbound access, and host security.</p>
+        </div>
+      </a>
 
-    </main>
+      <a class="guide-card" href="guides/mfa-access-control-notes/">
+        <div class="guide-icon-box">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+
+        <div class="guide-text">
+          <h3>MFA and Access Control Notes</h3>
+          <p>Identity checks, account security, permissions, and access troubleshooting.</p>
+        </div>
+      </a>
+
+      <a class="guide-card" href="guides/vulnerability-management-workflow/">
+        <div class="guide-icon-box">
+          <i class="fa-solid fa-bug"></i>
+        </div>
+
+        <div class="guide-text">
+          <h3>Vulnerability Management Workflow</h3>
+          <p>Asset scope, scanning, risk rating, remediation tracking, and validation.</p>
+        </div>
+      </a>
+
+      <a class="guide-card" href="guides/patch-management-workflow/">
+        <div class="guide-icon-box">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+        </div>
+
+        <div class="guide-text">
+          <h3>Patch Management Workflow</h3>
+          <p>Checking updates, testing patches, applying fixes, and validating systems.</p>
+        </div>
+      </a>
+
+      <a class="guide-card" href="guides/openvas-vulnerability-scanning/">
+        <div class="guide-icon-box">
+          <i class="fa-solid fa-magnifying-glass-chart"></i>
+        </div>
+
+        <div class="guide-text">
+          <h3>OpenVAS Vulnerability Scanning Lab</h3>
+          <p>Installing OpenVAS, creating scan tasks, reviewing findings, and documenting remediation notes.</p>
+        </div>
+      </a>
+
+      <a class="guide-card" href="guides/splunk-security-logs-lab/">
+        <div class="guide-icon-box">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+
+        <div class="guide-text">
+          <h3>Splunk Security Logs Lab</h3>
+          <p>Searching security logs, filtering events, reviewing failed logons, and documenting investigation notes.</p>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <section id="certifications" class="content-section">
+    <p class="section-label">Learning</p>
+    <h2>Certifications</h2>
+
+    <ul>
+      <li>CompTIA A+</li>
+      <li>CompTIA Network+</li>
+      <li>CompTIA Security+</li>
+      <li>Cisco Certified Network Associate (CCNA)</li>
+      <li>Microsoft Certified: Azure Fundamentals</li>
+      <li>Microsoft Certified: Security, Compliance, and Identity Fundamentals</li>
+      <li>Cyber Security 101 Certificate - TryHackMe</li>
+    </ul>
+  </section>
+
+  <section id="cv" class="content-section">
+    <p class="section-label">Resume</p>
+    <h2>CV</h2>
+
+    <p>
+      Download my CV to view my full work history, education, certifications, and technical background.
+    </p>
+
+    <a class="button" href="Alex.Mateescu-CV.pdf" target="_blank">Download CV</a>
+  </section>
+
+</main>
+```
 
   </div>
+
+  <script src="matrix.js"></script>
 
 </body>
 </html>
