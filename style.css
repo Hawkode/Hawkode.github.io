@@ -21,29 +21,53 @@ body {
 
 /* Matrix canvas background */
 
-#matrix-rain {
-  position: fixed !important;
-  top: 0 !important;
-  right: 0 !important;
-  width: 360px !important;
-  height: 100vh !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-  opacity: 0.42 !important;
-  display: block !important;
+.matrix-canvas {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  display: block;
+}
+
+/* Left Matrix strip */
+#matrix-left {
+  left: 0;
+  width: 78px;
+  opacity: 0.38;
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 65%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 65%,
+    transparent 100%
+  );
+}
+
+/* Right Matrix panel */
+#matrix-right {
+  right: 0;
+  width: 430px;
+  opacity: 0.46;
 
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.45) 18%,
-    #000 42%,
+    rgba(0, 0, 0, 0.55) 18%,
+    #000 38%,
     #000 100%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.45) 18%,
-    #000 42%,
+    rgba(0, 0, 0, 0.55) 18%,
+    #000 38%,
     #000 100%
   );
 }
@@ -408,8 +432,8 @@ code {
 /* Hide Matrix if screen is not wide enough */
 
 @media (max-width: 1650px) {
-  #matrix-rain {
-    display: none !important;
+  .matrix-canvas {
+    display: none;
   }
 }
 
