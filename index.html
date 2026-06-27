@@ -6,7 +6,7 @@
 
   <title>Alex Mateescu | Infrastructure, Networking & Security</title>
 
-  <link rel="stylesheet" href="style.css?v=matrix-fix-2" />
+  <link rel="stylesheet" href="style.css?v=matrix-fix-3" />
 
   <!-- Font Awesome icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -411,9 +411,13 @@
       document.getElementById("matrix-right")
     ];
 
-    const matrixCharacters = "01";
-    const matrixFontSize = 11;
+    const matrixCharacters = ["0", "1"];
+    const matrixFontSize = 10;
     const matrixAnimations = [];
+
+    function getMatrixCharacter() {
+      return matrixCharacters[Math.floor(Math.random() * matrixCharacters.length)];
+    }
 
     function createMatrix(canvas) {
       const ctx = canvas.getContext("2d");
@@ -425,6 +429,19 @@
         width: 0,
         height: 0
       };
+
+      function createColumn(index) {
+        const length = 28 + Math.floor(Math.random() * 48);
+
+        return {
+          x: index * matrixFontSize - matrixFontSize,
+          y: Math.random() * matrix.height,
+          speed: 0.24 + Math.random() * 0.46,
+          length: length,
+          brightness: 0.32 + Math.random() * 0.28,
+          characters: Array.from({ length: length }, getMatrixCharacter)
+        };
+      }
 
       function resize() {
         const rect = canvas.getBoundingClientRect();
@@ -442,17 +459,12 @@
         canvas.height = matrix.height * ratio;
 
         ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        ctx.imageSmoothingEnabled = false;
 
-        const columnCount = Math.ceil(matrix.width / matrixFontSize) + 2;
+        const columnCount = Math.ceil(matrix.width / matrixFontSize) + 4;
 
         matrix.columns = Array.from({ length: columnCount }, function (_, index) {
-          return {
-            x: index * matrixFontSize + matrixFontSize / 2,
-            y: Math.random() * matrix.height,
-            speed: 0.26 + Math.random() * 0.54,
-            length: 24 + Math.floor(Math.random() * 46),
-            brightness: 0.18 + Math.random() * 0.22
-          };
+          return createColumn(index);
         });
       }
 
@@ -462,8 +474,7 @@
           return;
         }
 
-        ctx.fillStyle = "rgba(5, 5, 5, 0.11)";
-        ctx.fillRect(0, 0, matrix.width, matrix.height);
+        ctx.clearRect(0, 0, matrix.width, matrix.height);
 
         ctx.font = matrixFontSize + "px Consolas, 'Lucida Console', 'Courier New', monospace";
         ctx.textAlign = "center";
@@ -471,10 +482,10 @@
 
         matrix.columns.forEach(function (column) {
           for (let i = 0; i < column.length; i++) {
-            const character = matrixCharacters[Math.floor(Math.random() * matrixCharacters.length)];
+            const character = column.characters[i];
             const y = column.y - i * matrixFontSize;
 
-            if (y < 0 || y > matrix.height) {
+            if (y < -matrixFontSize || y > matrix.height + matrixFontSize) {
               continue;
             }
 
@@ -482,7 +493,7 @@
             const opacity = Math.max(0, column.brightness * fade);
 
             if (i === 0) {
-              ctx.fillStyle = "rgba(187, 247, 208, 0.42)";
+              ctx.fillStyle = "rgba(187, 247, 208, 0.72)";
             } else if (i < 5) {
               ctx.fillStyle = "rgba(134, 239, 172, " + opacity + ")";
             } else {
@@ -494,11 +505,14 @@
 
           column.y += column.speed;
 
-          if (column.y - column.length * matrixFontSize > matrix.height) {
-            column.y = -Math.random() * 700;
-            column.speed = 0.26 + Math.random() * 0.54;
-            column.length = 24 + Math.floor(Math.random() * 46);
-            column.brightness = 0.18 + Math.random() * 0.22;
+          if (column.y - column.length * matrixFontSize > matrix.height + matrixFontSize) {
+            const newColumn = createColumn(Math.round((column.x + matrixFontSize) / matrixFontSize));
+
+            column.y = -Math.random() * 500;
+            column.speed = newColumn.speed;
+            column.length = newColumn.length;
+            column.brightness = newColumn.brightness;
+            column.characters = newColumn.characters;
           }
         });
 
