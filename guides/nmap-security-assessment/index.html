@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Nmap Security Assessment | Alex Mateescu</title>
+  <title>Nmap Network Security Assessment Lab | Alex Mateescu</title>
 
   <link rel="stylesheet" href="../../style.css" />
 
@@ -48,8 +48,8 @@
       <section class="sidebar-block">
         <h2>Guide</h2>
         <p>
-          A practical guide for using Nmap to review exposed services, identify risks,
-          and document remediation actions in an authorised lab or assessment.
+          A practical Nmap lab for scanning network services, identifying exposed ports,
+          reviewing risky protocols, and documenting remediation actions.
         </p>
       </section>
 
@@ -69,12 +69,18 @@
 
       <section class="content-section">
         <p class="section-label">Guide</p>
-        <h2>Nmap Security Assessment</h2>
+        <h2>Nmap Network Security Assessment Lab</h2>
 
         <p>
-          This guide documents a basic security assessment workflow using Nmap. The aim is to
-          identify exposed services, review common risks, and record practical remediation steps
-          for services such as FTP, SSH, Telnet, and SMB.
+          This guide documents a practical network security assessment workflow using Nmap.
+          The purpose of the lab is to identify exposed services, understand what is running
+          on a target system, review possible risks, and document remediation actions.
+        </p>
+
+        <p>
+          The lab focuses on common services such as FTP, SSH, Telnet, and SMB. These services
+          are useful for learning because they are often seen in real environments and can create
+          security risk if they are outdated, exposed, or misconfigured.
         </p>
 
         <p>
@@ -83,7 +89,7 @@
         </p>
 
         <p class="tags">
-          Nmap • Network Scanning • Vulnerability Assessment • FTP • SSH • Telnet • SMB • Remediation
+          Nmap • Network Scanning • Service Enumeration • Vulnerability Assessment • FTP • SSH • Telnet • SMB
         </p>
 
         <p>
@@ -95,11 +101,15 @@
 
       <section class="content-section">
         <p class="section-label">Step 1</p>
-        <h2>Understand the Assessment Scope</h2>
+        <h2>Define the Assessment Scope</h2>
 
         <p>
-          Before running any scan, define exactly which systems are approved for testing. This
-          helps avoid scanning devices that are outside the assessment scope.
+          Before running any scan, the target scope should be clearly defined. This prevents
+          accidental scanning of systems that are not part of the lab or assessment.
+        </p>
+
+        <p>
+          A small list of approved targets can be saved as an environment variable:
         </p>
 
         <pre><code>export TARGETS="192.168.1.1 192.168.1.2 192.168.1.3"</code></pre>
@@ -109,6 +119,10 @@
         </p>
 
         <pre><code>export TARGETS="192.168.1.0/24"</code></pre>
+
+        <p>
+          Keeping the target list clear makes the assessment easier to repeat and document.
+        </p>
       </section>
 
       <section class="content-section">
@@ -116,138 +130,181 @@
         <h2>Install and Verify Nmap</h2>
 
         <p>
-          Install Nmap on the assessment machine and confirm that the command is available.
+          Nmap can be installed on most Linux systems using the package manager. After installation,
+          the version should be checked to confirm that the tool is working correctly.
         </p>
 
-        <pre><code>sudo apt install nmap
+        <pre><code>sudo apt update
+sudo apt install nmap
 
 nmap --version</code></pre>
 
         <p>
-          Verifying the installation first helps confirm that Nmap is ready for port scanning,
-          service detection, and script-based checks.
+          This confirms that Nmap is ready for port scanning, service detection, and script-based
+          security checks.
         </p>
       </section>
 
       <section class="content-section">
         <p class="section-label">Step 3</p>
-        <h2>Run a Focused Port Scan</h2>
+        <h2>Run an Initial Port Scan</h2>
 
         <p>
-          This scan checks common services that can introduce risk when exposed or misconfigured.
+          The first scan checks whether key services are exposed. This lab focuses on FTP, SSH,
+          Telnet, and SMB because they are common services that can introduce risk if not managed
+          properly.
         </p>
 
-        <pre><code>nmap -p 21,22,23,445 -sV -T4 $TARGETS</code></pre>
+        <pre><code>nmap -p 21,22,23,445 $TARGETS</code></pre>
 
         <div class="list">
           <p>
-            <strong>-p 21,22,23,445</strong> scans FTP, SSH, Telnet, and SMB.
+            <strong>Port 21:</strong> FTP file transfer service.
           </p>
 
           <p>
-            <strong>-sV</strong> attempts to identify service versions.
+            <strong>Port 22:</strong> SSH remote administration service.
           </p>
 
           <p>
-            <strong>-T4</strong> uses faster timing for a controlled lab or approved assessment.
+            <strong>Port 23:</strong> Telnet remote access service.
+          </p>
+
+          <p>
+            <strong>Port 445:</strong> SMB file sharing service.
           </p>
         </div>
       </section>
 
       <section class="content-section">
         <p class="section-label">Step 4</p>
-        <h2>Run Vulnerability Script Checks</h2>
+        <h2>Identify Service Versions</h2>
 
         <p>
-          Nmap Scripting Engine checks can help identify known issues and risky configurations.
+          After finding open ports, service version detection helps identify what software is
+          running behind each port. This is useful because older versions may have known security
+          weaknesses.
         </p>
 
-        <pre><code>nmap --script vuln -p 21,22,23,445 $TARGETS</code></pre>
+        <pre><code>nmap -p 21,22,23,445 -sV -T4 $TARGETS</code></pre>
+
+        <div class="list">
+          <p>
+            <strong>-sV:</strong> Attempts to detect service names and versions.
+          </p>
+
+          <p>
+            <strong>-T4:</strong> Uses faster timing for a controlled lab or approved assessment.
+          </p>
+        </div>
 
         <p>
-          SMB can also be checked with SMB-focused scripts:
-        </p>
-
-        <pre><code>nmap --script smb-vuln* -p 445 $TARGETS</code></pre>
-
-        <p>
-          Script results should be reviewed carefully and validated before being treated as
-          confirmed vulnerabilities.
+          The output should be reviewed for service names, version numbers, and anything that
+          suggests outdated or unnecessary services.
         </p>
       </section>
 
       <section class="content-section">
         <p class="section-label">Step 5</p>
-        <h2>Run a Comprehensive Scan</h2>
+        <h2>Run Vulnerability Script Checks</h2>
 
         <p>
-          A more detailed scan can collect additional information such as operating system
-          guesses, service details, script output, and traceroute information.
+          Nmap includes the Nmap Scripting Engine, which can run checks against services to help
+          identify known issues or risky configurations.
+        </p>
+
+        <pre><code>nmap --script vuln -p 21,22,23,445 $TARGETS</code></pre>
+
+        <p>
+          SMB can also be checked using SMB-specific vulnerability scripts:
+        </p>
+
+        <pre><code>nmap --script smb-vuln* -p 445 $TARGETS</code></pre>
+
+        <p>
+          Script results should not be accepted blindly. They should be reviewed, validated, and
+          compared with the system configuration before being treated as confirmed vulnerabilities.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 6</p>
+        <h2>Run a More Detailed Scan</h2>
+
+        <p>
+          A more detailed scan can collect additional information such as operating system guesses,
+          service details, script output, and traceroute information.
         </p>
 
         <pre><code>nmap -A -T4 $TARGETS</code></pre>
 
         <div class="list">
           <p>
-            <strong>-A</strong> enables OS detection, version detection, script scanning,
-            and traceroute.
+            <strong>-A:</strong> Enables OS detection, version detection, script scanning, and traceroute.
           </p>
 
           <p>
-            <strong>-T4</strong> increases scan speed in a controlled environment.
+            <strong>-T4:</strong> Increases scan speed in a controlled lab environment.
           </p>
         </div>
+
+        <p>
+          This type of scan is more active than a simple port scan, so it should only be used
+          where it is appropriate and authorised.
+        </p>
       </section>
 
       <section class="content-section">
-        <p class="section-label">Step 6</p>
-        <h2>Review Common Findings</h2>
+        <p class="section-label">Step 7</p>
+        <h2>Review Common Service Risks</h2>
 
         <p>
-          After the scans complete, review the results and group findings by service and risk.
+          Once scan results are collected, the findings can be grouped by service. This makes
+          it easier to understand the risk and decide what should be fixed first.
         </p>
 
         <div class="grid">
           <div class="card">
             <h3>FTP</h3>
             <p>
-              Anonymous access or outdated FTP versions can expose data and increase the risk
-              of unauthorised access.
+              FTP can expose files if anonymous access is enabled or permissions are configured
+              incorrectly. Plain FTP also does not provide strong protection for credentials.
             </p>
           </div>
 
           <div class="card">
             <h3>SSH</h3>
             <p>
-              Weak ciphers or older SSH configurations can reduce the strength of encrypted
-              remote administration.
+              SSH is normally preferred for remote administration, but weak configuration,
+              outdated versions, or poor authentication controls can still create risk.
             </p>
           </div>
 
           <div class="card">
             <h3>Telnet</h3>
             <p>
-              Telnet sends traffic in clear text and should not be used for secure remote
-              administration.
+              Telnet is high risk because it sends traffic in clear text. It should normally be
+              disabled and replaced with SSH.
             </p>
           </div>
 
           <div class="card">
             <h3>SMB</h3>
             <p>
-              Legacy SMB versions such as SMBv1 can expose systems to known security risks and
-              should be disabled where possible.
+              SMB should be reviewed carefully because legacy versions such as SMBv1 can expose
+              systems to known vulnerabilities and unnecessary file-sharing risk.
             </p>
           </div>
         </div>
       </section>
 
       <section class="content-section">
-        <p class="section-label">Step 7</p>
+        <p class="section-label">Step 8</p>
         <h2>Document Remediation Actions</h2>
 
         <p>
-          Findings should be written clearly so they can be tracked and remediated.
+          A scan becomes more useful when the results are translated into clear actions. Each
+          finding should include the affected service, risk, evidence, and recommended fix.
         </p>
 
         <div class="list">
@@ -274,10 +331,34 @@ nmap --version</code></pre>
       </section>
 
       <section class="content-section">
+        <p class="section-label">Step 9</p>
+        <h2>Record Evidence and Notes</h2>
+
+        <p>
+          Good documentation makes the assessment easier to review later. Useful notes include
+          the scan date, target scope, commands used, open ports, service versions, risk rating,
+          and remediation status.
+        </p>
+
+        <pre><code>Service: SMB
+Port: 445
+Risk: Medium
+Finding: SMB service exposed and requires version review
+Action: Confirm SMB version, disable SMBv1 if present, restrict access where possible
+Status: To review</code></pre>
+
+        <p>
+          This structure keeps findings clear and makes remediation easier to track.
+        </p>
+      </section>
+
+      <section class="content-section">
         <p class="section-label">Summary</p>
         <h2>Commands Covered</h2>
 
         <pre><code>nmap --version
+
+nmap -p 21,22,23,445 $TARGETS
 
 nmap -p 21,22,23,445 -sV -T4 $TARGETS
 
@@ -288,8 +369,9 @@ nmap --script smb-vuln* -p 445 $TARGETS
 nmap -A -T4 $TARGETS</code></pre>
 
         <p>
-          These commands cover installation verification, focused service scanning,
-          vulnerability script checks, SMB-specific checks, and more detailed assessment scans.
+          These commands cover installation verification, focused port scanning, service version
+          detection, vulnerability script checks, SMB-specific checks, and more detailed assessment
+          scanning.
         </p>
       </section>
 
@@ -298,19 +380,20 @@ nmap -A -T4 $TARGETS</code></pre>
         <h2>Why This Is Useful</h2>
 
         <p>
-          Nmap is useful for understanding what services are exposed on a network and whether
-          those services may introduce security risk.
+          Nmap is useful because it helps identify what services are exposed on a network. This
+          supports troubleshooting, network visibility, vulnerability management, and security
+          review.
         </p>
 
         <p>
-          This type of assessment supports vulnerability management, network visibility,
-          remediation planning, and technical security review.
+          This lab shows how scan results can be turned into practical actions such as disabling
+          insecure services, removing legacy protocols, strengthening configuration, and reducing
+          the attack surface.
         </p>
 
         <p>
-          It also helps turn scan results into practical actions such as disabling insecure
-          protocols, removing legacy services, strengthening configurations, and reducing the
-          attack surface.
+          It also demonstrates a simple workflow for moving from discovery to analysis, then from
+          analysis to remediation notes.
         </p>
 
         <p>
