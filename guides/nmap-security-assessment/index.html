@@ -1,1 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Nmap Security Assessment | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p>al3ksmatee@gmail.com</p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          A practical security assessment guide using Nmap to identify exposed services,
+          review risky protocols, and document remediation actions.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../">Home</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../../#guides">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Security Guide</p>
+        <h2>Nmap Security Assessment</h2>
+
+        <p>
+          This guide documents a basic security assessment workflow using Nmap. The goal is to
+          identify exposed services, review common risks, and record practical remediation steps
+          for services such as FTP, SSH, Telnet, and SMB.
+        </p>
+
+        <p>
+          The assessment focuses on authorised scanning only. Nmap should only be used against
+          systems, networks, or lab environments where permission has been granted.
+        </p>
+
+        <p class="tags">
+          Nmap • Vulnerability Assessment • Network Scanning • FTP • SSH • Telnet • SMB • Risk Assessment
+        </p>
+
+        <p>
+          <a class="button" href="https://github.com/Hawkode/nmap-security-assessment" target="_blank">
+            View GitHub Repository
+          </a>
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Purpose</p>
+        <h2>Assessment Objectives</h2>
+
+        <p>
+          The purpose of this assessment is to understand what services are exposed on target
+          systems and identify possible security weaknesses.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Discover Open Ports</h3>
+            <p>
+              Identify whether common services such as FTP, SSH, Telnet, and SMB are reachable
+              on the target systems.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Identify Service Versions</h3>
+            <p>
+              Use service detection to understand what software and versions are running on
+              exposed ports.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Review Security Risks</h3>
+            <p>
+              Look for risky services, weak configurations, legacy protocols, and exposed
+              network access.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Document Remediation</h3>
+            <p>
+              Record findings clearly and provide practical recommendations to reduce risk.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Setup</p>
+        <h2>Install and Verify Nmap</h2>
+
+        <p>
+          Nmap can be installed on most Linux distributions and macOS. After installation,
+          verify that the command is available before starting the assessment.
+        </p>
+
+        <pre><code>sudo apt install nmap
+
+nmap --version</code></pre>
+
+        <p>
+          On a controlled lab machine, this confirms that Nmap is ready to run basic discovery,
+          service detection, and script-based checks.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Scope</p>
+        <h2>Define the Target Scope</h2>
+
+        <p>
+          Before scanning, define the approved target scope. This may be a small list of hosts
+          or a lab subnet.
+        </p>
+
+        <pre><code>export TARGETS="192.168.1.1 192.168.1.2 192.168.1.3"</code></pre>
+
+        <p>
+          For a lab subnet, the scope can be defined like this:
+        </p>
+
+        <pre><code>export TARGETS="192.168.1.0/24"</code></pre>
+
+        <p>
+          Keeping the scope clearly defined helps avoid scanning systems that are not part of
+          the assessment.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Scanning</p>
+        <h2>Scan Key Services</h2>
+
+        <p>
+          This scan focuses on common services that can introduce security risk if they are
+          exposed or misconfigured.
+        </p>
+
+        <pre><code>nmap -p 21,22,23,445 -sV -T4 $TARGETS</code></pre>
+
+        <div class="list">
+          <p>
+            <strong>-p 21,22,23,445</strong> scans FTP, SSH, Telnet, and SMB.
+          </p>
+
+          <p>
+            <strong>-sV</strong> attempts to identify service versions.
+          </p>
+
+          <p>
+            <strong>-T4</strong> uses faster timing for lab or controlled environments.
+          </p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Vulnerability Checks</p>
+        <h2>Use Nmap Scripts</h2>
+
+        <p>
+          Nmap Scripting Engine checks can help identify known issues and risky service
+          configurations.
+        </p>
+
+        <pre><code>nmap --script vuln -p 21,22,23,445 $TARGETS</code></pre>
+
+        <p>
+          For SMB-specific checks, the scan can be narrowed to SMB scripts:
+        </p>
+
+        <pre><code>nmap --script smb-vuln* -p 445 $TARGETS</code></pre>
+
+        <p>
+          Script results should always be reviewed carefully. Findings should be validated
+          before being treated as confirmed vulnerabilities.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Deeper Review</p>
+        <h2>Comprehensive Scan</h2>
+
+        <p>
+          A more detailed Nmap scan can be used to collect extra information such as operating
+          system guesses, service details, script output, and traceroute information.
+        </p>
+
+        <pre><code>nmap -A -T4 $TARGETS</code></pre>
+
+        <p>
+          This type of scan is useful in a lab or approved assessment, but it should be used
+          carefully because it is more active than a simple port scan.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Findings</p>
+        <h2>Example Risk Findings</h2>
+
+        <div class="grid">
+          <div class="card">
+            <h3>FTP - High Risk</h3>
+            <p>
+              Anonymous login or outdated FTP versions can expose files and allow unauthorised
+              access to data.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>SSH - Medium Risk</h3>
+            <p>
+              Weak ciphers or older SSH configurations can reduce the strength of encrypted
+              remote access.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Telnet - High Risk</h3>
+            <p>
+              Telnet sends traffic in clear text and should not be used for secure remote
+              administration.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>SMB - Medium Risk</h3>
+            <p>
+              Legacy SMB versions such as SMBv1 can increase exposure to known vulnerabilities
+              and should be disabled where possible.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Remediation</p>
+        <h2>Mitigation Recommendations</h2>
+
+        <div class="list">
+          <p>
+            <strong>FTP:</strong> Disable anonymous access, restrict permissions, and use secure
+            alternatives or encrypted transfer methods where possible.
+          </p>
+
+          <p>
+            <strong>SSH:</strong> Keep SSH updated, disable weak ciphers, use strong authentication,
+            and limit access to trusted users or networks.
+          </p>
+
+          <p>
+            <strong>Telnet:</strong> Disable Telnet and replace it with SSH for encrypted remote
+            administration.
+          </p>
+
+          <p>
+            <strong>SMB:</strong> Disable SMBv1, use SMBv2 or SMBv3, apply security updates,
+            and restrict file-sharing access.
+          </p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Compliance Notes</p>
+        <h2>Security and Compliance Alignment</h2>
+
+        <p>
+          This type of assessment supports basic vulnerability management and network security
+          review activities. It helps identify exposed services, verify technical controls,
+          and document remediation actions.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Vulnerability Management</h3>
+            <p>
+              Regular scanning helps identify systems that may require patching, configuration
+              changes, or further investigation.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Network Security</h3>
+            <p>
+              Reviewing exposed services helps reduce unnecessary network access and improve
+              visibility of the environment.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Technical Review</h3>
+            <p>
+              Documented scan results provide evidence for security review and remediation
+              tracking.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Risk Reduction</h3>
+            <p>
+              Findings can be prioritised by severity so high-risk services can be addressed
+              first.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Outcome</p>
+        <h2>What This Lab Demonstrates</h2>
+
+        <p>
+          This lab demonstrates the ability to use Nmap for basic network security assessment,
+          service identification, vulnerability checks, risk documentation, and remediation
+          planning.
+        </p>
+
+        <p>
+          It also shows how scan results can be converted into practical actions, such as
+          disabling insecure protocols, strengthening service configuration, and improving
+          network visibility.
+        </p>
+
+        <p>
+          <a class="button" href="../../#guides">Back to Guides</a>
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
