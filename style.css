@@ -446,3 +446,7 @@ a { color: #f59e0b; }
 }
 
 .section-label { color: #38bdf8; }
+
+.sidebar h2 { color: #38bdf8; }
+.menu a:hover,
+.menu a.active { color: #38bdf8; border-left-color: #38bdf8; background: rgba(56, 189, 248, 0.08); }
