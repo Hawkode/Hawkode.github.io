@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Diagnosing Entra Connect Sync Issues | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" rel="noopener noreferrer" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          A diagnostic workflow for a user that will not sync, or syncs stale, from on-premises
+          Active Directory to Microsoft Entra ID through Entra Connect.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../../#guides" class="active">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Guide</p>
+        <h2>Diagnosing Entra Connect Sync Issues</h2>
+
+        <p>
+          In a hybrid setup, accounts are mastered on-premises and synced to Entra ID by Entra
+          Connect. When a user is missing in the cloud, or an attribute change on-premises never
+          appears, the cause is almost always sync scope, a matching conflict, or the source
+          anchor. This guide works through them in order.
+        </p>
+
+        <p>
+          Commands run in one of three places, called out per step: a <strong>domain
+          controller</strong>, the <strong>Entra Connect server</strong>, or <strong>any machine
+          with the Microsoft Graph PowerShell module</strong>. Names like
+          <code>corp.local</code> and <code>jane.doe@example.co.uk</code> are examples.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 1</p>
+        <h2>Confirm the Symptom</h2>
+
+        <p>
+          Decide which case you have: the object is missing in the cloud, or it exists but an
+          attribute is stale. Check the cloud side from any machine with the Graph module.
+        </p>
+
+        <pre><code>Connect-MgGraph -Scopes User.Read.All
+Get-MgUser -Filter "userPrincipalName eq 'jane.doe@example.co.uk'" -Property OnPremisesSyncEnabled,OnPremisesImmutableId,UserPrincipalName</code></pre>
+
+        <div class="list">
+          <p><strong>No result:</strong> the object is not syncing at all. Continue to scope and matching.</p>
+          <p><strong>Result with OnPremisesSyncEnabled empty:</strong> a cloud-only object exists and may be blocking the match.</p>
+          <p><strong>Result present but attribute old:</strong> the object syncs; the issue is a filtered attribute or a pending cycle.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 2</p>
+        <h2>Check Sync Scope</h2>
+
+        <p>
+          Entra Connect only syncs objects inside its configured OUs and groups. A user in an
+          unselected OU never syncs. On the Entra Connect server, review the filtering
+          configuration (Entra Connect wizard &gt; Domain and OU filtering), and confirm the
+          user's OU is selected.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 3</p>
+        <h2>Check for Sync Errors</h2>
+
+        <p>
+          Look for a duplicate-attribute error, the most common blocker. In the portal go to
+          Identity &gt; Hybrid management &gt; Microsoft Entra Connect &gt; Connect Sync &gt;
+          Health &gt; Sync errors. A "Duplicate Attribute" entry confirms a UPN or proxyAddress
+          clash with an existing cloud object.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 4</p>
+        <h2>Trace the Single Object</h2>
+
+        <p>
+          On the Entra Connect server, trace just this object to see whether it is in scope,
+          which rules apply, and where it stops. Needs Entra Connect 2.x or later.
+        </p>
+
+        <pre><code>Invoke-ADSyncSingleObjectSync -DistinguishedName "CN=Jane Doe,OU=Users,OU=London,DC=corp,DC=local" | Out-File C:\Temp\jdoe-sync.json</code></pre>
+
+        <p>
+          On older builds, use the Synchronization Service Manager &gt; Connectors &gt; AD
+          connector &gt; Search Connector Space instead.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 5</p>
+        <h2>Check the Source Anchor</h2>
+
+        <p>
+          Entra Connect matches on the source anchor (<code>mS-DS-ConsistencyGuid</code> or
+          <code>objectGUID</code>). If the on-premises anchor does not match the cloud
+          <code>ImmutableId</code>, the object will not join. On a domain controller, read the
+          on-prem value and compare it to the cloud value.
+        </p>
+
+        <pre><code>$onprem = [Convert]::ToBase64String((Get-ADUser jane.doe -Properties 'mS-DS-ConsistencyGuid').'mS-DS-ConsistencyGuid')
+$onprem
+$onprem -ceq "PASTE-CLOUD-IMMUTABLEID=="</code></pre>
+
+        <div class="list">
+          <p><strong>True:</strong> the anchors match, so the anchor is not the problem. Read the Step 4 trace instead.</p>
+          <p><strong>False:</strong> the anchors differ. Stamp the on-prem value onto the cloud object (Step 6). Use <code>-ceq</code>, not <code>-eq</code>, because base64 is case-sensitive.</p>
+        </div>
+
+        <p>
+          Confirm which attribute Entra Connect actually uses as its anchor, on the Entra Connect
+          server:
+        </p>
+
+        <pre><code>(Get-ADSyncGlobalSettings).Parameters | Where Name -eq "Microsoft.SynchronizationOption.AnchorAttribute" | Select Value</code></pre>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 6</p>
+        <h2>Resolve the Conflict</h2>
+
+        <div class="list">
+          <p><strong>Stale cloud object blocking a soft match:</strong> delete the cloud-only object and remove it from the recycle bin, then sync. A cloud account holding an admin role blocks soft match by default, which is why cloud-only admin accounts should stay separate from synced identities.</p>
+          <p><strong>Anchor mismatch:</strong> hard match by stamping the on-prem anchor onto the cloud object with <code>Update-MgUser -UserId ... -OnPremisesImmutableId "..."</code> from a machine with the Graph module.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 7</p>
+        <h2>Force a Sync and Verify</h2>
+
+        <p>
+          On the Entra Connect server, run a delta cycle, then confirm in the portal.
+        </p>
+
+        <pre><code>Start-ADSyncSyncCycle -PolicyType Delta</code></pre>
+
+        <div class="list">
+          <p><strong>Verify:</strong> the user in the portal shows "On-premises sync enabled: Yes" and the expected UPN and attributes.</p>
+          <p><strong>If still missing:</strong> re-read the Step 4 trace for a stale join to a deleted duplicate, which needs a full cycle (<code>-PolicyType Initial</code>) to clear.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Why It Matters</p>
+        <h2>Security Angle</h2>
+
+        <p>
+          Hybrid identity is the seam between on-premises and cloud, and it is a target. Keep
+          cloud admin accounts cloud-only so a compromised on-prem account cannot soft-match into
+          a privileged cloud identity. Anchor on <code>mS-DS-ConsistencyGuid</code> so a rebuilt
+          or moved account keeps its cloud identity instead of creating a duplicate. Watch Entra
+          Connect Health for repeated duplicate-attribute or export errors, which can indicate
+          account tampering as well as misconfiguration.
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>

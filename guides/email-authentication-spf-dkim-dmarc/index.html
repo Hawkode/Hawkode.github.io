@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Email Authentication: SPF, DKIM, DMARC | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" rel="noopener noreferrer" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          Setting up and verifying SPF, DKIM, and DMARC for a Microsoft 365 / Exchange Online
+          domain to stop spoofing and meet Cyber Essentials.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../../#guides" class="active">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Guide</p>
+        <h2>Email Authentication: SPF, DKIM, DMARC</h2>
+
+        <p>
+          Without authentication, anyone can send mail that claims to be from your domain. The
+          three records work together: SPF lists who may send, DKIM proves a message was not
+          altered, and DMARC tells receivers what to do when SPF or DKIM fails, and sends you
+          reports. This guide sets them up for Exchange Online. DNS examples use
+          <code>example.co.uk</code>.
+        </p>
+
+        <div class="list">
+          <p><strong>SPF:</strong> a DNS TXT record listing the servers allowed to send for your domain.</p>
+          <p><strong>DKIM:</strong> a cryptographic signature added to each message, verified against a public key in DNS.</p>
+          <p><strong>DMARC:</strong> a policy saying what to do with mail that fails SPF or DKIM, plus a reporting address.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 1</p>
+        <h2>Publish SPF</h2>
+
+        <p>
+          Add one TXT record at the domain root authorising Exchange Online. Use only one SPF
+          record per domain; multiple records break SPF.
+        </p>
+
+        <pre><code>Type: TXT
+Host: @  (example.co.uk)
+Value: v=spf1 include:spf.protection.outlook.com -all</code></pre>
+
+        <div class="list">
+          <p><strong>-all (hard fail):</strong> mail from anywhere else fails SPF. Use this once you are sure all legitimate senders are included.</p>
+          <p><strong>~all (soft fail):</strong> a safer starting point if you have third-party senders to add first.</p>
+          <p><strong>Add other senders inside the same record</strong> with more <code>include:</code> terms, for example a marketing platform, rather than creating a second SPF record.</p>
+        </div>
+
+        <pre><code>nslookup -type=txt example.co.uk</code></pre>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 2</p>
+        <h2>Enable DKIM</h2>
+
+        <p>
+          Exchange Online publishes two CNAME records that point at Microsoft's rotating keys,
+          then you switch signing on. In the Microsoft 365 Defender portal go to Email &amp;
+          collaboration &gt; Policies &amp; rules &gt; Threat policies &gt; Email authentication
+          settings &gt; DKIM, select the domain, and it shows the two CNAMEs to publish.
+        </p>
+
+        <pre><code>Host: selector1._domainkey   -> selector1-example-co-uk._domainkey.example.onmicrosoft.com
+Host: selector2._domainkey   -> selector2-example-co-uk._domainkey.example.onmicrosoft.com</code></pre>
+
+        <div class="list">
+          <p><strong>After the CNAMEs resolve,</strong> return to the DKIM page and switch "Sign messages for this domain" to Enabled.</p>
+          <p><strong>Two selectors</strong> let Microsoft rotate keys without a signing gap.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 3</p>
+        <h2>Publish DMARC</h2>
+
+        <p>
+          Add a TXT record at <code>_dmarc</code>. Start in monitor mode so you can see the
+          reports before enforcing.
+        </p>
+
+        <pre><code>Type: TXT
+Host: _dmarc  (_dmarc.example.co.uk)
+Value: v=DMARC1; p=none; rua=mailto:dmarc@example.co.uk; fo=1</code></pre>
+
+        <div class="list">
+          <p><strong>p=none:</strong> monitor only. Receivers report but take no action. Start here.</p>
+          <p><strong>p=quarantine:</strong> failing mail goes to junk. Move here once reports show your legitimate mail passes.</p>
+          <p><strong>p=reject:</strong> failing mail is dropped. The end goal, once you are confident.</p>
+          <p><strong>rua:</strong> the mailbox that receives the aggregate XML reports.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 4</p>
+        <h2>Verify</h2>
+
+        <p>
+          Send a message to an external mailbox and read the headers, or use a checker. In the
+          received message look at the <code>Authentication-Results</code> header.
+        </p>
+
+        <pre><code>Authentication-Results: spf=pass ... dkim=pass ... dmarc=pass</code></pre>
+
+        <div class="list">
+          <p><strong>All three pass:</strong> the records are correct and signing is on.</p>
+          <p><strong>dkim=none:</strong> signing is not enabled yet, or the CNAMEs have not propagated.</p>
+          <p><strong>spf=fail for your own mail:</strong> a legitimate sender is missing from the SPF record.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 5</p>
+        <h2>Tighten the Policy</h2>
+
+        <p>
+          Leave DMARC at <code>p=none</code> for a week or two and read the reports. Confirm every
+          legitimate sending source passes SPF or DKIM, add any that are missing, then move the
+          policy to <code>p=quarantine</code>, and finally <code>p=reject</code>. Move SPF to
+          <code>-all</code> at the same confidence point.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Why It Matters</p>
+        <h2>Security Angle</h2>
+
+        <p>
+          SPF, DKIM, and DMARC together are the control that stops attackers spoofing your domain
+          in phishing and business email compromise. SPF or DKIM alone can be worked around;
+          DMARC at <code>p=reject</code> is what actually blocks spoofed mail and gives you
+          visibility through its reports. It is also a required control under Cyber Essentials and
+          a common audit finding. Roll it out from monitor to enforce so you tighten security
+          without dropping legitimate mail on day one.
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>

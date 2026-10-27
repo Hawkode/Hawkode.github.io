@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Windows Security Event IDs for Detection | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    table.ref {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 14px;
+    }
+    table.ref th, table.ref td {
+      text-align: left;
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(34, 197, 94, 0.18);
+      vertical-align: top;
+    }
+    table.ref th { color: #bbf7d0; font-weight: 600; }
+    table.ref td:first-child { color: #86efac; white-space: nowrap; font-family: monospace; }
+    code {
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" rel="noopener noreferrer" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          A reference of the Windows and Sysmon event IDs that matter most for detection, grouped
+          by what they catch, with the logging that has to be on first.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../../#guides" class="active">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Guide</p>
+        <h2>Windows Security Event IDs for Detection</h2>
+
+        <p>
+          A detection is only as good as the events under it. This is the reference I use
+          alongside my
+          <a href="../../projects/windows-privilege-escalation/">privilege escalation</a> and
+          <a href="../../projects/splunk-privesc-detection/">Splunk detection</a> work: the
+          event IDs worth watching, grouped by what they reveal. Security-log IDs are four
+          digits; Sysmon IDs are low numbers from its own Operational log.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Prerequisite</p>
+        <h2>Turn the Logging On First</h2>
+
+        <p>
+          Most of these are not logged by default. Enable them before expecting the events to
+          appear, ideally through Group Policy across the fleet.
+        </p>
+
+        <div class="list">
+          <p><strong>Command-line process auditing:</strong> turns on 4688 with the process command line, the single most useful setting.</p>
+          <p><strong>Sysmon:</strong> install with a sound configuration for process, network, file, and pipe telemetry.</p>
+          <p><strong>PowerShell logging:</strong> script-block and module logging for 4104 / 4103.</p>
+          <p><strong>Forward to a SIEM:</strong> an event logged only on the host is gone when the host is wiped.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reference</p>
+        <h2>Authentication and Privilege</h2>
+
+        <table class="ref">
+          <tr><th>Event</th><th>Meaning</th><th>Why it matters</th></tr>
+          <tr><td>4624</td><td>Successful logon</td><td>Logon type shows how (2 interactive, 3 network, 10 RDP); odd types or hours stand out</td></tr>
+          <tr><td>4625</td><td>Failed logon</td><td>Bursts indicate password spraying or brute force</td></tr>
+          <tr><td>4672</td><td>Special privileges at logon</td><td>Admin-equivalent logon; to an unexpected account it is a strong signal</td></tr>
+          <tr><td>4648</td><td>Logon with explicit credentials</td><td>runas and lateral movement with alternate creds</td></tr>
+          <tr><td>4740</td><td>Account locked out</td><td>Repeated lockouts can mean brute force or a bad service password</td></tr>
+        </table>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reference</p>
+        <h2>Account and Group Changes</h2>
+
+        <table class="ref">
+          <tr><th>Event</th><th>Meaning</th><th>Why it matters</th></tr>
+          <tr><td>4720</td><td>User account created</td><td>A new account, especially off-hours, can be attacker persistence</td></tr>
+          <tr><td>4728 / 4732 / 4756</td><td>Member added to a privileged group</td><td>Addition to Domain Admins or local Administrators is high priority</td></tr>
+          <tr><td>4722 / 4725</td><td>Account enabled / disabled</td><td>Re-enabling a dormant account is a common foothold</td></tr>
+          <tr><td>4738</td><td>User account changed</td><td>Password or attribute changes on sensitive accounts</td></tr>
+        </table>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reference</p>
+        <h2>Execution, Services, and Persistence</h2>
+
+        <table class="ref">
+          <tr><th>Event</th><th>Meaning</th><th>Why it matters</th></tr>
+          <tr><td>4688</td><td>Process created (with command line)</td><td>The backbone of execution detection; reveals what ran and how</td></tr>
+          <tr><td>Sysmon 1</td><td>Process create</td><td>Richer than 4688: hashes, parent process, signing</td></tr>
+          <tr><td>7045</td><td>New service installed</td><td>Services run as SYSTEM; a rogue one is escalation or persistence</td></tr>
+          <tr><td>4697</td><td>Service installed (Security log)</td><td>Same event audited through the Security channel</td></tr>
+          <tr><td>4698 / 4702</td><td>Scheduled task created / updated</td><td>Common persistence and privilege-abuse technique</td></tr>
+        </table>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reference</p>
+        <h2>Credential Access and Network</h2>
+
+        <table class="ref">
+          <tr><th>Event</th><th>Meaning</th><th>Why it matters</th></tr>
+          <tr><td>4663</td><td>Object access attempt</td><td>On SAM/SYSTEM or credential files, flags hive theft and secret reads</td></tr>
+          <tr><td>Sysmon 10</td><td>Process access</td><td>Access to <code>lsass.exe</code> is a strong credential-dumping signal</td></tr>
+          <tr><td>Sysmon 3</td><td>Network connection</td><td>Outbound from a process that has no business making network calls</td></tr>
+          <tr><td>5156 / 5157</td><td>Filtering Platform allowed / blocked</td><td>A burst across many ports from one source is a port scan</td></tr>
+          <tr><td>Sysmon 17 / 18</td><td>Named pipe created / connected</td><td>Potato-style token impersonation under a service account</td></tr>
+        </table>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reference</p>
+        <h2>PowerShell and Log Tampering</h2>
+
+        <table class="ref">
+          <tr><th>Event</th><th>Meaning</th><th>Why it matters</th></tr>
+          <tr><td>4104</td><td>PowerShell script block logging</td><td>Captures the actual script, including obfuscated and in-memory code</td></tr>
+          <tr><td>4103</td><td>PowerShell module/pipeline logging</td><td>Commands and parameters executed in the pipeline</td></tr>
+          <tr><td>1102</td><td>Security audit log cleared</td><td>Clearing the log is almost always an attacker covering tracks; alert hard</td></tr>
+        </table>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Why It Matters</p>
+        <h2>Using the Reference</h2>
+
+        <p>
+          Collecting events is not detecting; the value is in which ones you alert on. The
+          highest-fidelity are the rare, high-impact ones: 1102 (log cleared), 7045 (new service),
+          4720 and privileged group additions, 4672 to an unusual account, and Sysmon 10 against
+          <code>lsass</code>. Baseline the noisy ones first, then alert on deviation. This maps
+          directly to the SC-200 and CySA+ detection work and feeds the Splunk rules in my
+          detection lab.
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
