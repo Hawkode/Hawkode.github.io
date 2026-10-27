@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Windows Privilege Escalation: Techniques, Detection, Hardening | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    table.spec {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    table.spec th,
+    table.spec td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(34, 197, 94, 0.18);
+      vertical-align: top;
+    }
+
+    table.spec th {
+      color: #bbf7d0;
+      font-weight: 600;
+    }
+
+    table.spec td:first-child {
+      color: #86efac;
+      white-space: nowrap;
+    }
+
+    code {
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 13px;
+    }
+
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .visual-card {
+      background: rgba(34, 197, 94, 0.04);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    }
+
+    .visual-card h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: #bbf7d0;
+    }
+
+    .visual-card p {
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .flow-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 18px;
+      border-radius: 8px;
+      background: #020617;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+    }
+
+    .console {
+      background: #0b1220;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      margin-bottom: 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .console.attack { border: 1px solid rgba(148, 163, 184, 0.35); color: #cbd5e1; }
+    .console.detect { border: 1px solid rgba(34, 197, 94, 0.4); color: #86efac; }
+    .console .cmd { color: #f8fafc; }
+    .console .hi { color: #fca5a5; }
+    .console .ok { color: #4ade80; }
+
+    @media (max-width: 900px) {
+      .visual-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p>al3ksmatee@gmail.com</p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Lab</h2>
+        <p>
+          A hands-on study of Windows local privilege escalation: the common vectors,
+          the Windows event IDs and Sysmon signals that detect each, and the configuration
+          that closes them.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../" class="active">Projects & Labs</a>
+        <a href="../../#guides">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Security Lab</p>
+        <h2>Windows Privilege Escalation: Techniques, Detection, Hardening</h2>
+
+        <p>
+          This lab works through how an attacker turns a low-privileged foothold on a Windows
+          host into SYSTEM, and treats each technique from both sides: how it is abused, which
+          logs and event IDs reveal it, and the configuration that removes it. The focus is the
+          defender's view, since the point of learning the attack is to detect and shut it.
+        </p>
+
+        <p>
+          <strong>Scope:</strong> local privilege escalation, after initial access, on a
+          standalone Windows lab VM. Based on hands-on TryHackMe room work. No flags, room
+          answers, or room content are reproduced here; the techniques are well documented and
+          are described generally, mapped to Windows Server 2022 and Windows 11. The console
+          output on this page is illustrative, not from the room. Proof of completion is on my
+          <a href="https://tryhackme.com/p/Hawkode" target="_blank">TryHackMe profile</a>.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Context</p>
+        <h2>Why It Matters</h2>
+
+        <p>
+          Privilege escalation is the step between an initial foothold and full control of a
+          host. An attacker rarely lands as an administrator; they land as a user or a service
+          account and look for a misconfiguration that lifts them to SYSTEM, from where they can
+          dump credentials, disable defences, and move laterally. Every technique here is a
+          misconfiguration a defender can find first. The same enumeration that an attacker runs
+          is the audit that hardens a fleet, and the same actions that escalate are the ones a
+          SIEM can alert on.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Overview</p>
+        <h2>The Escalation Path</h2>
+
+        <p>
+          The loop is the same for every vector: enumerate the host, find a weakness, abuse it
+          to gain privileges, and confirm the result. Each step leaves traces, so the path up is
+          also a trail a defender can follow back.
+        </p>
+
+        <svg class="flow-svg" viewBox="0 0 520 220" role="img" aria-label="Privilege escalation path diagram">
+          <g font-family="Arial">
+            <rect x="12" y="40" width="104" height="40" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="30" y="58" fill="#d1fae5" font-size="12">Low-priv</text>
+            <text x="30" y="73" fill="#d1fae5" font-size="12">foothold</text>
+
+            <rect x="140" y="40" width="104" height="40" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="156" y="58" fill="#d1fae5" font-size="12">Enumerate</text>
+            <text x="156" y="73" fill="#86efac" font-size="11">winPEAS</text>
+
+            <rect x="268" y="40" width="104" height="40" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="284" y="58" fill="#d1fae5" font-size="12">Misconfig</text>
+            <text x="284" y="73" fill="#86efac" font-size="11">found</text>
+
+            <rect x="396" y="40" width="112" height="40" rx="7" fill="#052e16" stroke="#22c55e" stroke-width="3"/>
+            <text x="430" y="64" fill="#bbf7d0" font-size="14" font-weight="bold">SYSTEM</text>
+
+            <g stroke="#22c55e" stroke-width="2" fill="none">
+              <path d="M116 60 L140 60"/>
+              <path d="M244 60 L268 60"/>
+              <path d="M372 60 L396 60"/>
+            </g>
+            <g fill="#22c55e">
+              <path d="M138 56 l6 4 -6 4 z"/>
+              <path d="M266 56 l6 4 -6 4 z"/>
+              <path d="M394 56 l6 4 -6 4 z"/>
+            </g>
+
+            <rect x="140" y="150" width="232" height="38" rx="7" fill="#020617" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3"/>
+            <text x="166" y="167" fill="#fbbf24" font-size="12">Each step logged &#8594; event IDs</text>
+            <text x="166" y="182" fill="#fbbf24" font-size="12">&#8594; Sysmon &#8594; SIEM alert</text>
+
+            <g stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 3" fill="none">
+              <path d="M192 80 L192 150"/>
+              <path d="M320 80 L320 150"/>
+            </g>
+          </g>
+        </svg>
+
+        <div class="console attack" style="margin-top:20px;">
+<span class="cmd">PS C:\Users\lowpriv&gt; whoami /priv</span>
+
+PRIVILEGES INFORMATION
+----------------------
+SeChangeNotifyPrivilege      Bypass traverse checking        Enabled
+<span class="hi">SeImpersonatePrivilege       Impersonate a client            Enabled</span>
+        </div>
+        <p style="font-size:13px;color:#86efac;margin-top:-4px;">
+          <code>SeImpersonatePrivilege</code> on a service account is the entry point for a
+          potato attack to SYSTEM &mdash; the first thing enumeration looks for.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Approach</p>
+        <h2>Method</h2>
+
+        <p>
+          The work followed the same loop for every vector: enumerate the host, identify a
+          misconfiguration, abuse it to gain higher privileges, then confirm the result and note
+          how the activity would look to a defender.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Enumeration</h3>
+            <ul>
+              <li>Automated sweeps with winPEAS, PrivescCheck, and Seatbelt.</li>
+              <li>Manual checks of services, scheduled tasks, privileges, and credential stores.</li>
+              <li><code>whoami /priv</code> to read the token's privileges.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Validation</h3>
+            <ul>
+              <li>Escalation confirmed by spawning a process as SYSTEM or an admin.</li>
+              <li>Each step mapped to the event IDs and Sysmon signals it generates.</li>
+              <li>Hardening tested by re-running the check and confirming the vector was gone.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Vector</p>
+        <h2>Credential Harvesting</h2>
+
+        <p>
+          The quickest escalation is often a password left on disk. These are read, not
+          exploited, so they leave light traces unless file and PowerShell auditing is on. The
+          usual stores are unattended install files, the credential manager, command history,
+          and application config.
+        </p>
+
+        <ul>
+          <li><strong>Abuse:</strong> unattended install files (<code>Unattend.xml</code>, <code>sysprep.inf</code>) with base64 passwords, stored credentials via <code>cmdkey /list</code> then <code>runas /savecred</code>, PowerShell history files, <code>web.config</code> connection strings, and saved PuTTY sessions in the registry.</li>
+          <li><strong>Detect:</strong> object-access auditing (Event ID 4663) on sensitive files such as <code>Unattend.xml</code> and <code>web.config</code>; PowerShell script-block logging (4104) when history files are read; 4688 with command line for <code>cmdkey</code> and <code>runas /savecred</code>.</li>
+          <li><strong>Harden:</strong> never leave plaintext secrets in deployment files or scripts; deploy LAPS so local admin passwords are unique and rotated; enable PowerShell transcription and script-block logging; clear sensitive history.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Vector</p>
+        <h2>Service Misconfigurations</h2>
+
+        <p>
+          Services run as SYSTEM, so a service an unprivileged user can influence is a direct
+          path up. Two classics: unquoted service paths, and weak permissions on the service
+          binary or its registry key.
+        </p>
+
+        <div class="console attack">
+<span class="cmd">C:\&gt; winpeas.exe quiet servicesinfo</span>
+
+[+] Interesting Services -- non Microsoft
+  <span class="hi">VulnSvc</span> (Vulnerable Service)
+    Path: C:\Program Files\Vuln App\service.exe   <span class="hi">(unquoted)</span>
+    StartMode: Auto   RunAs: <span class="hi">LocalSystem</span>
+    Writable dir: C:\Program Files\   (Everyone: WriteData/AppendData)
+        </div>
+        <p style="font-size:13px;color:#86efac;margin-top:-4px;">
+          winPEAS flagging an unquoted service path running as SYSTEM with a writable parent
+          folder &mdash; a planted <code>C:\Program.exe</code> would run at service start.
+        </p>
+
+        <ul>
+          <li><strong>Abuse:</strong> an unquoted path with spaces lets a planted binary earlier in the path run instead; writable service binaries or <code>HKLM\...\Services</code> keys let the <code>ImagePath</code> or binary be swapped for a payload that runs as SYSTEM at service start.</li>
+          <li><strong>Detect:</strong> new or changed service (Event ID 7045 service installed, 4697 via the Security log); registry modification on a service key (4657); a process starting from an unexpected path (4688); Sysmon 11 (file create) in a service binary directory.</li>
+          <li><strong>Harden:</strong> quote every service binary path; restrict ACLs on service binaries and their registry keys to admins; remove writable directories from <code>PATH</code>; run services under least-privilege or managed service accounts.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Vector</p>
+        <h2>Token and Privilege Abuse</h2>
+
+        <p>
+          Certain privileges are SYSTEM in all but name. Service accounts for IIS and MSSQL
+          commonly hold <code>SeImpersonatePrivilege</code>, which is the basis of the "potato"
+          family of attacks, and the backup and ownership privileges open their own paths.
+        </p>
+
+        <ul>
+          <li><strong>Abuse:</strong> <code>SeImpersonatePrivilege</code> is used with a potato technique (named-pipe or token impersonation) to run code as SYSTEM; <code>SeBackupPrivilege</code> / <code>SeRestorePrivilege</code> read protected files to copy the SAM and SYSTEM hives for offline cracking; <code>SeTakeOwnershipPrivilege</code> seizes a SYSTEM binary and swaps it.</li>
+          <li><strong>Detect:</strong> Sysmon 17/18 (named-pipe create and connect) is the strongest signal for potato attacks; 4688 showing a child process under a service account; 4672 (special privileges assigned at logon) and 4673/4674 (privileged service called); 4688 for <code>reg.exe save hklm\sam</code> or <code>esentutl</code> / VSS access to the hives.</li>
+          <li><strong>Harden:</strong> keep service accounts off interactive rights; prefer group-managed service accounts; keep hosts patched, since current Windows mitigates the classic potato routes; enable LSA protection (RunAsPPL) and Credential Guard where supported; alert hard on <code>SeImpersonate</code> abuse.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Vector</p>
+        <h2>Other Quick Wins</h2>
+
+        <ul>
+          <li><strong>AlwaysInstallElevated:</strong> if both the HKLM and HKCU policy keys are set to <code>1</code>, any user can install an MSI as SYSTEM. Detect with 4688 for <code>msiexec /quiet /qn</code> and MsiInstaller events; harden by setting both keys to <code>0</code> (or via GPO).</li>
+          <li><strong>Scheduled tasks:</strong> a task that runs as a higher user from a script the attacker can write is a reliable escalation. Detect with 4698 (task created) and 4702 (task updated), plus Task Scheduler Operational log 106/140/141; harden by tightening ACLs on task scripts and binaries.</li>
+          <li><strong>Vulnerable software:</strong> an outdated local service or client with a public exploit. Detect by inventorying installed versions (<code>wmic product</code>, endpoint tooling); harden by patching and removing unused software.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Detection</p>
+        <h2>Detection Reference</h2>
+
+        <p>
+          The signals below assume command-line process auditing (4688 with command line),
+          Sysmon with a sound config, and PowerShell logging are all enabled and forwarded to a
+          SIEM. Two of the highest-value signals look like this:
+        </p>
+
+        <div class="visual-grid">
+          <div class="visual-card">
+            <div class="console detect">
+<span class="ok">Sysmon  EID 17  Pipe Created</span>
+Image:     C:\Temp\rp.exe
+PipeName:  \\.\pipe\RoguePotato
+User:      NT AUTHORITY\IUSR
+            </div>
+            <h3>Potato Attack</h3>
+            <p>
+              The named pipe a potato attack creates shows up in Sysmon Event ID 17, under a
+              service account that has no business opening one. The strongest signal to alert on.
+            </p>
+          </div>
+
+          <div class="visual-card">
+            <div class="console detect">
+<span class="ok">Security  EID 4688  Process Creation</span>
+New Process:  C:\Windows\System32\reg.exe
+Cmd Line:     reg save hklm\sam C:\Temp\sam.hive
+Account:      websvc$
+            </div>
+            <h3>Hive Theft</h3>
+            <p>
+              Exporting the SAM hive for offline cracking is caught by command-line process
+              auditing (Event ID 4688), which is why logging the command line matters.
+            </p>
+          </div>
+        </div>
+
+        <table class="spec">
+          <tr>
+            <th>Technique</th><th>Key signals</th>
+          </tr>
+          <tr>
+            <td>Credential harvesting</td>
+            <td>4663 on sensitive files; 4104 PowerShell script-block; 4688 for <code>cmdkey</code> / <code>runas /savecred</code></td>
+          </tr>
+          <tr>
+            <td>Service misconfiguration</td>
+            <td>7045 new service; 4697 service installed; 4657 service-key change; 4688 from unexpected path; Sysmon 11</td>
+          </tr>
+          <tr>
+            <td>SeImpersonate / potato</td>
+            <td>Sysmon 17/18 named pipe; 4688 child under service account; 4672 special privileges</td>
+          </tr>
+          <tr>
+            <td>SAM / SYSTEM hive theft</td>
+            <td>4688 for <code>reg.exe save hklm\sam</code>; 4663 on SAM/SYSTEM; VSS or <code>esentutl</code> access</td>
+          </tr>
+          <tr>
+            <td>AlwaysInstallElevated</td>
+            <td>4688 for <code>msiexec /quiet /qn</code>; MsiInstaller events</td>
+          </tr>
+          <tr>
+            <td>Scheduled task abuse</td>
+            <td>4698 task created; 4702 task updated; Task Scheduler Operational 106/140/141</td>
+          </tr>
+          <tr>
+            <td>Privilege abuse (SeBackup / SeTakeOwnership)</td>
+            <td>4672 / 4673 / 4674 privileged use</td>
+          </tr>
+        </table>
+
+        <p>
+          In my lab these events are forwarded to Splunk, where a search for Sysmon Event ID 17
+          from a service account, or 4688 showing <code>reg save</code> against the SAM hive,
+          becomes a detection rule rather than a line in a log nobody reads.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Hardening</p>
+        <h2>Hardening Summary</h2>
+
+        <ul>
+          <li>Least privilege everywhere; avoid granting <code>SeImpersonate</code> or <code>SeAssignPrimaryToken</code> broadly; use managed or virtual service accounts.</li>
+          <li>Quote all service binary paths; restrict ACLs on service binaries and their registry keys; keep writable directories out of <code>PATH</code>.</li>
+          <li>Set <code>AlwaysInstallElevated</code> to <code>0</code> in both HKLM and HKCU via GPO.</li>
+          <li>Audit and tighten scheduled-task script and binary permissions.</li>
+          <li>Credential hygiene: no secrets in deployment files or scripts; deploy LAPS; enable PowerShell transcription and script-block logging.</li>
+          <li>Protect the LSA (RunAsPPL) and enable Credential Guard where supported.</li>
+          <li>Patch third-party software and keep a version inventory.</li>
+          <li>Enable command-line process auditing and Sysmon, and forward both to the SIEM so these signals are actually collected.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Tools</p>
+        <h2>Tooling Used</h2>
+
+        <p class="tags">
+          winPEAS &bull; PrivescCheck &bull; Seatbelt &bull; Sysmon &bull; Windows Event Log &bull;
+          Splunk &bull; PowerShell &bull; reg.exe &bull; sc.exe &bull; icacls
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reflection</p>
+        <h2>What This Lab Demonstrates</h2>
+
+        <p>
+          This lab shows I can work a Windows host from both sides: find the misconfigurations
+          that hand an attacker SYSTEM, and recognise what each one looks like in the logs. For
+          an infrastructure security role that matters, because the checks that find a privilege
+          escalation path in a lab are the same ones that harden a domain-joined fleet, and the
+          event IDs behind them feed the detections that catch it in production.
+        </p>
+
+        <p>
+          It maps directly to the Windows Server 2022 and Windows 11 estate I work on, and to the
+          detection and response work I'm building toward with SC-200 and CySA+. The value is not
+          the exploit; it is knowing, for every vector, where it shows up and how to remove it.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Skills</p>
+        <h2>Skills Demonstrated</h2>
+
+        <p class="tags">
+          Windows Privilege Escalation &bull; Active Directory &bull; Detection Engineering &bull;
+          Sysmon &bull; Windows Event IDs &bull; SIEM &bull; Splunk &bull; Endpoint Hardening &bull;
+          Service Security &bull; Credential Hygiene &bull; Least Privilege
+        </p>
+
+        <p>
+          <a class="button" href="../">Back to Projects</a>
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
