@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@400;600&display=swap');
 * {
   box-sizing: border-box;
   }
@@ -10,7 +11,7 @@ body {
 margin: 0;
 font-family: Arial, Helvetica, sans-serif;
 background: #050505;
-color: #d1fae5;
+color: #cbd5e1;
 line-height: 1.6;
 position: relative;
 overflow-x: hidden;
@@ -43,8 +44,8 @@ left: 80px;
 top: 0;
 padding: 42px 30px;
 background: linear-gradient(145deg, #020617, #04150b, #052e16);
-border-right: 1px solid rgba(34, 197, 94, 0.45);
-box-shadow: 0 0 30px rgba(34, 197, 94, 0.14);
+border-right: 1px solid rgba(22, 163, 74, 0.45);
+box-shadow: 0 0 30px rgba(22, 163, 74, 0.14);
 overflow-y: auto;
 z-index: 2;
 }
@@ -52,7 +53,7 @@ z-index: 2;
 .sidebar-block {
 padding-bottom: 26px;
 margin-bottom: 26px;
-border-bottom: 1px solid rgba(34, 197, 94, 0.25);
+border-bottom: 1px solid rgba(22, 163, 74, 0.25);
 }
 
 .sidebar-block:last-child {
@@ -65,14 +66,14 @@ padding-bottom: 0;
 margin: 0;
 font-size: 34px;
 line-height: 1.1;
-color: #22c55e;
+color: #16a34a;
 letter-spacing: 1px;
-text-shadow: 0 0 14px rgba(34, 197, 94, 0.65);
+text-shadow: 0 0 14px rgba(22, 163, 74, 0.65);
 }
 
 .role {
 margin: 10px 0 16px;
-color: #bbf7d0;
+color: #86efac;
 font-size: 18px;
 font-weight: bold;
 }
@@ -90,7 +91,7 @@ font-size: 17px;
 }
 
 .sidebar p {
-color: #d1fae5;
+color: #cbd5e1;
 font-size: 14px;
 }
 
@@ -104,14 +105,14 @@ align-items: center;
 }
 
 .social-icons a {
-color: #4ade80;
+color: #22c55e;
 font-size: 24px;
 text-decoration: none;
 transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .social-icons a:hover {
-color: #86efac;
+color: #4ade80;
 transform: scale(1.12);
 text-decoration: none;
 }
@@ -126,7 +127,7 @@ gap: 4px;
 
 .menu a {
 display: block;
-color: #d1fae5;
+color: #cbd5e1;
 text-decoration: none;
 font-weight: bold;
 padding: 9px 10px;
@@ -136,9 +137,9 @@ border-left: 2px solid transparent;
 
 .menu a:hover,
 .menu a.active {
-color: #22c55e;
-background: rgba(34, 197, 94, 0.08);
-border-left: 2px solid #22c55e;
+color: #16a34a;
+background: rgba(22, 163, 74, 0.08);
+border-left: 2px solid #16a34a;
 text-decoration: none;
 }
 
@@ -160,14 +161,14 @@ border-radius: 0;
 box-shadow: none;
 padding: 0 0 42px;
 margin-bottom: 42px;
-border-bottom: 1px solid rgba(34, 197, 94, 0.25);
+border-bottom: 1px solid rgba(22, 163, 74, 0.25);
 position: relative;
 z-index: 1;
 }
 
 .section-label {
 margin: 0 0 8px;
-color: #86efac;
+color: #4ade80;
 font-size: 13px;
 text-transform: uppercase;
 letter-spacing: 1.5px;
@@ -176,18 +177,18 @@ letter-spacing: 1.5px;
 .content-section h2 {
 margin: 0 0 20px;
 padding-bottom: 12px;
-color: #22c55e;
+color: #16a34a;
 font-size: 28px;
-border-bottom: 1px solid rgba(34, 197, 94, 0.35);
+border-bottom: 1px solid rgba(22, 163, 74, 0.35);
 }
 
 .content-section h3 {
 margin-top: 0;
-color: #bbf7d0;
+color: #86efac;
 }
 
 p {
-color: #d1fae5;
+color: #cbd5e1;
 }
 
 ul {
@@ -214,8 +215,8 @@ grid-template-columns: repeat(3, 1fr);
 }
 
 .card {
-background: rgba(34, 197, 94, 0.04);
-border: 1px solid rgba(34, 197, 94, 0.18);
+background: rgba(22, 163, 74, 0.04);
+border: 1px solid rgba(22, 163, 74, 0.18);
 border-radius: 10px;
 padding: 18px;
 position: relative;
@@ -235,8 +236,8 @@ margin-bottom: 0;
 .project {
 padding: 18px 0 18px 18px;
 margin-bottom: 22px;
-border-left: 4px solid #22c55e;
-background: rgba(34, 197, 94, 0.04);
+border-left: 4px solid #16a34a;
+background: rgba(22, 163, 74, 0.04);
 position: relative;
 z-index: 1;
 }
@@ -250,7 +251,7 @@ margin-right: 18px;
 }
 
 .tags {
-color: #86efac;
+color: #4ade80;
 font-size: 14px;
 font-weight: bold;
 }
@@ -260,7 +261,7 @@ font-weight: bold;
 .list p {
 padding-bottom: 14px;
 margin-bottom: 14px;
-border-bottom: 1px solid rgba(34, 197, 94, 0.18);
+border-bottom: 1px solid rgba(22, 163, 74, 0.18);
 }
 
 .list p:last-child {
@@ -272,13 +273,13 @@ padding-bottom: 0;
 /* Links and buttons */
 
 a {
-color: #4ade80;
+color: #22c55e;
 font-weight: bold;
 text-decoration: none;
 }
 
 a:hover {
-color: #86efac;
+color: #4ade80;
 text-decoration: underline;
 }
 
@@ -286,14 +287,14 @@ text-decoration: underline;
 display: inline-block;
 margin-top: 8px;
 padding: 10px 16px;
-border: 1px solid #22c55e;
+border: 1px solid #16a34a;
 border-radius: 8px;
-color: #22c55e;
-background: rgba(34, 197, 94, 0.06);
+color: #16a34a;
+background: rgba(22, 163, 74, 0.06);
 }
 
 .button:hover {
-background: #22c55e;
+background: #16a34a;
 color: #020617;
 text-decoration: none;
 }
@@ -313,7 +314,7 @@ align-items: center;
 gap: 16px;
 min-height: 120px;
 padding: 16px;
-border: 1px solid rgba(34, 197, 94, 0.16);
+border: 1px solid rgba(22, 163, 74, 0.16);
 border-radius: 10px;
 background: rgba(255, 255, 255, 0.03);
 box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
@@ -325,7 +326,7 @@ z-index: 1;
 
 .guide-card:hover {
 transform: translateY(-2px);
-border-color: rgba(34, 197, 94, 0.45);
+border-color: rgba(22, 163, 74, 0.45);
 background: rgba(255, 255, 255, 0.05);
 text-decoration: none;
 }
@@ -338,8 +339,8 @@ display: flex;
 align-items: center;
 justify-content: center;
 border-radius: 8px;
-background: rgba(34, 197, 94, 0.08);
-color: #4ade80;
+background: rgba(22, 163, 74, 0.08);
+color: #22c55e;
 font-size: 22px;
 }
 
@@ -351,7 +352,7 @@ color: #f3f4f6;
 
 .guide-text p {
 margin: 0;
-color: #d1fae5;
+color: #cbd5e1;
 font-size: 13px;
 }
 
@@ -359,15 +360,15 @@ font-size: 13px;
 
 pre {
 background: #020617;
-border: 1px solid rgba(34, 197, 94, 0.28);
+border: 1px solid rgba(22, 163, 74, 0.28);
 border-radius: 8px;
 padding: 16px;
 overflow-x: auto;
-box-shadow: 0 0 14px rgba(34, 197, 94, 0.08);
+box-shadow: 0 0 14px rgba(22, 163, 74, 0.08);
 }
 
 code {
-color: #86efac;
+color: #4ade80;
 font-family: "Courier New", Courier, monospace;
 font-size: 14px;
 }
@@ -400,7 +401,7 @@ left: 0;
 width: 100%;
 height: auto;
 border-right: none;
-border-bottom: 1px solid rgba(34, 197, 94, 0.45);
+border-bottom: 1px solid rgba(22, 163, 74, 0.45);
 }
 
 .content {
@@ -423,4 +424,23 @@ padding: 0 0 36px;
 .guide-card {
 min-height: 110px;
 }
+}
+
+
+/* ---- refreshed look: fonts, dividers, links, skill tag-bars ---- */
+body { font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif; }
+h1, h2, h3, .section-label, .role { font-family: 'Chakra Petch', system-ui, sans-serif; letter-spacing: 0.2px; }
+.content-section { border-bottom: 1px solid rgba(148,163,184,0.14); padding-bottom: 32px; margin-bottom: 20px; }
+.content-section:last-child { border-bottom: none; }
+a { color: #f59e0b; }
+.tags {
+  color: #86efac;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.9;
+  background: rgba(22,163,74,0.06);
+  border: 1px solid rgba(22,163,74,0.22);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: inline-block;
 }
