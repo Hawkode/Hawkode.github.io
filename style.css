@@ -146,14 +146,14 @@ text-decoration: none;
 
 .content {
 margin-left: 440px;
-width: calc(100% - 440px);
+width: calc(100% - 520px);
 padding: 70px 0 70px 60px;
 position: relative;
 z-index: 1;
 }
 
 .content-section {
-max-width: 980px;
+max-width: none;
 background: transparent;
 border: none;
 border-radius: 0;
