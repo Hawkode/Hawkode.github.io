@@ -353,6 +353,45 @@ Status: To review</code></pre>
       </section>
 
       <section class="content-section">
+        <p class="section-label">Detection</p>
+        <h2>How a Scan Looks to a Defender</h2>
+
+        <p>
+          Running the scan is only half the lesson. The same activity is noisy on the target
+          side, and knowing where it shows up is what turns recon knowledge into detection.
+        </p>
+
+        <div class="list">
+          <p>
+            <strong>Host firewall and connection logs:</strong> a single source IP reaching
+            many ports in a short window is the port-scan pattern. With Windows Filtering
+            Platform auditing on, this appears as a burst of Event ID 5156 and 5157
+            (allowed and blocked connections) from one address.
+          </p>
+
+          <p>
+            <strong>Network IDS:</strong> Suricata and Snort ship rules for Nmap behaviour, and
+            Zeek's <code>conn.log</code> shows the fan-out of one host touching many services.
+            A version scan (<code>-sV</code>) or script scan is louder than a plain SYN scan
+            because it completes connections and sends probes, so it is easier to catch.
+          </p>
+
+          <p>
+            <strong>Detection logic:</strong> the core rule is a threshold &mdash; one source
+            reaching more than N distinct destination ports within T seconds raises an alert.
+            Tune N and T to the environment so routine health checks do not trip it.
+          </p>
+        </div>
+
+        <p>
+          Segmentation makes this stronger. On a VLAN-segmented network, a scanner on an
+          untrusted segment is blocked from reaching other segments and the attempts are logged
+          at the firewall, so the scan is both contained and visible &mdash; the same design as
+          my <a href="../../projects/home-network-udr7/">home network build</a>.
+        </p>
+      </section>
+
+      <section class="content-section">
         <p class="section-label">Summary</p>
         <h2>Commands Covered</h2>
 

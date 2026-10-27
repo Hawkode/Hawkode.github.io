@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Detecting Privilege Escalation in Splunk | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    table.spec {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    table.spec th,
+    table.spec td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(34, 197, 94, 0.18);
+      vertical-align: top;
+    }
+
+    table.spec th { color: #bbf7d0; font-weight: 600; }
+    table.spec td:first-child { color: #86efac; white-space: nowrap; }
+
+    code {
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 13px;
+    }
+
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .visual-card {
+      background: rgba(34, 197, 94, 0.04);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    }
+
+    .visual-card h3 { margin-top: 0; margin-bottom: 12px; color: #bbf7d0; }
+    .visual-card p { margin-bottom: 0; font-size: 14px; }
+
+    .flow-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 18px;
+      border-radius: 8px;
+      background: #020617;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+    }
+
+    .console {
+      background: #0b1220;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      margin: 10px 0 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #cbd5e1;
+    }
+
+    .console .kw { color: #86efac; }
+    .console .fn { color: #7dd3fc; }
+    .console .cm { color: #64748b; }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" rel="noopener noreferrer" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Lab</h2>
+        <p>
+          Turning Windows privilege-escalation techniques into Splunk detections: the data
+          sources, the SPL searches, the alerts, and how each maps to MITRE ATT&CK.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../" class="active">Projects & Labs</a>
+        <a href="../../#guides">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Security Lab</p>
+        <h2>Detecting Privilege Escalation in Splunk</h2>
+
+        <p>
+          This lab is the defender's half of my
+          <a href="../windows-privilege-escalation/">Windows Privilege Escalation</a> write-up.
+          It takes the same techniques and builds the detections: the Windows and Sysmon events
+          they generate, the Splunk searches that surface them, and the saved alerts that turn a
+          line in a log into a signal someone acts on.
+        </p>
+
+        <p>
+          <strong>Scope:</strong> a home SOC lab. A Windows VM runs Sysmon and command-line
+          process auditing; logs ship to Splunk, where the searches below run as scheduled
+          alerts. The SPL is illustrative: index names and field names depend on the add-ons in
+          use (Splunk Add-on for Microsoft Windows, Sysmon TA), so treat them as a starting
+          point to tune, not copy-paste rules.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Design</p>
+        <h2>The Detection Pipeline</h2>
+
+        <p>
+          Detections are only as good as the data under them. The chain is: generate the events
+          on the endpoint, ship them to Splunk, search them, and alert. If command-line auditing
+          and Sysmon are not on, most of these searches have nothing to match.
+        </p>
+
+        <svg class="flow-svg" viewBox="0 0 520 170" role="img" aria-label="Splunk detection pipeline diagram">
+          <g font-family="Arial">
+            <rect x="12" y="60" width="118" height="48" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="26" y="80" fill="#d1fae5" font-size="12">Windows host</text>
+            <text x="26" y="96" fill="#86efac" font-size="11">Sysmon + 4688</text>
+
+            <rect x="166" y="60" width="118" height="48" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="180" y="80" fill="#d1fae5" font-size="12">Universal</text>
+            <text x="180" y="96" fill="#d1fae5" font-size="12">Forwarder</text>
+
+            <rect x="320" y="60" width="90" height="48" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="334" y="80" fill="#d1fae5" font-size="12">Splunk</text>
+            <text x="334" y="96" fill="#86efac" font-size="11">index</text>
+
+            <rect x="446" y="60" width="62" height="48" rx="7" fill="#052e16" stroke="#22c55e" stroke-width="3"/>
+            <text x="458" y="82" fill="#bbf7d0" font-size="12" font-weight="bold">Alert</text>
+            <text x="456" y="98" fill="#86efac" font-size="10">SPL</text>
+
+            <g stroke="#22c55e" stroke-width="2" fill="none">
+              <path d="M130 84 L166 84"/>
+              <path d="M284 84 L320 84"/>
+              <path d="M410 84 L446 84"/>
+            </g>
+            <g fill="#22c55e">
+              <path d="M164 80 l6 4 -6 4 z"/>
+              <path d="M318 80 l6 4 -6 4 z"/>
+              <path d="M444 80 l6 4 -6 4 z"/>
+            </g>
+
+            <text x="12" y="30" fill="#bbf7d0" font-size="13" font-family="Arial">Endpoint &#8594; forwarder &#8594; index &#8594; scheduled alert</text>
+          </g>
+        </svg>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Sources</p>
+        <h2>Data Sources</h2>
+
+        <table class="spec">
+          <tr><th>Source</th><th>Provides</th></tr>
+          <tr><td>Sysmon Operational</td><td>Process creation (1), network (3), file create (11), pipe create/connect (17/18)</td></tr>
+          <tr><td>Security log</td><td>4688 process creation with command line, 4697/7045 service install, 4672/4673 privilege use</td></tr>
+          <tr><td>PowerShell Operational</td><td>4104 script-block logging</td></tr>
+          <tr><td>System log</td><td>7045 new service</td></tr>
+        </table>
+
+        <p>
+          Command-line process auditing (the command line on 4688) is the single setting that
+          makes most of these searches work, since it reveals <em>what</em> a process was asked
+          to do, not just that it ran.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Detection</p>
+        <h2>Named-Pipe Impersonation (Potato)</h2>
+
+        <p>
+          The potato family creates a named pipe to coerce and impersonate a SYSTEM token.
+          A service account opening an unusual pipe is the signal. Sysmon Event ID 17 captures
+          the pipe creation.
+        </p>
+
+        <div class="console">
+<span class="cm"># Sysmon pipe create under a service account</span>
+<span class="kw">index</span>=win_sysmon <span class="kw">EventCode</span>=17
+| <span class="fn">search</span> User IN ("NT AUTHORITY\\NETWORK SERVICE","NT AUTHORITY\\LOCAL SERVICE","*\\IUSR","*MSSQL*")
+| <span class="fn">stats</span> count values(PipeName) AS pipes values(Image) AS images
+        min(_time) AS first_seen BY host, User
+| <span class="fn">where</span> count &gt; 0
+        </div>
+        <p style="font-size:13px;color:#86efac;margin-top:-2px;">
+          Maps to ATT&CK <code>T1134</code> (Access Token Manipulation). Tune by baselining the
+          pipes your legitimate services open, then alert on the rest.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Detection</p>
+        <h2>SAM / SYSTEM Hive Theft</h2>
+
+        <p>
+          Copying the registry hives for offline credential cracking shows up in the command
+          line of <code>reg.exe</code>, <code>esentutl.exe</code>, or <code>vssadmin</code>.
+        </p>
+
+        <div class="console">
+<span class="cm"># Hive export via reg save / esentutl / VSS</span>
+<span class="kw">index</span>=win_security <span class="kw">EventCode</span>=4688
+| <span class="fn">search</span> (New_Process_Name="*\\reg.exe" AND Process_Command_Line="*save*sam*")
+       OR (Process_Command_Line="*reg* save *hklm\\sam*")
+       OR (New_Process_Name="*\\esentutl.exe" AND Process_Command_Line="*vss*")
+       OR (Process_Command_Line="*vssadmin* create shadow*")
+| <span class="fn">table</span> _time, host, Account_Name, New_Process_Name, Process_Command_Line
+        </div>
+        <p style="font-size:13px;color:#86efac;margin-top:-2px;">
+          Maps to ATT&CK <code>T1003.002</code> (OS Credential Dumping: SAM). High fidelity;
+          legitimate hive exports are rare outside backup software.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Detection</p>
+        <h2>Rogue Services and MSI Abuse</h2>
+
+        <div class="visual-grid">
+          <div class="visual-card">
+            <div class="console">
+<span class="cm"># New service installed</span>
+<span class="kw">index</span>=win_security <span class="kw">EventCode</span>=7045
+| <span class="fn">table</span> _time, host, Service_Name,
+        Service_File_Name, Service_Account
+| <span class="fn">sort</span> - _time
+            </div>
+            <h3>Rogue Service</h3>
+            <p>
+              A service pointing at a script or a binary in a user-writable path is a classic
+              escalation and persistence step. ATT&CK <code>T1543.003</code>.
+            </p>
+          </div>
+
+          <div class="visual-card">
+            <div class="console">
+<span class="cm"># AlwaysInstallElevated MSI as SYSTEM</span>
+<span class="kw">index</span>=win_security <span class="kw">EventCode</span>=4688
+       New_Process_Name="*\\msiexec.exe"
+| <span class="fn">search</span> Process_Command_Line="*/quiet*"
+       OR Process_Command_Line="*/qn*"
+| <span class="fn">stats</span> count BY host, Account_Name,
+        Process_Command_Line
+            </div>
+            <h3>MSI Abuse</h3>
+            <p>
+              A non-admin installing an MSI silently points at the AlwaysInstallElevated
+              misconfiguration. ATT&CK <code>T1548</code>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reference</p>
+        <h2>Detection Summary</h2>
+
+        <table class="spec">
+          <tr><th>Technique</th><th>Primary signal</th><th>ATT&CK</th></tr>
+          <tr><td>Named-pipe impersonation (potato)</td><td>Sysmon 17/18 under a service account</td><td>T1134</td></tr>
+          <tr><td>SAM / SYSTEM hive theft</td><td>4688 <code>reg save</code> / <code>esentutl</code> / VSS</td><td>T1003.002</td></tr>
+          <tr><td>Rogue service</td><td>7045 / 4697 new service</td><td>T1543.003</td></tr>
+          <tr><td>AlwaysInstallElevated</td><td>4688 <code>msiexec /quiet</code></td><td>T1548</td></tr>
+          <tr><td>Token privilege abuse</td><td>4672 special privileges to an unusual account</td><td>T1134</td></tr>
+          <tr><td>Credential files</td><td>4663 on sensitive files; 4104 script-block</td><td>T1552</td></tr>
+        </table>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Operations</p>
+        <h2>From Search to Alert</h2>
+
+        <ul>
+          <li>Each search is saved as a scheduled alert, run on a short interval over a rolling window.</li>
+          <li>Throttling (suppression) stops one noisy host from firing the same alert repeatedly.</li>
+          <li>Known-good activity is allowlisted first: backup software that touches hives, deployment tools that install MSIs, admin jump hosts.</li>
+          <li>Each alert carries the ATT&CK ID and the host, so triage starts with context instead of a bare event.</li>
+        </ul>
+
+        <p>
+          The goal is a short list of high-fidelity alerts, not a wall of noise. A detection
+          that fires fifty times a day for legitimate admin work gets muted and stops being a
+          detection, so tuning is the real work, not writing the first search.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reflection</p>
+        <h2>What This Lab Demonstrates</h2>
+
+        <p>
+          Pairing this with the privilege-escalation write-up shows the full loop: I can find a
+          vector, and I can build the detection that catches it. For an infrastructure security
+          role that is the point, since hardening removes what it can and detection covers what
+          is left. The work maps directly to the SC-200 and CySA+ material I'm studying, and to
+          the Splunk and Sysmon tooling I run in the lab.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Tools</p>
+        <h2>Tooling Used</h2>
+
+        <p class="tags">
+          Splunk &bull; SPL &bull; Sysmon &bull; Windows Event Log &bull; Universal Forwarder &bull;
+          MITRE ATT&CK &bull; PowerShell logging
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Skills</p>
+        <h2>Skills Demonstrated</h2>
+
+        <p class="tags">
+          Detection Engineering &bull; SIEM &bull; Splunk &bull; SPL &bull; Sysmon &bull;
+          Windows Event IDs &bull; MITRE ATT&CK &bull; Alert Tuning &bull; Threat Detection &bull;
+          Log Analysis
+        </p>
+
+        <p>
+          <a class="button" href="../">Back to Projects</a>
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
