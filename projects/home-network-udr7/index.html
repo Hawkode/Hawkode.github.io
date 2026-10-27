@@ -73,6 +73,16 @@
       white-space: nowrap;
     }
 
+    .result-screen {
+      background: #0b1220;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 13px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
     @media (max-width: 900px) {
       .visual-grid {
         grid-template-columns: 1fr;
@@ -117,9 +127,9 @@
       <section class="sidebar-block">
         <h2>Project</h2>
         <p>
-          A home network rebuilt on a UniFi Dream Router 7: VLAN segmentation,
-          inter-VLAN firewall rules, WireGuard remote access, and IDS/IPS,
-          replacing an ISP router on a 900/900 Mbps fibre line.
+          A home network rebuilt on a UniFi Dream Router 7: four segmented VLANs,
+          zone-based firewall rules, content filtering for the kids' network, a guest
+          captive portal, and WireGuard remote access, on a direct 900/900 Mbps fibre line.
         </p>
       </section>
 
@@ -142,21 +152,24 @@
         <h2>Home Network Build with UniFi Dream Router 7</h2>
 
         <p>
-          This project replaced a single ISP router with a UniFi Dream Router 7 (UDR7)
-          to build a segmented, monitored home network. The work covered initial setup,
-          VLAN design, firewall rules between networks, Wi-Fi configuration across
-          multiple bands, remote access over WireGuard, and intrusion detection.
+          This project replaced a single ISP router with a UniFi Dream Router 7 (UDR7) to
+          build a segmented, filtered, and monitored home network. The work covered initial
+          setup, VLAN design, zone-based firewall rules, content filtering and forced DNS on
+          the children's network, a guest captive portal, and encrypted remote access over
+          WireGuard.
         </p>
 
         <p>
           The line is a symmetrical 900/900 Mbps fibre service with a static IPv4 address.
-          The ISP router was moved to modem mode to remove double NAT, so the UDR7 holds
-          the public address and performs all routing, firewalling, and VPN termination.
+          The UDR7 connects directly to the fibre ONT and holds the public address, so there
+          is no ISP router in the path and no double NAT. It performs all routing, firewalling,
+          DNS, and VPN termination.
         </p>
 
         <p>
-          <strong>Privacy note:</strong> SSID names, exact IP reservations, credentials,
-          and the public address have been removed or replaced with representative values.
+          <strong>Privacy note:</strong> SSID names, the real IP scheme, credentials, and the
+          public address have been removed or replaced with documentation values
+          (RFC 5737 / generic 10.0.x.x). None of the addresses below are the live network.
         </p>
       </section>
 
@@ -167,11 +180,13 @@
         <table class="spec">
           <tr><td>Gateway</td><td>UniFi Dream Router 7 (Wi-Fi 7, 2.5 GbE WAN, 10G SFP+, 3&times;2.5 GbE LAN with one PoE)</td></tr>
           <tr><td>Line</td><td>900/900 Mbps XGS-PON fibre, static IPv4, no CGNAT</td></tr>
-          <tr><td>Upstream</td><td>ISP router set to modem mode to remove double NAT</td></tr>
-          <tr><td>Segmentation</td><td>Five networks: Main, Kids, IoT, Guest, Servers</td></tr>
-          <tr><td>Remote access</td><td>WireGuard VPN server and UniFi Teleport</td></tr>
-          <tr><td>Monitoring</td><td>Built-in IDS/IPS, client and traffic visibility</td></tr>
-          <tr><td>Management</td><td>UniFi Site Manager, including remote admin of family sites</td></tr>
+          <tr><td>Upstream</td><td>UDR7 connected directly to the fibre ONT; no ISP router, no double NAT</td></tr>
+          <tr><td>Segmentation</td><td>Four networks: Main, Kids, IoT, Guest (Servers VLAN planned)</td></tr>
+          <tr><td>Kids controls</td><td>Content filter (Basic), Ad Block, locked SafeSearch, forced router DNS</td></tr>
+          <tr><td>Guest</td><td>Hotspot zone with captive portal, client isolation, internet only</td></tr>
+          <tr><td>Remote access</td><td>WireGuard VPN server (per-device configs) and UniFi Teleport</td></tr>
+          <tr><td>Firewall</td><td>Zone-based policies with logging; traffic and client visibility</td></tr>
+          <tr><td>Management</td><td>Single UniFi console today; UniFi Site Manager ready for added sites</td></tr>
         </table>
       </section>
 
@@ -180,9 +195,10 @@
         <h2>Why This Project Was Needed</h2>
 
         <p>
-          The ISP router handled routing and Wi-Fi on a single flat network, with every
-          device on the same broadcast domain. That left no way to separate trusted
-          machines from untrusted ones and almost no visibility into what was connected.
+          The ISP router handled routing and Wi-Fi on a single flat network, with every device
+          on the same broadcast domain. That left no way to separate trusted machines from
+          untrusted ones, no content control for the children's devices, and almost no
+          visibility into what was connected.
         </p>
 
         <div class="grid">
@@ -190,21 +206,21 @@
             <h3>Before</h3>
             <ul>
               <li>One flat network for every device, trusted and untrusted alike.</li>
-              <li>No VLANs, no inter-network firewall rules.</li>
-              <li>Upload speed a small fraction of download.</li>
-              <li>Double NAT blocked inbound connections and clean remote access.</li>
-              <li>Little visibility of clients, traffic, or threats.</li>
+              <li>No VLANs and no firewall rules between device types.</li>
+              <li>No content filtering or safe search for the kids' devices.</li>
+              <li>No inbound access for clean, secure remote connectivity.</li>
+              <li>Little visibility of clients or traffic.</li>
             </ul>
           </div>
 
           <div class="card">
             <h3>Target State</h3>
             <ul>
-              <li>Separate VLANs for Main, Kids, IoT, Guest, and Servers.</li>
-              <li>Firewall rules isolating untrusted networks from Main.</li>
-              <li>Full symmetrical 900/900 line with the UDR7 as the only router.</li>
-              <li>Secure inbound access over WireGuard only.</li>
-              <li>IDS/IPS and client visibility across the whole network.</li>
+              <li>Separate VLANs for Main, Kids, IoT, and Guest.</li>
+              <li>Firewall rules isolating untrusted networks and the router itself.</li>
+              <li>Filtered, SafeSearch-locked internet on the Kids network.</li>
+              <li>Guest access on a captive portal, isolated from everything.</li>
+              <li>Encrypted remote access with no exposed services.</li>
             </ul>
           </div>
         </div>
@@ -215,10 +231,10 @@
         <h2>Network Topology</h2>
 
         <p>
-          The UDR7 sits behind the ISP modem and terminates the public address.
-          Each network is a separate VLAN with its own subnet and firewall policy.
-          Trusted devices sit on Main; everything that does not need to reach Main
-          is pushed onto its own segment.
+          The UDR7 connects directly to the fibre ONT and terminates the public address.
+          Each network is a separate VLAN with its own subnet and firewall policy. Trusted
+          devices sit on Main; everything that does not need to reach Main is pushed onto its
+          own segment.
         </p>
 
         <div class="visual-grid">
@@ -230,7 +246,7 @@
               <text x="34" y="58" fill="#d1fae5" font-size="12" font-family="Arial">Fibre 900/900</text>
 
               <rect x="20" y="92" width="120" height="30" rx="6" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
-              <text x="30" y="112" fill="#d1fae5" font-size="12" font-family="Arial">ISP modem mode</text>
+              <text x="44" y="112" fill="#d1fae5" font-size="12" font-family="Arial">Fibre ONT</text>
               <line x1="80" y1="68" x2="80" y2="92" stroke="#22c55e" stroke-width="2"/>
 
               <rect x="20" y="146" width="120" height="34" rx="6" fill="#020617" stroke="#22c55e" stroke-width="3"/>
@@ -238,16 +254,16 @@
               <line x1="80" y1="122" x2="80" y2="146" stroke="#22c55e" stroke-width="2"/>
 
               <g font-family="Arial" font-size="11">
-                <rect x="210" y="40" width="130" height="26" rx="5" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+                <rect x="210" y="40" width="150" height="26" rx="5" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
                 <text x="222" y="57" fill="#d1fae5">Main</text>
-                <rect x="210" y="78" width="130" height="26" rx="5" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+                <rect x="210" y="78" width="150" height="26" rx="5" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
                 <text x="222" y="95" fill="#d1fae5">Kids</text>
-                <rect x="210" y="116" width="130" height="26" rx="5" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+                <rect x="210" y="116" width="150" height="26" rx="5" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
                 <text x="222" y="133" fill="#d1fae5">IoT</text>
-                <rect x="210" y="154" width="130" height="26" rx="5" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+                <rect x="210" y="154" width="150" height="26" rx="5" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
                 <text x="222" y="171" fill="#d1fae5">Guest</text>
-                <rect x="210" y="192" width="130" height="26" rx="5" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
-                <text x="222" y="209" fill="#d1fae5">Servers</text>
+                <rect x="210" y="192" width="150" height="26" rx="5" fill="#0b1220" stroke="#475569" stroke-width="2" stroke-dasharray="4 3"/>
+                <text x="222" y="209" fill="#64748b">Servers (future)</text>
               </g>
 
               <g stroke="#22c55e" stroke-width="2" fill="none">
@@ -255,17 +271,17 @@
                 <path d="M140 163 C180 163, 180 91, 210 91"/>
                 <path d="M140 163 C180 163, 180 129, 210 129"/>
                 <path d="M140 163 C180 163, 180 167, 210 167"/>
-                <path d="M140 163 C180 163, 180 205, 210 205"/>
               </g>
+              <path d="M140 163 C180 163, 180 205, 210 205" stroke="#475569" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
 
-              <text x="20" y="250" fill="#d1fae5" font-size="12" font-family="Arial">One router, five isolated VLANs,</text>
+              <text x="20" y="250" fill="#d1fae5" font-size="12" font-family="Arial">One router, four live VLANs,</text>
               <text x="20" y="268" fill="#d1fae5" font-size="12" font-family="Arial">firewall rules between each.</text>
             </svg>
 
             <h3>Single Routed Gateway</h3>
             <p>
-              The UDR7 holds the public IP and routes every VLAN, replacing the ISP
-              router's flat network with segmented, policy-controlled paths.
+              The UDR7 holds the public IP and routes every VLAN, replacing the ISP router's
+              flat network with segmented, policy-controlled paths.
             </p>
           </div>
 
@@ -275,7 +291,7 @@
               <text x="92" y="70" fill="#bbf7d0" font-size="14" font-family="Arial">Main</text>
 
               <rect x="280" y="40" width="180" height="50" rx="8" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
-              <text x="330" y="70" fill="#bbf7d0" font-size="14" font-family="Arial">IoT / Guest</text>
+              <text x="325" y="70" fill="#bbf7d0" font-size="14" font-family="Arial">Kids / IoT</text>
 
               <line x1="220" y1="65" x2="280" y2="65" stroke="#22c55e" stroke-width="3"/>
               <text x="224" y="56" fill="#86efac" font-size="11" font-family="Arial">allow</text>
@@ -287,16 +303,16 @@
               <rect x="40" y="150" width="420" height="110" rx="10" fill="#020617" stroke="#22c55e" stroke-width="2"/>
               <text x="60" y="178" fill="#86efac" font-size="13" font-family="Arial">Firewall policy</text>
               <g font-family="Arial" font-size="12" fill="#d1fae5">
-                <text x="60" y="202">Main &#8594; IoT: allowed (control smart devices)</text>
-                <text x="60" y="224">IoT / Guest &#8594; Main: blocked</text>
-                <text x="60" y="246">Guest: client isolation on, internet only</text>
+                <text x="60" y="202">Kids / IoT clients: isolated from other devices</text>
+                <text x="60" y="224">Kids / IoT / Guest &#8594; router UI: blocked</text>
+                <text x="60" y="246">Guest: captive portal, client isolation, internet only</text>
               </g>
             </svg>
 
-            <h3>Inter-VLAN Firewall</h3>
+            <h3>Segmentation Policy</h3>
             <p>
-              Main can reach IoT to control devices; untrusted networks cannot initiate
-              connections back to Main. Guest is isolated to internet access only.
+              Untrusted networks cannot reach other devices or the router's own management, and
+              Guest is isolated behind a captive portal with internet access only.
             </p>
           </div>
 
@@ -308,43 +324,188 @@
         <h2>VLAN and Wi-Fi Design</h2>
 
         <p>
-          Five networks cover the household, with four Wi-Fi names (Servers is wired only).
-          A device gets its own VLAN when it needs different firewall rules from everything
-          else; groups that would share the same rules stay together.
+          Four networks cover the household, each with its own SSID. A device gets its own
+          VLAN when it needs different rules from everything else; groups that would share the
+          same rules stay together. A Servers VLAN is planned for self-hosting and local DNS
+          filtering, and is not yet in place.
         </p>
 
         <table class="spec">
           <tr>
-            <th>Network</th><th>Purpose</th><th>Wi-Fi</th><th>Notes</th>
+            <th>Network</th><th>Purpose</th><th>Subnet</th><th>Notes</th>
           </tr>
           <tr>
-            <td>Main</td><td>Adults' phones, laptops, main PC</td><td>Yes</td>
+            <td>Main</td><td>Adults' phones, laptops, main PC</td><td>10.0.10.0/24</td>
             <td>WPA2/WPA3; 6 GHz band requires WPA3</td>
           </tr>
           <tr>
-            <td>Kids</td><td>Children's devices</td><td>Yes</td>
-            <td>Content filtering and time schedules</td>
+            <td>Kids</td><td>Children's devices</td><td>10.0.20.0/24</td>
+            <td>Content filter, Ad Block, locked SafeSearch, forced DNS</td>
           </tr>
           <tr>
-            <td>IoT</td><td>TVs, cameras, smart plugs</td><td>Yes</td>
-            <td>WPA2 with 2.4 GHz enabled for legacy devices</td>
+            <td>IoT</td><td>TVs, camera, printer, smart plugs</td><td>10.0.30.0/24</td>
+            <td>WPA2 with 2.4 GHz enabled; client isolation</td>
           </tr>
           <tr>
-            <td>Guest</td><td>Visitors</td><td>Yes</td>
-            <td>Client isolation on, internet only</td>
+            <td>Guest</td><td>Visitors</td><td>10.0.40.0/24</td>
+            <td>Hotspot zone, captive portal, client isolation, internet only</td>
           </tr>
           <tr>
-            <td>Servers</td><td>Self-hosted services, automation</td><td>No</td>
-            <td>Wired only, fixed IPs, reached over WireGuard</td>
+            <td>Servers <em>(planned)</em></td><td>Self-hosting, local DNS filtering</td><td>10.0.50.0/24</td>
+            <td>Future project; wired only, reached over WireGuard</td>
           </tr>
         </table>
 
         <p>
-          Fixed addresses are set as DHCP reservations on the UDR7 for the router, the main
-          PC, and anything that is connected <em>to</em> (servers, NAS, printer, cameras).
-          Everything that only connects outward stays on DHCP. Keeping all reservations in
-          one place on the router avoids address clashes and keeps DNS and gateway settings
-          consistent when they change.
+          Fixed addresses are set as DHCP reservations on the UDR7 for the router, the main PC,
+          and devices that are connected <em>to</em>, such as the printer and the camera.
+          Everything that only connects outward stays on DHCP. Keeping all reservations in one
+          place avoids address clashes and keeps DNS and gateway settings consistent.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Firewall</p>
+        <h2>Zone-Based Firewall Rules</h2>
+
+        <p>
+          Rules are built in the UDR7's zone-based policy engine. Return traffic is handled by
+          the stateful firewall; the explicit policies below isolate untrusted networks, lock
+          the router's own management away from them, and force the Kids network to resolve DNS
+          through the router so the content filter cannot be bypassed.
+        </p>
+
+        <table class="spec">
+          <tr>
+            <th>Policy</th><th>Source</th><th>Destination</th><th>Action</th>
+          </tr>
+          <tr>
+            <td>Network isolation</td><td>Kids, IoT</td><td>Other devices on any VLAN</td><td>Block</td>
+          </tr>
+          <tr>
+            <td>Guest hotspot</td><td>Guest</td><td>Other clients + all private ranges</td><td>Block</td>
+          </tr>
+          <tr>
+            <td>Block management UI</td><td>Kids, IoT</td><td>Gateway TCP 80, 443, 22</td><td>Block</td>
+          </tr>
+          <tr>
+            <td>Force router DNS</td><td>Kids</td><td>External DNS (TCP/UDP 53, 853)</td><td>Block</td>
+          </tr>
+          <tr>
+            <td>Internet</td><td>All VLANs</td><td>Internet (not matched above)</td><td>Allow</td>
+          </tr>
+        </table>
+
+        <p>
+          The management-UI block is scoped to the Kids and IoT networks only, not the whole
+          internal zone. Including Main there would lock the admin out of the router. Each rule
+          was tested from the network it restricts and from Main to confirm access still works
+          where it should.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Child Safety</p>
+        <h2>Securing the Kids Network</h2>
+
+        <p>
+          The Kids VLAN carries the children's devices on their own SSID and subnet. It is
+          isolated from every other network, and its internet access is filtered at the DNS
+          layer with search results locked down.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Content Filtering</h3>
+            <ul>
+              <li>UniFi content filter set to Basic (adult and malicious sites), scoped to Kids only.</li>
+              <li>Ad Block enabled, since ad networks are a common route to scam and malware pages.</li>
+              <li>SafeSearch forced and locked on Google, Bing, and YouTube.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Access Control</h3>
+            <ul>
+              <li>Isolated from Main, IoT, and Guest; blocked from the router's management UI.</li>
+              <li>All DNS forced through the router so the filter applies to every device.</li>
+              <li>WPA2/WPA3 with its own key, separate from Main.</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>
+          Security angle: the standard bypass is a device setting its own DNS, whether plain
+          DNS or DNS-over-TLS, to resolve names past the filter. The force-router-DNS rule
+          blocks outbound 53 and 853 to anything but the gateway, so a device that changes its
+          DNS gets no internet at all rather than unfiltered internet. That was verified by
+          setting a phone's Private DNS to an external resolver and confirming it lost access,
+          then returned to normal once set back to automatic.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Guest Access</p>
+        <h2>Guest Network and Captive Portal</h2>
+
+        <p>
+          Guests join a dedicated network on the UDR7's Hotspot zone, which keeps them away
+          from every internal device and the router itself without a custom rule.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Captive Portal</h3>
+            <ul>
+              <li>A portal landing page is shown before internet access is granted.</li>
+              <li>A QR code lets guests join without being handed the Wi-Fi key directly.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Isolation</h3>
+            <ul>
+              <li>Client isolation on, so guest devices cannot see each other.</li>
+              <li>No path to Main, Kids, IoT, or the management UI.</li>
+              <li>Internet access only.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Shared Services</p>
+        <h2>Printer on the IoT Segment</h2>
+
+        <p>
+          The network printer sits on the IoT VLAN at 10.0.30.20, away from trusted devices,
+          with a fixed IP so its address never changes. Because IoT is isolated, reaching it to
+          print needs two things handled deliberately: discovery and a scoped firewall
+          exception.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Discovery</h3>
+            <ul>
+              <li>AirPrint and Mopria rely on mDNS, which does not cross VLANs by default.</li>
+              <li>The UDR7's mDNS reflector lets trusted devices find the printer across segments.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Firewall Exception</h3>
+            <ul>
+              <li>Trusted devices to printer only, on print ports: TCP 631 (IPP), 9100 (RAW), 515 (LPD), UDP 5353.</li>
+              <li>The printer itself cannot start a connection back to any VLAN.</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>
+          Printers are a real foothold because they run old firmware and are rarely patched,
+          so the exception is one-directional and limited to the print ports. A compromised
+          printer still cannot reach the devices on other networks.
         </p>
       </section>
 
@@ -353,9 +514,9 @@
         <h2>Secure Inbound Connectivity</h2>
 
         <p>
-          Moving the ISP router to modem mode removed the double NAT that had been blocking
-          inbound connections. With the UDR7 holding the public static address, remote access
-          could be set up properly.
+          With the UDR7 connected straight to the ONT and holding the public static address,
+          there is no double NAT in front of it, so inbound connections reach it directly and
+          remote access works properly.
         </p>
 
         <div class="grid">
@@ -364,7 +525,7 @@
             <ul>
               <li>Encrypted tunnel for reaching home services from outside.</li>
               <li>The only inbound path; no services exposed directly.</li>
-              <li>Clients routed to the Servers VLAN with fixed IPs.</li>
+              <li>One config per device, so any single client can be revoked on its own.</li>
             </ul>
           </div>
 
@@ -378,9 +539,9 @@
         </div>
 
         <p>
-          Family sites are managed through UniFi Site Manager. Each household owns its own
-          console and invites admin access, rather than placing every router under one
-          account, so each owner keeps control and can revoke access at any time.
+          Each WireGuard config is a full key into the network, so they are generated per
+          device, scanned once from the router's QR code, and never shared or screenshotted.
+          VPN clients land in their own subnet (10.0.60.0/24), kept separate from the LAN.
         </p>
       </section>
 
@@ -395,100 +556,102 @@
 
         <ul>
           <li>
-            <strong>Lateral movement:</strong> on a flat network, one compromised IoT device
-            can reach every other host. Blocking IoT and Guest from initiating connections to
-            Main removes that path. The UDR7's firewall logs show denied cross-VLAN attempts.
+            <strong>Lateral movement:</strong> on a flat network, one compromised IoT device can
+            reach every other host. Network isolation on Kids and IoT removes that path, and the
+            firewall logs show denied cross-VLAN attempts.
           </li>
           <li>
-            <strong>Physical port abuse:</strong> an outdoor PoE camera run is a network socket
-            on the outside of the building. Pinning that port to the IoT VLAN means unplugging
-            the camera and connecting a laptop reaches nothing on Main.
+            <strong>Router management:</strong> the UDR7's own login and SSH are blocked from Kids
+            and IoT, so a device on an untrusted segment cannot even reach the admin interface to
+            attack it.
           </li>
           <li>
-            <strong>Exposed services:</strong> no port forwards to internal hosts. Inbound access
-            is WireGuard only, so there is no listening service on the public IP to scan or
-            brute-force.
+            <strong>Filter bypass:</strong> content filtering works at DNS, so the obvious evasion
+            is a custom resolver or DoH. Forcing all Kids DNS through the router closes that, and
+            denied-DNS events stand out in the logs.
           </li>
           <li>
-            <strong>Detection:</strong> IDS/IPS inspects traffic for known signatures, and client
-            and traffic visibility makes an unexpected device or an outbound beacon from the IoT
-            VLAN stand out against a normal baseline.
+            <strong>Exposed services:</strong> no port forwards to internal hosts. Inbound is
+            WireGuard only, so there is no listening service on the public IP to scan or brute-force.
+          </li>
+          <li>
+            <strong>Detection:</strong> traffic and client visibility in the UniFi console makes an
+            unexpected device, a blocked cross-VLAN attempt, or an unusual outbound flow stand out
+            against a normal baseline.
           </li>
         </ul>
       </section>
 
       <section class="content-section">
         <p class="section-label">Validation</p>
-        <h2>Testing the Segmentation</h2>
+        <h2>Testing the Controls</h2>
 
         <p>
-          Each firewall rule was tested from the segment it was meant to restrict.
-          A client placed on an untrusted VLAN was used to confirm it could not reach
-          the gateways or hosts of other networks, while the same targets stayed
-          reachable from their own segment. Addresses below use documentation ranges,
-          not the live scheme.
+          Each rule was tested from the network it was meant to restrict, and from Main to
+          confirm access still worked where it should. Addresses below use documentation
+          ranges, not the live scheme.
         </p>
 
         <div class="visual-grid">
 
           <div class="visual-card">
-            <div style="background:#0b1220;border:1px solid rgba(239,68,68,0.4);border-radius:8px;padding:16px;font-family:monospace;font-size:13px;color:#fca5a5;margin-bottom:14px;">
+            <div class="result-screen" style="border:1px solid rgba(239,68,68,0.4);color:#fca5a5;">
               <div style="color:#f87171;font-weight:700;">&#9888; This site can't be reached</div>
               <div style="color:#94a3b8;margin-top:8px;">https://10.0.10.1/ (Main gateway)</div>
               <div style="color:#94a3b8;">https://10.0.30.1/ (IoT gateway)</div>
               <div style="margin-top:8px;">ERR_CONNECTION_ABORTED</div>
-              <div style="color:#64748b;margin-top:8px;">From: Guest VLAN &#183; 10.0.40.0/24</div>
+              <div style="color:#64748b;margin-top:8px;">From: Guest &#183; 10.0.40.0/24</div>
             </div>
             <h3>Inter-VLAN Isolation</h3>
             <p>
               A client on Guest could not open the Main or IoT gateway. Cross-segment
-              connections aborted, confirming the deny rules block untrusted networks
-              from reaching other VLANs.
+              connections aborted, confirming untrusted networks cannot reach other VLANs or
+              the router.
             </p>
           </div>
 
           <div class="visual-card">
-            <div style="background:#0b1220;border:1px solid rgba(239,68,68,0.4);border-radius:8px;padding:16px;font-family:monospace;font-size:13px;color:#fca5a5;margin-bottom:14px;">
-              <div style="color:#f87171;font-weight:700;">Ping Summary &#183; Unreachable</div>
-              <div style="color:#94a3b8;margin-top:8px;">target: host on Servers VLAN</div>
-              <div style="margin-top:8px;">Sent 10 &#183; Received 0 &#183; Lost 10</div>
-              <div>Packet loss: 100%</div>
-              <div style="color:#64748b;margin-top:8px;">From: IoT VLAN &#183; 10.0.30.0/24</div>
+            <div class="result-screen" style="border:1px solid rgba(239,68,68,0.4);color:#fca5a5;">
+              <div style="color:#f87171;font-weight:700;">&#9888; This site can't be reached</div>
+              <div style="color:#94a3b8;margin-top:8px;">adult-category domain</div>
+              <div style="margin-top:8px;">DNS_PROBE_FINISHED_NXDOMAIN</div>
+              <div style="color:#86efac;margin-top:8px;">SafeSearch: locked on</div>
+              <div style="color:#64748b;">From: Kids &#183; 10.0.20.0/24</div>
             </div>
-            <h3>Cross-Segment Ping</h3>
+            <h3>Content Filter and Forced DNS</h3>
             <p>
-              ICMP from an untrusted segment to a host on another VLAN returned 100%
-              loss, matching the policy. The same host replied normally from within its
-              own network.
+              On Kids, a known adult domain is blocked and SafeSearch shows locked. Setting the
+              device's DNS to an external resolver dropped internet entirely, proving the filter
+              cannot be bypassed.
             </p>
           </div>
 
           <div class="visual-card">
-            <div style="background:#0b1220;border:1px solid rgba(34,197,94,0.4);border-radius:8px;padding:16px;font-family:monospace;font-size:13px;color:#86efac;margin-bottom:14px;">
+            <div class="result-screen" style="border:1px solid rgba(34,197,94,0.4);color:#86efac;">
               <div style="color:#4ade80;font-weight:700;">UniFi OS &#183; Sign In</div>
               <div style="color:#94a3b8;margin-top:8px;">reachable at 10.0.10.1</div>
               <div style="margin-top:8px;color:#86efac;">&#10003; from Main (trusted)</div>
-              <div style="color:#f87171;">&#10007; from Guest / IoT</div>
+              <div style="color:#f87171;">&#10007; from Kids / IoT / Guest</div>
             </div>
             <h3>Controlled Management Access</h3>
             <p>
-              The controller was reachable from a trusted Main device and blocked from
-              Guest and IoT, so management stays limited to the trusted segment.
+              The console was reachable from a trusted Main device and blocked from every
+              untrusted network, so management stays limited to the trusted segment.
             </p>
           </div>
 
           <div class="visual-card">
-            <div style="background:#0b1220;border:1px solid rgba(34,197,94,0.4);border-radius:8px;padding:16px;font-family:monospace;font-size:13px;color:#86efac;margin-bottom:14px;">
+            <div class="result-screen" style="border:1px solid rgba(34,197,94,0.4);color:#86efac;">
               <div style="color:#4ade80;font-weight:700;">Remote Access &#183; Connected</div>
               <div style="color:#94a3b8;margin-top:8px;">tunnel: WireGuard / Teleport</div>
-              <div style="margin-top:8px;">client: mobile (cellular)</div>
-              <div style="color:#86efac;">&#10003; home reachable, no ports exposed</div>
+              <div style="color:#94a3b8;">client: mobile (cellular)</div>
+              <div style="margin-top:8px;color:#86efac;">&#10003; home reachable, no ports exposed</div>
             </div>
             <h3>Remote Access Verified</h3>
             <p>
-              After the ISP router moved to modem mode, the home network was reachable
-              from a mobile connection over an encrypted tunnel, with no services
-              listening on the public IP.
+              With the UDR7 holding the public IP directly, the home network was reachable from
+              a mobile connection over an encrypted tunnel, with no services listening on that
+              address.
             </p>
           </div>
 
@@ -500,10 +663,11 @@
         <h2>Project Outcome</h2>
 
         <p>
-          The household moved from a single flat ISP network to a segmented, monitored
-          network with a full symmetrical fibre line. Trusted and untrusted devices are
-          separated by firewall policy, remote access is encrypted and restricted, and
-          the whole network is visible from one controller.
+          The household moved from a single flat ISP network to a segmented, filtered, and
+          monitored network on a full symmetrical fibre line. Trusted and untrusted devices are
+          separated by firewall policy, the children's devices are filtered and search-locked,
+          guests are isolated behind a portal, and remote access is encrypted with nothing
+          exposed.
         </p>
 
         <div class="grid">
@@ -511,19 +675,49 @@
             <h3>Operational Improvements</h3>
             <ul>
               <li>Full 900/900 Mbps with the UDR7 as the only router.</li>
-              <li>Separate networks for trusted, untrusted, and child devices.</li>
+              <li>Separate networks for trusted, untrusted, child, and guest devices.</li>
+              <li>Filtered, SafeSearch-locked internet for the kids.</li>
               <li>Encrypted remote access with no exposed services.</li>
-              <li>Central management across multiple sites.</li>
             </ul>
           </div>
 
           <div class="card">
             <h3>Technical Value</h3>
             <ul>
-              <li>Practical VLAN and inter-VLAN firewall design.</li>
-              <li>Double NAT removal and static IP routing.</li>
-              <li>WireGuard tunnel configuration.</li>
-              <li>IDS/IPS and network visibility in daily use.</li>
+              <li>Zone-based firewall and inter-VLAN policy design.</li>
+              <li>DNS-layer content filtering with anti-bypass enforcement.</li>
+              <li>Direct fibre (ONT) uplink with static IP routing.</li>
+              <li>WireGuard tunnel configuration and guest captive portal.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Roadmap</p>
+        <h2>Future Work</h2>
+
+        <p>
+          The build so far is one site. The next phases extend it into a managed, multi-site
+          network with self-hosted services.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>This Site</h3>
+            <ul>
+              <li>Add the Servers VLAN for self-hosting and local DNS filtering (AdGuard or Pi-hole).</li>
+              <li>Scheduled access windows on the Kids network for school hours and night.</li>
+              <li>A wired access point downstairs if the Wi-Fi survey calls for it.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Multi-Site</h3>
+            <ul>
+              <li>Build and manage two more homes (my brothers') to the same segmented, filtered design.</li>
+              <li>Site-to-site VPN linking the networks for shared services and remote support.</li>
+              <li>Central management across all sites through UniFi Site Manager, each owner keeping control of their own console.</li>
             </ul>
           </div>
         </div>
@@ -535,9 +729,10 @@
 
         <p class="tags">
           UniFi &bull; Dream Router 7 &bull; VLANs &bull; Network Segmentation &bull;
-          Firewall Rules &bull; Inter-VLAN Routing &bull; WireGuard &bull; VPN &bull;
-          IDS/IPS &bull; Wi-Fi 7 &bull; DHCP Reservations &bull; Static IP &bull;
-          Modem Mode &bull; Remote Management &bull; Network Security
+          Zone-Based Firewall &bull; Inter-VLAN Policy &bull; Content Filtering &bull;
+          SafeSearch &bull; DNS Enforcement &bull; Captive Portal &bull; WireGuard &bull;
+          VPN &bull; Wi-Fi 7 &bull; DHCP Reservations &bull; Static IP &bull;
+          Fibre ONT &bull; Network Security
         </p>
 
         <p>
