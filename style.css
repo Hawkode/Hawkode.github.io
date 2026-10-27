@@ -288,14 +288,14 @@ text-decoration: underline;
 display: inline-block;
 margin-top: 8px;
 padding: 10px 16px;
-border: 1px solid #16a34a;
+border: 1px solid #f59e0b;
 border-radius: 8px;
-color: #16a34a;
-background: rgba(22, 163, 74, 0.06);
+color: #f59e0b;
+background: rgba(245, 158, 11, 0.06);
 }
 
 .button:hover {
-background: #16a34a;
+background: #f59e0b;
 color: #020617;
 text-decoration: none;
 }
