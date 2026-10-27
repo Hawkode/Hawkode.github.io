@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>John the Ripper: Offline Cracking and Why Hashing Matters | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" rel="noopener noreferrer" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          How offline password cracking with John the Ripper works, why it is invisible on the
+          target, and the hashing and storage choices that defeat it. Authorised lab use only.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../../#guides" class="active">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Guide</p>
+        <h2>John the Ripper: Offline Cracking and Why Hashing Matters</h2>
+
+        <p>
+          John the Ripper takes password hashes an attacker has already captured and tries to
+          recover the plaintext offline. It is the step that follows credential theft, such as the
+          SAM hive export in my
+          <a href="../../projects/windows-privilege-escalation/">privilege escalation lab</a>. The
+          defensive lesson is the important one: because cracking happens off your systems, you
+          cannot detect it, so the defence is making the hashes not worth cracking and keeping them
+          out of reach in the first place.
+        </p>
+
+        <p>
+          <strong>Scope:</strong> authorised lab work only, on hashes captured from TryHackMe
+          machines or VMs I own. Hash values below are placeholders.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 1</p>
+        <h2>Identify the Hash Type</h2>
+
+        <p>
+          Cracking starts with knowing the format. John can auto-detect, or the type can be
+          identified first.
+        </p>
+
+        <pre><code>john hashes.txt            # auto-detect and run
+john --list=formats        # supported formats
+# NT hashes from a Windows SAM dump:
+john --format=NT hashes.txt</code></pre>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 2</p>
+        <h2>Choose a Mode</h2>
+
+        <div class="list">
+          <p><strong>Dictionary:</strong> try a wordlist. Fastest and most effective against weak passwords.</p>
+          <p><strong>Rules:</strong> mutate the wordlist (append numbers, swap letters) to catch common variations.</p>
+          <p><strong>Incremental:</strong> brute force every combination. Only feasible for short passwords.</p>
+        </div>
+
+        <pre><code>john --wordlist=rockyou.txt hashes.txt
+john --wordlist=rockyou.txt --rules hashes.txt
+john --show hashes.txt       # reveal what cracked</code></pre>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 3</p>
+        <h2>Why Some Hashes Fall Fast</h2>
+
+        <p>
+          The hash algorithm decides how quickly cracking works. This is the whole defensive point.
+        </p>
+
+        <div class="list">
+          <p><strong>NTLM / unsalted MD5 / SHA1:</strong> fast to compute, so a GPU tries billions per second. Weak passwords fall in seconds.</p>
+          <p><strong>bcrypt / scrypt / Argon2:</strong> deliberately slow and salted, so each guess costs far more and precomputed tables are useless. Cracking becomes impractical.</p>
+          <p><strong>Password length</strong> beats complexity against cracking: each extra character multiplies the search space far more than a symbol substitution does.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Detection</p>
+        <h2>You Cannot Detect the Cracking</h2>
+
+        <p>
+          Cracking runs on the attacker's own hardware, so there is nothing to see on your
+          network. The detectable event is the moment <em>before</em> it: the theft of the hashes.
+          That is where monitoring pays off.
+        </p>
+
+        <div class="list">
+          <p><strong>SAM / SYSTEM hive export:</strong> Event ID 4688 for <code>reg save hklm\sam</code>, or <code>esentutl</code> / VSS access to the hives.</p>
+          <p><strong>NTDS.dit theft on a domain controller:</strong> volume shadow copy creation and access to <code>ntds.dit</code>.</p>
+          <p><strong>LSASS access:</strong> Sysmon Event ID 10 against <code>lsass.exe</code> for in-memory credential dumping.</p>
+          <p>These map to the detections in my <a href="../../projects/splunk-privesc-detection/">Splunk detection lab</a>.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Hardening</p>
+        <h2>Making Hashes Not Worth Cracking</h2>
+
+        <div class="list">
+          <p><strong>Strong, long passwords:</strong> length is the single biggest factor against offline cracking.</p>
+          <p><strong>Slow, salted hashing for applications:</strong> bcrypt, scrypt, or Argon2, never plain MD5 or SHA1.</p>
+          <p><strong>Disable LM hashes</strong> and avoid legacy NTLM where possible.</p>
+          <p><strong>Protect the hash store:</strong> restrict and audit access to the SAM and NTDS.dit; this is where the PrivEsc hardening overlaps.</p>
+          <p><strong>LAPS:</strong> unique, rotated local admin passwords, so one cracked hash does not unlock every machine.</p>
+          <p><strong>MFA:</strong> the backstop. Even a cracked password is not enough on its own.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Why It Matters</p>
+        <h2>The Takeaway</h2>
+
+        <p>
+          Offline cracking is invisible, so prevention is the whole game. Strong, long passwords
+          and modern salted hashing make the hashes impractical to crack, protecting the hash store
+          stops them being stolen, and MFA means a recovered password still is not a login. Knowing
+          how fast weak hashes fall is what makes those choices feel urgent rather than theoretical.
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Hydra: Online Password Attacks and Defences | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" rel="noopener noreferrer" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Guide</h2>
+        <p>
+          How online password attacks with Hydra work, how to detect them on the defending side,
+          and how to shut them down. Authorised lab use only.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../projects/">Projects & Labs</a>
+        <a href="../../#guides" class="active">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Guide</p>
+        <h2>Hydra: Online Password Attacks and Defences</h2>
+
+        <p>
+          Hydra tests login endpoints by trying many username and password combinations against a
+          live service. Understanding it matters for defence: an online password attack is noisy
+          and preventable, and knowing the tool is what lets you recognise and stop it. This guide
+          covers the attack, then the detection and hardening that neutralise it.
+        </p>
+
+        <p>
+          <strong>Scope:</strong> authorised lab work only, on TryHackMe machines or VMs I own.
+          Running this against systems without permission is illegal. Targets below are
+          placeholders (<code>TARGET</code>), not real hosts.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 1</p>
+        <h2>Pick the Service and Method</h2>
+
+        <p>
+          Hydra supports many protocols. The common lab targets are remote-access and web login
+          services.
+        </p>
+
+        <div class="list">
+          <p><strong>SSH / RDP:</strong> remote administration logins.</p>
+          <p><strong>FTP:</strong> file transfer logins.</p>
+          <p><strong>HTTP basic or form:</strong> web application logins.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 2</p>
+        <h2>Prepare Word Lists</h2>
+
+        <p>
+          An attack is only as good as its lists. One list of usernames, one of passwords. In a
+          lab, <code>rockyou.txt</code> is the standard password list.
+        </p>
+
+        <pre><code>-l user        single username
+-L users.txt   username list
+-p password    single password
+-P rockyou.txt password list</code></pre>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Step 3</p>
+        <h2>Run the Attack (Lab)</h2>
+
+        <p>
+          Example syntax against placeholder targets. The web form example needs the request
+          parameters and a string that identifies a failed login.
+        </p>
+
+        <pre><code>hydra -l user -P rockyou.txt ssh://TARGET
+
+hydra -L users.txt -P rockyou.txt TARGET http-post-form \
+  "/login:username=^USER^&password=^PASS^:F=Invalid credentials"</code></pre>
+
+        <div class="list">
+          <p><strong>-t:</strong> parallel tasks. Lower it to stay reliable and to mimic a quieter, more realistic attack.</p>
+          <p><strong>F=:</strong> the text shown on a failed login, so Hydra knows which attempts failed.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Detection</p>
+        <h2>How a Hydra Attack Looks to a Defender</h2>
+
+        <p>
+          Online brute force is loud. The signal is many failed logins from one source in a short
+          window, then possibly a success.
+        </p>
+
+        <div class="list">
+          <p><strong>Windows:</strong> a burst of Event ID 4625 (failed logon) from one source, and 4740 (account lockout) if a lockout policy is set. A 4625 run followed by a 4624 success is the pattern to alert on.</p>
+          <p><strong>Linux:</strong> repeated failures in <code>/var/log/auth.log</code>; fail2ban bans the source after a threshold.</p>
+          <p><strong>Web:</strong> many POSTs to the login path from one IP; a WAF or rate-limiter flags and throttles it.</p>
+          <p><strong>Detection logic:</strong> N failed logins from one source within T seconds raises an alert, tuned so routine typos do not trip it.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Hardening</p>
+        <h2>Shutting It Down</h2>
+
+        <div class="list">
+          <p><strong>MFA:</strong> the single best control. A guessed password alone is not enough to log in, so online brute force stops paying off.</p>
+          <p><strong>Account lockout / backoff:</strong> lock or delay after a few failures, so a wordlist attack never completes.</p>
+          <p><strong>Key-based SSH:</strong> disable password authentication entirely; there is nothing to brute-force.</p>
+          <p><strong>Do not expose services:</strong> put RDP and SSH behind a VPN rather than on the internet. This ties to the segmentation in my <a href="../../projects/home-network-udr7/">home network build</a>.</p>
+          <p><strong>Rate limiting:</strong> fail2ban on Linux, a WAF or lockout on web apps.</p>
+          <p><strong>Strong, unique passwords:</strong> length defeats wordlists, and uniqueness defeats credential stuffing.</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Why It Matters</p>
+        <h2>The Takeaway</h2>
+
+        <p>
+          Online password attacks are among the easiest to detect and prevent, which is exactly
+          why they should never succeed. MFA plus lockout plus not exposing the service removes
+          the attack almost entirely, and the failed-logon signal catches whatever is left. Knowing
+          the tool is what makes the detection obvious. This connects directly to my
+          <a href="../mfa-access-control-notes/">MFA and access control notes</a>.
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
