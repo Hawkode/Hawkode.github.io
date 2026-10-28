@@ -202,10 +202,11 @@
           <tr><td>IPv6</td><td>/48 delegation via DHCPv6-PD; a /64 per VLAN, dual-stack</td></tr>
           <tr><td>Upstream</td><td>UDR7 connected directly to the fibre ONT; no ISP router, no double NAT</td></tr>
           <tr><td>Segmentation</td><td>Four networks: Main, Kids, IoT, Guest (Servers VLAN planned)</td></tr>
-          <tr><td>Kids controls</td><td>Content filter (Basic), Ad Block, locked SafeSearch, forced DNS, scheduled access (09:00&ndash;19:00)</td></tr>
+          <tr><td>Kids controls</td><td>Content filter (Basic), Ad Block, locked SafeSearch, forced DNS, public DoH resolvers blocked, scheduled access (09:00&ndash;19:00)</td></tr>
           <tr><td>Guest</td><td>Hotspot zone with captive portal, client isolation, internet only</td></tr>
           <tr><td>Remote access</td><td>WireGuard VPN server (per-device configs) and UniFi Teleport</td></tr>
-          <tr><td>Firewall</td><td>Zone-based policies with logging; traffic and client visibility</td></tr>
+          <tr><td>Firewall</td><td>Zone-based policies with logging; printer reachable from Main only, IoT replies but never initiates</td></tr>
+          <tr><td>Hardening</td><td>UPnP off, SSH off, Direct Remote Connection off, unused gateway ports disabled, MFA on the console account, honeypots on Main, Kids and IoT, encrypted upstream DNS from the gateway</td></tr>
           <tr><td>Threat management</td><td>IDS/IPS (Threat Management) in Notify &amp; Block mode across all four networks</td></tr>
           <tr><td>Resilience</td><td>Local admin account alongside the cloud login; automatic and exported backups</td></tr>
           <tr><td>Management</td><td>Single UniFi console today; UniFi Site Manager ready for added sites</td></tr>
@@ -450,6 +451,12 @@
             <td>Force router DNS</td><td>Kids</td><td>External DNS (TCP/UDP 53, 853)</td><td>Block</td>
           </tr>
           <tr>
+            <td>Block public DoH</td><td>Kids</td><td>Cloudflare, Google and Quad9 resolvers, TCP/UDP 443</td><td>Block</td>
+          </tr>
+          <tr>
+            <td>Printer access</td><td>Main</td><td>Printer, TCP 80, 443, 631, 9100 (replies only in return)</td><td>Allow</td>
+          </tr>
+          <tr>
             <td>Internet</td><td>All VLANs</td><td>Internet (not matched above)</td><td>Allow</td>
           </tr>
         </table>
@@ -487,6 +494,7 @@
             <ul>
               <li>Isolated from Main, IoT, and Guest; blocked from the router's management UI.</li>
               <li>All DNS forced through the router so the filter applies to every device.</li>
+              <li>DNS over HTTPS to the major public resolvers blocked, so a browser's "secure DNS" setting cannot skip the filter.</li>
               <li>Scheduled access: Wi-Fi available 09:00&ndash;19:00, off outside those hours.</li>
               <li>WPA2/WPA3 with its own key, separate from Main.</li>
             </ul>
@@ -505,6 +513,14 @@
           DNS gets no internet at all rather than unfiltered internet. That was verified by
           setting a phone's Private DNS to an external resolver and confirming it lost access,
           then returned to normal once set back to automatic.
+        </p>
+
+        <p>
+          DNS over HTTPS (DoH) is the harder bypass: the lookup travels inside ordinary HTTPS on
+          port 443, so a port block cannot see it. The major public DoH resolvers (Cloudflare,
+          Google, Quad9) are blocked by IP for Kids, over IPv4 and IPv6, so a browser set to use
+          them falls back to the router and the filter applies again. Hits are logged. VPN apps
+          and smaller DoH providers are left to device-level parental controls.
         </p>
       </section>
 
@@ -543,9 +559,9 @@
 
         <p>
           The network printer sits on the IoT VLAN at 10.0.40.20, away from trusted devices,
-          with a fixed IP so its address never changes. Because IoT is isolated, reaching it to
-          print needs two things handled deliberately: discovery and a scoped firewall
-          exception.
+          with a fixed IP so its address never changes. Only Main prints; Kids and Guest cannot
+          see it or reach it. Because IoT is isolated, that needs three things handled
+          deliberately: discovery, a scoped firewall exception, and the printer's own settings.
         </p>
 
         <div class="grid">
@@ -553,15 +569,25 @@
             <h3>Discovery</h3>
             <ul>
               <li>AirPrint and Mopria rely on mDNS, which does not cross VLANs by default.</li>
-              <li>The UDR7's mDNS reflector lets trusted devices find the printer across segments.</li>
+              <li>The gateway's mDNS proxy is scoped to Main and IoT only, so the printer is advertised to trusted devices and invisible to Kids and Guest.</li>
             </ul>
           </div>
 
           <div class="card">
             <h3>Firewall Exception</h3>
             <ul>
-              <li>Trusted devices to printer only, on print ports: TCP 631 (IPP), 9100 (RAW), 515 (LPD), UDP 5353.</li>
-              <li>The printer itself cannot start a connection back to any VLAN.</li>
+              <li>Main to printer only, on TCP 80, 443, 631 (IPP) and 9100 (RAW).</li>
+              <li>Return traffic is allowed automatically; the printer cannot start a connection to any VLAN.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Printer Hardening</h3>
+            <ul>
+              <li>IPv4 only, so its single address is the one the firewall rule matches.</li>
+              <li>Wi-Fi Direct off, so it cannot run its own Wi-Fi network around the VLANs.</li>
+              <li>Bluetooth off.</li>
+              <li>AirPrint and IPP on for driverless printing from phones and laptops.</li>
             </ul>
           </div>
         </div>
@@ -570,6 +596,14 @@
           Printers are a real foothold because they run old firmware and are rarely patched,
           so the exception is one-directional and limited to the print ports. A compromised
           printer still cannot reach the devices on other networks.
+        </p>
+
+        <p>
+          Lesson from testing: the zone firewall's "auto allow return traffic" option creates a
+          linked reply policy that appears in the table as printer-to-Main. It looks like a hole
+          but only matches return traffic. Pausing it broke printing from every device, which
+          confirmed what it was. Checking a rule's connection state before removing it saves
+          that round trip.
         </p>
       </section>
 
@@ -675,8 +709,9 @@
           <div class="card">
             <h3>Backups</h3>
             <ul>
-              <li>UniFi automatic backups left on.</li>
-              <li>A config backup exported and stored off the device after every major change (zone upgrade, new firewall policy, filter).</li>
+              <li>UniFi automatic cloud backups on, weekly.</li>
+              <li>A config backup exported and stored off the device after every major change (zone upgrade, new firewall policy, filter, hardening review).</li>
+              <li>Exported backups are stored securely, since they contain VPN keys and Wi-Fi passwords.</li>
               <li>A restore rebuilds the whole configuration without redoing it by hand.</li>
             </ul>
           </div>
@@ -711,12 +746,23 @@
           </li>
           <li>
             <strong>Filter bypass:</strong> content filtering works at DNS, so the obvious evasion
-            is a custom resolver or DoH. Forcing all Kids DNS through the router closes that, and
-            denied-DNS events stand out in the logs.
+            is a custom resolver or DoH. Blocking outbound DNS and DoT and the major public DoH
+            resolvers forces Kids lookups through the router, and denied-DNS events stand out in the logs.
           </li>
           <li>
-            <strong>Exposed services:</strong> no port forwards to internal hosts. Inbound is
-            WireGuard only, so there is no listening service on the public IP to scan or brute-force.
+            <strong>Discovery leakage:</strong> mDNS announces device names, models and services.
+            Reflecting it everywhere would hand Kids and Guest a map of the IoT segment without a
+            single scan, so the proxy is limited to Main and IoT.
+          </li>
+          <li>
+            <strong>Exposed services:</strong> no port forwards to internal hosts, and UPnP is off so
+            no device can open one for itself. Inbound is WireGuard only, so there is no listening
+            service on the public IP to scan or brute-force.
+          </li>
+          <li>
+            <strong>Physical access:</strong> the gateway's unused LAN ports are disabled. Their native
+            network is Main, so a device plugged into a live spare port would land on the trusted
+            segment.
           </li>
           <li>
             <strong>Detection and prevention:</strong> IDS/IPS inspects traffic against 23,000+
@@ -784,6 +830,35 @@
               On Kids, a known adult domain is blocked and SafeSearch shows locked. Setting the
               device's DNS to an external resolver dropped internet entirely, proving the filter
               cannot be bypassed.
+            </p>
+          </div>
+
+          <div class="visual-card">
+            <div class="result-screen" style="border:1px solid rgba(34,197,94,0.4);color:#86efac;">
+              <div style="color:#4ade80;font-weight:700;">Printer &#183; 10.0.40.20</div>
+              <div style="margin-top:8px;color:#86efac;">&#10003; Main phone and laptop: printed over IPP</div>
+              <div style="color:#f87171;">&#10007; Kids tablet: no printers found</div>
+              <div style="color:#64748b;margin-top:8px;">mDNS proxy: Main, IoT</div>
+            </div>
+            <h3>Printer Scoped to Main</h3>
+            <p>
+              Main devices discovered the printer and printed; a Kids tablet searching for
+              printers found nothing, confirming discovery and access stop at Main.
+            </p>
+          </div>
+
+          <div class="visual-card">
+            <div class="result-screen" style="border:1px solid rgba(239,68,68,0.4);color:#fca5a5;">
+              <div style="color:#f87171;font-weight:700;">&#9888; Hmm. We're having trouble finding that site.</div>
+              <div style="color:#94a3b8;margin-top:8px;">Firefox DNS over HTTPS: Max Protection</div>
+              <div style="color:#94a3b8;">Provider: Cloudflare</div>
+              <div style="color:#64748b;margin-top:8px;">From: Kids &#183; 10.0.20.0/24</div>
+            </div>
+            <h3>DoH Bypass Blocked</h3>
+            <p>
+              A Kids device forced to use Cloudflare DoH with no fallback could not load pages.
+              With the browser back on its default setting, lookups returned to the router and
+              the content filter applied as normal.
             </p>
           </div>
 
@@ -892,7 +967,7 @@
           Zone-Based Firewall &bull; Inter-VLAN Policy &bull; IDS/IPS &bull; Content Filtering &bull;
           SafeSearch &bull; DNS Enforcement &bull; Captive Portal &bull; WireGuard &bull;
           IPv6 &bull; Dual-Stack &bull; Wi-Fi 7 &bull; DHCP Reservations &bull; Static IP &bull;
-          Fibre ONT &bull; Backup &amp; Recovery &bull; Network Security
+          Fibre ONT &bull; mDNS &bull; DoH Blocking &bull; Printer Hardening &bull; Backup &amp; Recovery &bull; Network Security
         </p>
 
         <p>
