@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Hybrid IAM Lab in Microsoft Entra ID | Alex Mateescu</title>
+  <title>IAM Lab in Microsoft Entra ID | Alex Mateescu</title>
 
   <link rel="stylesheet" href="../../style.css" />
 
@@ -89,7 +89,7 @@
 
       <section class="content-section">
         <p class="section-label">Identity Lab</p>
-        <h2>Hybrid IAM Lab in Microsoft Entra ID</h2>
+        <h2>IAM Lab in Microsoft Entra ID</h2>
 
         <p>
           I built a complete identity and access management environment from an empty
@@ -100,11 +100,12 @@
         </p>
 
         <p>
-          The lab was inspired by the four classic IAM failure modes &mdash; over-privilege,
-          stale credentials, over-permissive roles, and no change visibility &mdash; and rebuilds
-          each one on Microsoft identity. It maps across all four SC-300 (Identity and Access
-          Administrator) domains, and every phase was validated with evidence rather than
-          assumed to work.
+          The lab was inspired by the four classic IAM failure modes (over-privilege,
+          stale credentials, over-permissive roles, and no change visibility) and applies
+          the Microsoft controls that address them: PIM for standing privilege, a secretless
+          least-privilege app registration for workload identity, and the sign-in and audit logs
+          for visibility. Long-term log export to a SIEM is out of scope here. The lab maps across
+          all four SC-300 (Identity and Access Administrator) domains.
         </p>
 
         <p>
@@ -164,8 +165,8 @@
         <h2>Dynamic Department Groups (RBAC)</h2>
 
         <p>
-          I created six security groups &mdash; HR, IT, Engineering, Customer Support,
-          Warehouse and Finance &mdash; with <strong>dynamic membership</strong> driven by each
+          I created six security groups (HR, IT, Engineering, Customer Support,
+          Warehouse and Finance) with <strong>dynamic membership</strong> driven by each
           user's department attribute. Access follows the attribute: set a user's department and
           they land in the right group automatically, with no manual membership changes. Every
           group has an owner and a description stating its purpose, rule and access, and the
@@ -193,7 +194,7 @@
         </div>
 
         <p class="tags">
-          Microsoft Entra ID • Dynamic Groups • RBAC • Attribute-Based Access • Group-Based Licensing
+          Microsoft Entra ID • Dynamic Groups • RBAC • Attribute-Based Access
         </p>
 
         <figure class="evidence">
@@ -209,9 +210,10 @@
 
         <p>
           I ran the full identity lifecycle end to end. A <strong>joiner</strong> is created with
-          a department and drops into the correct group automatically, inheriting access and a
-          licence. A <strong>mover</strong> who changes department is re-scoped in both directions
-          &mdash; new access granted, old access removed &mdash; just by changing one attribute.
+          a department and drops into the correct group automatically, inheriting the group's
+          access; licences were assigned in the Microsoft 365 admin center (see Lab vs Production).
+          A <strong>mover</strong> who changes department is re-scoped in both directions,
+          gaining the new access and losing the old, just by changing one attribute.
           A <strong>leaver</strong> is disabled, their sessions revoked, their licences reclaimed,
           and their department cleared so they drop out of every group.
         </p>
@@ -221,7 +223,7 @@
             <h3>Leaver Sequence</h3>
             <ul>
               <li>Block sign-in (disable account)</li>
-              <li>Revoke sessions &mdash; invalidates refresh tokens</li>
+              <li>Revoke sessions to invalidate refresh tokens</li>
               <li>Remove licences (reclaim spend)</li>
               <li>Clear department &rarr; drops from dynamic groups</li>
               <li>Retain, then delete after the retention window</li>
@@ -273,7 +275,7 @@
         <p>
           Before enforcing anything, I built a <strong>break-glass emergency-access account</strong>,
           excluded it from Conditional Access and the registration campaign, and then
-          <strong>tested it</strong> &mdash; the sign-in log confirmed the policy did not apply to it
+          <strong>tested it</strong>: the sign-in log confirmed the policy did not apply to it
           (&ldquo;Not matched: Group exclusion&rdquo;). An untested emergency account is worse than
           none, because you only discover it fails at the moment you need it.
         </p>
@@ -283,8 +285,8 @@
             <h3>Controls</h3>
             <ul>
               <li>Passkey (FIDO2) + Authenticator on; SMS / voice / email OTP off</li>
-              <li>CA01 &mdash; require MFA, all users (break-glass excluded)</li>
-              <li>CA02 &mdash; block legacy authentication</li>
+              <li>CA01: require MFA, all users (break-glass excluded)</li>
+              <li>CA02: block legacy authentication</li>
               <li>Report-only &rarr; reviewed &rarr; enforced</li>
               <li>SSPR: two methods, no security questions, notify on reset</li>
             </ul>
@@ -293,7 +295,7 @@
             <h3>Security Angle</h3>
             <ul>
               <li><strong>Abuse:</strong> password spray and legacy-auth bypass defeat password-only sign-in</li>
-              <li><strong>Detect:</strong> sign-in logs &mdash; failures across many accounts from one IP; legacy-auth client sign-ins</li>
+              <li><strong>Detect:</strong> sign-in logs showing failures across many accounts from one IP; legacy-auth client sign-ins</li>
               <li><strong>Harden:</strong> number-matching MFA, block legacy auth, phishing-resistant methods for admins</li>
             </ul>
           </div>
@@ -304,13 +306,13 @@
         </p>
 
         <figure class="evidence">
-          <img src="img/05-auth-methods.png" alt="Authentication methods: passkey and Authenticator enabled, SMS disabled" />
-          <figcaption>Authentication methods hardened &mdash; strong methods on, weak methods off.</figcaption>
+          <img src="img/05-auth-methods.png" alt="Email OTP, SMS and voice call authentication methods disabled" />
+          <figcaption>Weak methods switched off: Email OTP, SMS and voice call.</figcaption>
         </figure>
 
         <figure class="evidence">
           <img src="img/06-conditional-access.png" alt="Conditional Access policies for MFA and blocking legacy authentication" />
-          <figcaption>Conditional Access: require MFA and block legacy authentication.</figcaption>
+          <figcaption>Conditional Access: CA01 (require MFA) and CA02 (block legacy authentication), both On.</figcaption>
         </figure>
 
         <figure class="evidence">
@@ -345,7 +347,7 @@
             <h3>Security Angle</h3>
             <ul>
               <li><strong>Abuse:</strong> Golden SAML (forged assertions from a stolen signing key); reply-URL tampering</li>
-              <li><strong>Detect:</strong> audit-log changes to SSO config &mdash; a new reply URL or signing certificate</li>
+              <li><strong>Detect:</strong> audit-log changes to SSO config, such as a new reply URL or signing certificate</li>
               <li><strong>Harden:</strong> protect and rotate the signing cert, pin the reply URL, require assignment, enforce MFA</li>
             </ul>
           </div>
@@ -367,9 +369,9 @@
         <h2>PIM, Access Reviews &amp; Entitlement Management</h2>
 
         <p>
-          This is the governance layer and the hardest SC-300 domain. I first created the problem
-          &mdash; a standing Global Administrator assignment on a user who only needed helpdesk-level
-          access &mdash; then remediated it with <strong>Privileged Identity Management</strong>: the
+          This is the governance layer and the hardest SC-300 domain. I first created the problem,
+          a standing Global Administrator assignment on a user who only needed helpdesk-level
+          access, then remediated it with <strong>Privileged Identity Management</strong>: the
           standing Global Admin was removed and replaced with an <em>eligible</em> User Administrator
           role (least privilege plus just-in-time), requiring MFA, a justification, approval and a
           four-hour activation cap.
@@ -377,8 +379,8 @@
 
         <p>
           I set up a quarterly <strong>access review</strong> to recertify membership of the
-          break-glass exclusion group &mdash; the most dangerous group in the tenant, since anyone
-          in it bypasses MFA &mdash; and built an <strong>entitlement management</strong> access
+          break-glass exclusion group (the most dangerous group in the tenant, since anyone
+          in it bypasses MFA) and built an <strong>entitlement management</strong> access
           package so users request project access through an approved, time-boxed, auditable
           workflow instead of being added by hand.
         </p>
@@ -432,8 +434,8 @@
           Identity is not only human. I registered an application (a service identity), removed the
           default delegated permission it did not need, and granted it only a single read-only
           Microsoft Graph application permission. This is the Microsoft equivalent of an
-          over-permissioned cloud role &mdash; an app with excessive Graph permissions can escalate
-          to tenant takeover &mdash; so the whole point was least privilege for a non-human identity.
+          over-permissioned cloud role. An app with excessive Graph permissions can escalate
+          to tenant takeover, so the whole point was least privilege for a non-human identity.
         </p>
 
         <div class="grid">
@@ -480,7 +482,7 @@
           <p>
             <strong>Licensing:</strong> I assigned licences directly to users because the portal
             routed group-based licensing elsewhere. In production, group-based licensing is the
-            correct choice &mdash; it makes offboarding atomic, reclaiming the licence the moment
+            correct choice because it makes offboarding atomic, reclaiming the licence the moment
             the group membership drops.
           </p>
           <p>
@@ -499,16 +501,26 @@
       <!-- VALIDATION -->
       <section class="content-section">
         <p class="section-label">Validation</p>
-        <h2>What I Proved</h2>
+        <h2>What I Tested</h2>
 
         <p>
-          Every phase was validated rather than assumed. The dynamic groups were confirmed to
-          populate automatically, the mover and leaver flows were checked in the directory, the
-          break-glass exclusion was proven in the sign-in logs, and the PIM remediation was
-          confirmed by the before-and-after role assignments. The result is a working identity
-          environment that demonstrates the full SC-300 skill set &mdash; design, lifecycle,
-          access control, governance, applications and workload identity &mdash; with the security
-          reasoning behind each control.
+          <strong>Tested end to end:</strong> dynamic groups populating from the department
+          attribute, the mover re-scoped in both directions, a full leaver deprovision, both
+          Conditional Access policies enforced with the break-glass exclusion proven in the sign-in
+          logs, and the PIM remediation confirmed by the before-and-after role assignments.
+        </p>
+
+        <p>
+          <strong>Configured, not yet exercised:</strong> an SSO round-trip sign-in, a PIM
+          activation request and approval, an access package request, and the first cycle of the
+          quarterly access review. Each is built and visible in the portal; running them is the
+          next step for this lab.
+        </p>
+
+        <p>
+          The result is a working identity environment covering the SC-300 skill set
+          (design, lifecycle, access control, governance, applications and workload identity),
+          with the security reasoning behind each control.
         </p>
 
         <p class="tags">
