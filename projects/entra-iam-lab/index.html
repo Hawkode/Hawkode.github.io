@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Hybrid IAM Lab in Microsoft Entra ID | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Evidence figures (scoped to this page, matches the site's green/dark theme) -->
+  <style>
+    .evidence { margin: 20px 18px 0 0; }
+    .evidence img {
+      width: 100%;
+      border: 1px solid rgba(22, 163, 74, 0.28);
+      border-radius: 8px;
+      box-shadow: 0 0 14px rgba(22, 163, 74, 0.08);
+      display: block;
+    }
+    .evidence figcaption {
+      color: #4ade80;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" rel="noopener noreferrer" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Project</h2>
+        <p>
+          A self-built identity and access management lab in a dedicated Microsoft Entra ID
+          tenant, covering dynamic RBAC groups, the full joiner-mover-leaver lifecycle,
+          MFA and Conditional Access, SSPR, a tested break-glass account, PIM, access reviews,
+          entitlement management, SSO, and a least-privilege workload identity. Built to the
+          SC-300 skill set.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../" class="active">Projects & Labs</a>
+        <a href="../../#guides">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Identity Lab</p>
+        <h2>Hybrid IAM Lab in Microsoft Entra ID</h2>
+
+        <p>
+          I built a complete identity and access management environment from an empty
+          Microsoft Entra ID tenant, for a fictional company I called Mateescu Industries.
+          The goal was to practise identity the way it is actually run and defended, not just
+          administered: design the directory, run the user lifecycle, enforce access controls,
+          govern privilege, and understand how each part is attacked and detected.
+        </p>
+
+        <p>
+          The lab was inspired by the four classic IAM failure modes &mdash; over-privilege,
+          stale credentials, over-permissive roles, and no change visibility &mdash; and rebuilds
+          each one on Microsoft identity. It maps across all four SC-300 (Identity and Access
+          Administrator) domains, and every phase was validated with evidence rather than
+          assumed to work.
+        </p>
+
+        <p>
+          This lab runs in a throwaway tenant with fictional users, so the screenshots below
+          show a disposable environment rather than any production system.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Project Snapshot</p>
+        <h2>Overview</h2>
+
+        <div class="grid">
+          <div class="card">
+            <h3>What I Built</h3>
+            <ul>
+              <li>Six attribute-driven dynamic department groups</li>
+              <li>Joiner, mover and leaver lifecycle, end to end</li>
+              <li>MFA, Conditional Access and SSPR</li>
+              <li>A tested break-glass emergency-access account</li>
+              <li>PIM, access reviews and entitlement management</li>
+              <li>SAML SSO on an enterprise application</li>
+              <li>A least-privilege workload identity (app registration)</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Skills Demonstrated</h3>
+            <ul>
+              <li>RBAC and attribute-based access design</li>
+              <li>Identity lifecycle automation and deprovisioning</li>
+              <li>Zero-trust access controls and MFA strategy</li>
+              <li>Privileged access management and least privilege</li>
+              <li>Identity governance and recertification</li>
+              <li>Attack / detect / harden thinking on each control</li>
+              <li>SC-300 skill set, hands-on</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Approach</p>
+        <h2>Build, Attack, Detect, Harden</h2>
+
+        <p>
+          I treated every control the same way: build it correctly, understand how an attacker
+          abuses it, identify the log or event that detects the abuse, and apply the hardening
+          that closes it. That framing runs through all six phases below, because an IAM
+          engineer is expected to run identity <em>and</em> defend it, not just configure it.
+        </p>
+      </section>
+
+      <!-- PHASE 1 -->
+      <section class="content-section">
+        <p class="section-label">Phase 1 &middot; Foundation</p>
+        <h2>Dynamic Department Groups (RBAC)</h2>
+
+        <p>
+          I created six security groups &mdash; HR, IT, Engineering, Customer Support,
+          Warehouse and Finance &mdash; with <strong>dynamic membership</strong> driven by each
+          user's department attribute. Access follows the attribute: set a user's department and
+          they land in the right group automatically, with no manual membership changes. Every
+          group has an owner and a description stating its purpose, rule and access, and the
+          sensitive groups (HR and Finance) are flagged for priority review.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Design</h3>
+            <ul>
+              <li>Rule: <code>user.department -eq "&lt;dept&gt;"</code></li>
+              <li>Group-based access instead of per-user permissions</li>
+              <li>Documented owner and purpose on every group</li>
+              <li>HR and Finance tagged sensitive</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security Angle</h3>
+            <ul>
+              <li><strong>Abuse:</strong> group sprawl and nested groups hide excess access</li>
+              <li><strong>Detect:</strong> Entra audit log "Add member to group" events</li>
+              <li><strong>Harden:</strong> attribute-driven membership, documented owners, access reviews</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tags">
+          Microsoft Entra ID • Dynamic Groups • RBAC • Attribute-Based Access • Group-Based Licensing
+        </p>
+
+        <figure class="evidence">
+          <img src="img/01-dynamic-groups.png" alt="Six dynamic department security groups in Microsoft Entra ID" />
+          <figcaption>Six dynamic department groups, each Security type with attribute-based membership.</figcaption>
+        </figure>
+      </section>
+
+      <!-- PHASE 2 -->
+      <section class="content-section">
+        <p class="section-label">Phase 2 &middot; Lifecycle</p>
+        <h2>Joiner, Mover, Leaver</h2>
+
+        <p>
+          I ran the full identity lifecycle end to end. A <strong>joiner</strong> is created with
+          a department and drops into the correct group automatically, inheriting access and a
+          licence. A <strong>mover</strong> who changes department is re-scoped in both directions
+          &mdash; new access granted, old access removed &mdash; just by changing one attribute.
+          A <strong>leaver</strong> is disabled, their sessions revoked, their licences reclaimed,
+          and their department cleared so they drop out of every group.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Leaver Sequence</h3>
+            <ul>
+              <li>Block sign-in (disable account)</li>
+              <li>Revoke sessions &mdash; invalidates refresh tokens</li>
+              <li>Remove licences (reclaim spend)</li>
+              <li>Clear department &rarr; drops from dynamic groups</li>
+              <li>Retain, then delete after the retention window</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security Angle</h3>
+            <ul>
+              <li><strong>Abuse:</strong> un-deprovisioned leavers and over-accessed movers are the top identity attack surface</li>
+              <li><strong>Detect:</strong> sign-in attempts against disabled accounts; audit-log group changes</li>
+              <li><strong>Harden:</strong> revoke tokens on exit (a disable alone leaves sessions live); reclaim access by attribute</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tags">
+          Identity Lifecycle • Joiner-Mover-Leaver • Deprovisioning • Token Revocation • Least Privilege
+        </p>
+
+        <figure class="evidence">
+          <img src="img/02-dynamic-membership.png" alt="A new user automatically added to their department group" />
+          <figcaption>Joiner: a new user lands in their department group automatically via the dynamic rule.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/03-mover.png" alt="A user moved between departments, re-scoped automatically" />
+          <figcaption>Mover: changing the department attribute re-scopes group membership both ways.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/04-leaver.png" alt="A leaver fully deprovisioned: disabled, no groups, no roles, no licences" />
+          <figcaption>Leaver: account disabled, zero group memberships, zero roles, zero licences.</figcaption>
+        </figure>
+      </section>
+
+      <!-- PHASE 3 -->
+      <section class="content-section">
+        <p class="section-label">Phase 3 &middot; Access Control</p>
+        <h2>MFA, Conditional Access, SSPR &amp; Break-Glass</h2>
+
+        <p>
+          I hardened authentication and enforced it with Conditional Access. The authentication
+          methods policy allows phishing-resistant passkeys and Microsoft Authenticator, and
+          disables the weak methods (SMS, voice, email OTP). Two Conditional Access policies were
+          deployed in report-only first, then enforced: one requires MFA for all users, the other
+          blocks legacy authentication. SSPR is enabled with two methods and no security questions.
+        </p>
+
+        <p>
+          Before enforcing anything, I built a <strong>break-glass emergency-access account</strong>,
+          excluded it from Conditional Access and the registration campaign, and then
+          <strong>tested it</strong> &mdash; the sign-in log confirmed the policy did not apply to it
+          (&ldquo;Not matched: Group exclusion&rdquo;). An untested emergency account is worse than
+          none, because you only discover it fails at the moment you need it.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Controls</h3>
+            <ul>
+              <li>Passkey (FIDO2) + Authenticator on; SMS / voice / email OTP off</li>
+              <li>CA01 &mdash; require MFA, all users (break-glass excluded)</li>
+              <li>CA02 &mdash; block legacy authentication</li>
+              <li>Report-only &rarr; reviewed &rarr; enforced</li>
+              <li>SSPR: two methods, no security questions, notify on reset</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security Angle</h3>
+            <ul>
+              <li><strong>Abuse:</strong> password spray and legacy-auth bypass defeat password-only sign-in</li>
+              <li><strong>Detect:</strong> sign-in logs &mdash; failures across many accounts from one IP; legacy-auth client sign-ins</li>
+              <li><strong>Harden:</strong> number-matching MFA, block legacy auth, phishing-resistant methods for admins</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tags">
+          MFA • Conditional Access • Passkeys (FIDO2) • SSPR • Break-Glass • Zero Trust
+        </p>
+
+        <figure class="evidence">
+          <img src="img/05-auth-methods.png" alt="Authentication methods: passkey and Authenticator enabled, SMS disabled" />
+          <figcaption>Authentication methods hardened &mdash; strong methods on, weak methods off.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/06-conditional-access.png" alt="Conditional Access policies for MFA and blocking legacy authentication" />
+          <figcaption>Conditional Access: require MFA and block legacy authentication.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/07-breakglass-exclusion.png" alt="Sign-in log showing the MFA policy was not applied to the break-glass account due to group exclusion" />
+          <figcaption>Break-glass validated: the MFA policy shows &ldquo;Not matched: Group exclusion&rdquo;.</figcaption>
+        </figure>
+      </section>
+
+      <!-- PHASE 4 -->
+      <section class="content-section">
+        <p class="section-label">Phase 4 &middot; Applications</p>
+        <h2>Single Sign-On (SAML)</h2>
+
+        <p>
+          I configured SAML single sign-on on an enterprise application, assigned access through
+          a department group rather than to individual users, and required assignment so only
+          assigned users reach the app. SSO centralises authentication: one login, with MFA and
+          Conditional Access enforced once, access granted by group, and every sign-in audited.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Configured</h3>
+            <ul>
+              <li>SAML SSO (Identifier, Reply URL, Sign-on URL)</li>
+              <li>Claims mapping (Name ID = userprincipalname)</li>
+              <li>Group-based app assignment</li>
+              <li>Assignment required</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security Angle</h3>
+            <ul>
+              <li><strong>Abuse:</strong> Golden SAML (forged assertions from a stolen signing key); reply-URL tampering</li>
+              <li><strong>Detect:</strong> audit-log changes to SSO config &mdash; a new reply URL or signing certificate</li>
+              <li><strong>Harden:</strong> protect and rotate the signing cert, pin the reply URL, require assignment, enforce MFA</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tags">
+          SSO • SAML • Enterprise Applications • Claims Mapping • Group-Based Assignment
+        </p>
+
+        <figure class="evidence">
+          <img src="img/08-sso-saml.png" alt="SAML single sign-on configured on an enterprise application" />
+          <figcaption>SAML SSO configured with claims and an active token-signing certificate.</figcaption>
+        </figure>
+      </section>
+
+      <!-- PHASE 5 -->
+      <section class="content-section">
+        <p class="section-label">Phase 5 &middot; Governance</p>
+        <h2>PIM, Access Reviews &amp; Entitlement Management</h2>
+
+        <p>
+          This is the governance layer and the hardest SC-300 domain. I first created the problem
+          &mdash; a standing Global Administrator assignment on a user who only needed helpdesk-level
+          access &mdash; then remediated it with <strong>Privileged Identity Management</strong>: the
+          standing Global Admin was removed and replaced with an <em>eligible</em> User Administrator
+          role (least privilege plus just-in-time), requiring MFA, a justification, approval and a
+          four-hour activation cap.
+        </p>
+
+        <p>
+          I set up a quarterly <strong>access review</strong> to recertify membership of the
+          break-glass exclusion group &mdash; the most dangerous group in the tenant, since anyone
+          in it bypasses MFA &mdash; and built an <strong>entitlement management</strong> access
+          package so users request project access through an approved, time-boxed, auditable
+          workflow instead of being added by hand.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Governance Controls</h3>
+            <ul>
+              <li>PIM: standing Global Admin &rarr; eligible least-privilege role</li>
+              <li>Activation: MFA + justification + approval + 4-hour cap</li>
+              <li>Quarterly access review of the MFA-bypass group</li>
+              <li>Self-service access package with approval and 90-day expiry</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security Angle</h3>
+            <ul>
+              <li><strong>Abuse:</strong> standing admin means one compromise owns the tenant; access creep over time</li>
+              <li><strong>Detect:</strong> PIM audit log on every activation; audit-log role changes</li>
+              <li><strong>Harden:</strong> no standing privilege, JIT elevation, recurring recertification, fail-closed defaults</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tags">
+          PIM • Just-In-Time Access • Access Reviews • Entitlement Management • Least Privilege • Identity Governance
+        </p>
+
+        <figure class="evidence">
+          <img src="img/09-pim-eligible.png" alt="PIM eligible, time-bound User Administrator assignment replacing standing Global Admin" />
+          <figcaption>PIM: standing Global Admin replaced with an eligible, time-bound User Administrator role.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/10-access-review.png" alt="Quarterly access review scheduled on the emergency-access group" />
+          <figcaption>Quarterly access review recertifying the break-glass exclusion group.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/11-access-package.png" alt="Entitlement management access package for self-service, approved, time-boxed access" />
+          <figcaption>Entitlement management: a self-service access package with approval and expiry.</figcaption>
+        </figure>
+      </section>
+
+      <!-- PHASE 6 -->
+      <section class="content-section">
+        <p class="section-label">Phase 6 &middot; Workload Identity</p>
+        <h2>Least-Privilege App Registration</h2>
+
+        <p>
+          Identity is not only human. I registered an application (a service identity), removed the
+          default delegated permission it did not need, and granted it only a single read-only
+          Microsoft Graph application permission. This is the Microsoft equivalent of an
+          over-permissioned cloud role &mdash; an app with excessive Graph permissions can escalate
+          to tenant takeover &mdash; so the whole point was least privilege for a non-human identity.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Configured</h3>
+            <ul>
+              <li>Single-tenant app registration</li>
+              <li>Removed the unused delegated permission</li>
+              <li>Granted only <code>User.Read.All</code> (application, read-only)</li>
+              <li>No client secret (certificate / managed identity preferred)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security Angle</h3>
+            <ul>
+              <li><strong>Abuse:</strong> over-permissioned apps escalate; leaked secrets give silent persistent access; illicit consent grants</li>
+              <li><strong>Detect:</strong> audit log on permission grants, consent events and credential additions</li>
+              <li><strong>Harden:</strong> least-privilege Graph scopes, short-lived secrets or managed identities, restrict app registration and consent</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tags">
+          Workload Identity • App Registration • Microsoft Graph • Least Privilege • Service Principals
+        </p>
+
+        <figure class="evidence">
+          <img src="img/12-workload-identity.png" alt="App registration with a single least-privilege Microsoft Graph application permission, admin-consented" />
+          <figcaption>Workload identity with one least-privilege Graph permission, admin-consented.</figcaption>
+        </figure>
+      </section>
+
+      <!-- CAVEAT -->
+      <section class="content-section">
+        <p class="section-label">Scope &amp; Honesty</p>
+        <h2>Lab vs Production</h2>
+
+        <p>
+          A few things were simplified because this is a lab in a trial tenant, and it is worth
+          being clear about them:
+        </p>
+
+        <div class="list">
+          <p>
+            <strong>Licensing:</strong> I assigned licences directly to users because the portal
+            routed group-based licensing elsewhere. In production, group-based licensing is the
+            correct choice &mdash; it makes offboarding atomic, reclaiming the licence the moment
+            the group membership drops.
+          </p>
+          <p>
+            <strong>Hybrid identity:</strong> the lab is cloud-only. A full build would add an
+            on-premises Active Directory synced to Entra ID, which I have done separately in my
+            Windows Server 2022 domain controller migration project.
+          </p>
+          <p>
+            <strong>Break-glass fail-closed:</strong> the access review on the emergency-access
+            group was set to fail closed, but I noted this is the one group where that can backfire,
+            since auto-removal could strip the break-glass account's own exclusion.
+          </p>
+        </div>
+      </section>
+
+      <!-- VALIDATION -->
+      <section class="content-section">
+        <p class="section-label">Validation</p>
+        <h2>What I Proved</h2>
+
+        <p>
+          Every phase was validated rather than assumed. The dynamic groups were confirmed to
+          populate automatically, the mover and leaver flows were checked in the directory, the
+          break-glass exclusion was proven in the sign-in logs, and the PIM remediation was
+          confirmed by the before-and-after role assignments. The result is a working identity
+          environment that demonstrates the full SC-300 skill set &mdash; design, lifecycle,
+          access control, governance, applications and workload identity &mdash; with the security
+          reasoning behind each control.
+        </p>
+
+        <p class="tags">
+          SC-300 • Microsoft Entra ID • Identity &amp; Access Management • Zero Trust • Identity Governance
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
