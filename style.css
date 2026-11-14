@@ -497,3 +497,10 @@ a { color: #f59e0b; }
   }
   .content table.spec td:first-child { white-space: normal; }
 }
+
+/* Guide grid: let columns shrink to fit the content column. Plain 1fr columns
+   cannot go narrower than their longest word, which pushed the grid past the
+   right edge. auto-fill picks the column count from the space available. */
+.guide-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.guide-card, .guide-text { min-width: 0; }
+.guide-text h3 { overflow-wrap: break-word; }

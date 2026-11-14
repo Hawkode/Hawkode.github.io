@@ -20,7 +20,7 @@
 
       <section class="sidebar-block intro">
         <h1>Alex Mateescu</h1>
-        <p class="role">Infrastructure, Networking & Security</p>
+        <p class="role">Identity &amp; Infrastructure Security</p>
 
         <div class="contact">
           <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
@@ -48,9 +48,8 @@
       <section class="sidebar-block">
         <h2>About</h2>
         <p>
-          I use this space to document technical projects, troubleshooting notes,
-          guides, and learning progress across infrastructure, networking, security,
-          and IT operations.
+          I'm Alex, an IT Service Engineer who secures hybrid identity and the infrastructure under
+          it. This page collects the identity, security and infrastructure work behind that.
         </p>
       </section>
 
@@ -73,44 +72,15 @@
         <h2>Projects & Labs</h2>
 
         <p>
-          A collection of infrastructure, networking, security, and documentation projects.
-          These include practical workplace projects, home lab exercises, and security-focused labs.
+          Identity, security and infrastructure work: projects from my job, home labs, and tools
+          with tests behind them. Identity and security come first because that is where I'm heading;
+          the infrastructure projects underneath are what that work is built on.
         </p>
       </section>
 
       <section class="content-section">
-        <p class="section-label">Infrastructure</p>
-        <h2>Infrastructure Projects</h2>
-
-       <article class="project">
-  <h3>Windows Server 2022 Domain Controller Migration</h3>
-
-  <p>
-    Built and configured a new Windows Server 2022 domain controller with
-    Active Directory Domain Services, DNS, DHCP, OU structure, replication checks,
-    and Windows 11 Pro domain join preparation.
-  </p>
-
-  <p>
-    Migrated shared data using Robocopy, migrated 50+ user accounts with ADManager Plus,
-    aligned on-premises user attributes with existing Microsoft Entra ID identities,
-    and deployed a PowerShell domain-join script through ManageEngine.
-  </p>
-
-  <p>
-    The project improved the Active Directory structure, reduced identity duplication risk,
-    and created a cleaner synced identity model between on-premises AD and Microsoft Entra ID.
-  </p>
-
-  <p class="tags">
-    Windows Server 2022 • Active Directory • OU Design • DNS • DHCP • Replication •
-    Microsoft Entra ID • ADManager Plus • ManageEngine • PowerShell • Robocopy
-  </p>
-
-  <p>
-    <a href="windows-server-2022-domain-migration/">Read project details</a>
-  </p>
-</article>
+        <p class="section-label">Identity</p>
+        <h2>Identity &amp; Access</h2>
 
         <article class="project">
           <h3>IAM Lab in Microsoft Entra ID</h3>
@@ -140,102 +110,6 @@
         </article>
 
         <article class="project">
-          <h3>Home Network Build with UniFi Dream Router 7</h3>
-
-          <p>
-            Rebuilt a home network on a UniFi Dream Router 7, connected directly to the fibre
-            ONT on a 900/900 Mbps line. Designed four VLANs with zone-based firewall rules,
-            content filtering and forced DNS for the kids' network, and a guest captive portal.
-          </p>
-
-          <p>
-            Added WireGuard remote access with no exposed services, with a roadmap to build and
-            manage my brothers' homes over site-to-site VPN.
-          </p>
-
-          <p class="tags">
-            UniFi &bull; Dream Router 7 &bull; VLANs &bull; Zone-Based Firewall &bull;
-            Content Filtering &bull; Captive Portal &bull; WireGuard &bull; Wi-Fi 7
-          </p>
-
-          <p>
-            <a href="home-network-udr7/">Read project details</a>
-          </p>
-        </article>
-
-        <article class="project">
-          <h3>IT Asset Inventory and Site Tracking System using Snipe-IT</h3>
-
-          <p>
-            Improved how IT equipment is tracked across multiple sites by organising assets,
-            accessories, users, physical desk locations, naming standards, lifecycle statuses,
-            site maps, and desk numbering.
-          </p>
-
-          <p>
-            This helped improve visibility of available equipment, assigned devices,
-            accessory stock, onboarding, offboarding, troubleshooting, audits, and
-            hardware lifecycle management.
-          </p>
-
-          <p class="tags">
-            Snipe-IT • Asset Management • Inventory • Site Tracking • Lifecycle Management
-          </p>
-
-          <p>
-            <a href="snipe-it-asset-inventory/">Read project details</a>
-          </p>
-        </article>
-
-        <article class="project">
-          <h3>Network Cabling & Port Mapping</h3>
-
-          <p>
-            Traced network cables from server room patch panels to wall sockets,
-            matched wall socket ports with patch panel ports, applied clear labels,
-            and documented port-to-location records.
-          </p>
-
-          <p>
-            This created a more reliable reference for troubleshooting, hardware setup,
-            office changes, asset tracking, and physical network visibility.
-          </p>
-
-          <p class="tags">
-            Networking • Patch Panels • Structured Cabling • Port Mapping • Site Documentation
-          </p>
-
-          <p>
-            <a href="network-cabling-port-mapping/">Read project details</a>
-          </p>
-        </article>
-
-        <article class="project">
-          <h3>Knowledge Base Development</h3>
-
-          <p>
-            At work I write and maintain the internal knowledge base: fixes for recurring support
-            and infrastructure issues, SOPs and troubleshooting steps. That content stays internal,
-            so the public version is my guides section: 15 practical write-ups in the same style,
-            from Entra Connect sync errors and patch management to Windows security event IDs and
-            SPF, DKIM and DMARC.
-          </p>
-
-          <p class="tags">
-            Knowledge Base &bull; SOPs &bull; Troubleshooting &bull; Technical Documentation
-          </p>
-
-          <p>
-            <a href="../guides/">Read the guides</a>
-          </p>
-        </article>
-      </section>
-
-      <section class="content-section">
-        <p class="section-label">Tools &amp; Automation</p>
-        <h2>Security Tools &amp; Automation</h2>
-
-        <article class="project">
           <h3>Entra IAM Automation</h3>
 
           <p>
@@ -253,44 +127,6 @@
           <p>
             <a href="https://github.com/Hawkode/entra-iam-automation" target="_blank" rel="noopener noreferrer">View on GitHub</a> &middot;
             <a href="entra-iam-lab/">IAM lab write-up</a>
-          </p>
-        </article>
-
-        <article class="project">
-          <h3>MailGuard</h3>
-
-          <p>
-            A phishing triage CLI for suspicious <code>.eml</code> files. It translates Microsoft
-            365's own verdict headers, checks SPF, DKIM and DMARC alignment, unwraps Safe Links,
-            and grades links, attachments and sender identity, each with a score and a
-            plain-English reason. It never opens a link or runs an attachment.
-          </p>
-
-          <p class="tags">
-            Python &bull; Email Security &bull; Phishing Triage &bull; SPF/DKIM/DMARC &bull;
-            Defender for Office 365 &bull; pytest
-          </p>
-
-          <p>
-            <a href="https://github.com/Hawkode/MailGuard" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-          </p>
-        </article>
-
-        <article class="project">
-          <h3>PasswordAnalyzer</h3>
-
-          <p>
-            A command-line password auditor: charset entropy, a Have I Been Pwned breach check
-            using k-anonymity (only five characters of the SHA-1 hash leave the machine), and a
-            strength rating with zxcvbn or a pattern-based fallback. Tested with pytest.
-          </p>
-
-          <p class="tags">
-            Python &bull; Password Security &bull; Have I Been Pwned &bull; k-Anonymity &bull; pytest
-          </p>
-
-          <p>
-            <a href="https://github.com/Hawkode/PasswordAnalyzer" target="_blank" rel="noopener noreferrer">View on GitHub</a>
           </p>
         </article>
       </section>
@@ -460,6 +296,175 @@
           </p>
         </article>
 
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Tools</p>
+        <h2>Security Tools</h2>
+
+        <article class="project">
+          <h3>MailGuard</h3>
+
+          <p>
+            A phishing triage CLI for suspicious <code>.eml</code> files. It translates Microsoft
+            365's own verdict headers, checks SPF, DKIM and DMARC alignment, unwraps Safe Links,
+            and grades links, attachments and sender identity, each with a score and a
+            plain-English reason. It never opens a link or runs an attachment.
+          </p>
+
+          <p class="tags">
+            Python &bull; Email Security &bull; Phishing Triage &bull; SPF/DKIM/DMARC &bull;
+            Defender for Office 365 &bull; pytest
+          </p>
+
+          <p>
+            <a href="https://github.com/Hawkode/MailGuard" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          </p>
+        </article>
+
+        <article class="project">
+          <h3>PasswordAnalyzer</h3>
+
+          <p>
+            A command-line password auditor: charset entropy, a Have I Been Pwned breach check
+            using k-anonymity (only five characters of the SHA-1 hash leave the machine), and a
+            strength rating with zxcvbn or a pattern-based fallback. Tested with pytest.
+          </p>
+
+          <p class="tags">
+            Python &bull; Password Security &bull; Have I Been Pwned &bull; k-Anonymity &bull; pytest
+          </p>
+
+          <p>
+            <a href="https://github.com/Hawkode/PasswordAnalyzer" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          </p>
+        </article>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Infrastructure</p>
+        <h2>Infrastructure Projects</h2>
+
+       <article class="project">
+  <h3>Windows Server 2022 Domain Controller Migration</h3>
+
+  <p>
+    Built and configured a new Windows Server 2022 domain controller with
+    Active Directory Domain Services, DNS, DHCP, OU structure, replication checks,
+    and Windows 11 Pro domain join preparation.
+  </p>
+
+  <p>
+    Migrated shared data using Robocopy, migrated 60+ user accounts with ADManager Plus,
+    aligned on-premises user attributes with existing Microsoft Entra ID identities,
+    and deployed a PowerShell domain-join script through ManageEngine.
+  </p>
+
+  <p>
+    The project improved the Active Directory structure, reduced identity duplication risk,
+    and created a cleaner synced identity model between on-premises AD and Microsoft Entra ID.
+  </p>
+
+  <p class="tags">
+    Windows Server 2022 • Active Directory • OU Design • DNS • DHCP • Replication •
+    Microsoft Entra ID • ADManager Plus • ManageEngine • PowerShell • Robocopy
+  </p>
+
+  <p>
+    <a href="windows-server-2022-domain-migration/">Read project details</a>
+  </p>
+</article>
+
+        <article class="project">
+          <h3>Home Network Build with UniFi Dream Router 7</h3>
+
+          <p>
+            Rebuilt a home network on a UniFi Dream Router 7, connected directly to the fibre
+            ONT on a 900/900 Mbps line. Designed four VLANs with zone-based firewall rules,
+            content filtering and forced DNS for the kids' network, and a guest captive portal.
+          </p>
+
+          <p>
+            Added WireGuard remote access with no exposed services, with a roadmap to build and
+            manage my brothers' homes over site-to-site VPN.
+          </p>
+
+          <p class="tags">
+            UniFi &bull; Dream Router 7 &bull; VLANs &bull; Zone-Based Firewall &bull;
+            Content Filtering &bull; Captive Portal &bull; WireGuard &bull; Wi-Fi 7
+          </p>
+
+          <p>
+            <a href="home-network-udr7/">Read project details</a>
+          </p>
+        </article>
+
+        <article class="project">
+          <h3>IT Asset Inventory and Site Tracking System using Snipe-IT</h3>
+
+          <p>
+            Improved how IT equipment is tracked across multiple sites by organising assets,
+            accessories, users, physical desk locations, naming standards, lifecycle statuses,
+            site maps, and desk numbering.
+          </p>
+
+          <p>
+            This helped improve visibility of available equipment, assigned devices,
+            accessory stock, onboarding, offboarding, troubleshooting, audits, and
+            hardware lifecycle management.
+          </p>
+
+          <p class="tags">
+            Snipe-IT • Asset Management • Inventory • Site Tracking • Lifecycle Management
+          </p>
+
+          <p>
+            <a href="snipe-it-asset-inventory/">Read project details</a>
+          </p>
+        </article>
+
+        <article class="project">
+          <h3>Network Cabling & Port Mapping</h3>
+
+          <p>
+            Traced network cables from server room patch panels to wall sockets,
+            matched wall socket ports with patch panel ports, applied clear labels,
+            and documented port-to-location records.
+          </p>
+
+          <p>
+            This created a more reliable reference for troubleshooting, hardware setup,
+            office changes, asset tracking, and physical network visibility.
+          </p>
+
+          <p class="tags">
+            Networking • Patch Panels • Structured Cabling • Port Mapping • Site Documentation
+          </p>
+
+          <p>
+            <a href="network-cabling-port-mapping/">Read project details</a>
+          </p>
+        </article>
+
+        <article class="project">
+          <h3>Knowledge Base Development</h3>
+
+          <p>
+            At work I write and maintain the internal knowledge base: fixes for recurring support
+            and infrastructure issues, SOPs and troubleshooting steps. That content stays internal,
+            so the public version is my guides section: 15 practical write-ups in the same style,
+            from Entra Connect sync errors and patch management to Windows security event IDs and
+            SPF, DKIM and DMARC.
+          </p>
+
+          <p class="tags">
+            Knowledge Base &bull; SOPs &bull; Troubleshooting &bull; Technical Documentation
+          </p>
+
+          <p>
+            <a href="../guides/">Read the guides</a>
+          </p>
+        </article>
       </section>
 
     </main>
