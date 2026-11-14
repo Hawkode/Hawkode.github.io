@@ -451,3 +451,49 @@ a { color: #f59e0b; }
 .sidebar h2 { color: #38bdf8; }
 .menu a:hover,
 .menu a.active { color: #38bdf8; border-left-color: #38bdf8; background: rgba(56, 189, 248, 0.08); }
+
+/* Series strip: links the three Windows Endpoint Security pages */
+.series-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: 0 0 22px;
+  padding: 10px 14px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.06);
+  font-size: 14px;
+}
+.series-strip .series-name {
+  width: 100%;
+  color: #38bdf8;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+.series-strip a { color: #f59e0b; text-decoration: none; }
+.series-strip a:hover { text-decoration: underline; }
+.series-strip .series-current { color: #bbf7d0; font-weight: 600; }
+.series-strip .series-sep { color: #64748b; }
+.series-strip .series-step {
+  display: inline-block;
+  min-width: 18px;
+  margin-right: 4px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: rgba(56, 189, 248, 0.18);
+  color: #bae6fd;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Narrow screens: spec tables scroll inside their own box instead of widening the page */
+@media (max-width: 700px) {
+  .content table.spec {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .content table.spec td:first-child { white-space: normal; }
+}

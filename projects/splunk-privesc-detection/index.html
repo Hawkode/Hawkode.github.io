@@ -145,6 +145,15 @@
         <p class="section-label">Security Lab</p>
         <h2>Detecting Privilege Escalation in Splunk</h2>
 
+        <nav class="series-strip" aria-label="Windows Endpoint Security series">
+          <span class="series-name">Windows Endpoint Security series</span>
+          <a href="../windows-privilege-escalation/"><span class="series-step">1</span> Attack: Privilege Escalation</a>
+          <span class="series-sep" aria-hidden="true">&#8594;</span>
+          <span class="series-current" aria-current="page"><span class="series-step">2</span> Detect: Splunk</span>
+          <span class="series-sep" aria-hidden="true">&#8594;</span>
+          <a href="../windows-health-monitor/"><span class="series-step">3</span> Harden: Health Monitor</a>
+        </nav>
+
         <p>
           This lab is the defender's half of my
           <a href="../windows-privilege-escalation/">Windows Privilege Escalation</a> write-up.
@@ -216,6 +225,7 @@
           <tr><td>Security log</td><td>4688 process creation with command line, 4697/7045 service install, 4672/4673 privilege use</td></tr>
           <tr><td>PowerShell Operational</td><td>4104 script-block logging</td></tr>
           <tr><td>System log</td><td>7045 new service</td></tr>
+          <tr><td>Application log</td><td>Posture findings and a heartbeat from <a href="../windows-health-monitor/">Windows Health Monitor</a>: Defender off (3006), firewall profile off (3008), logs cleared (3011), heartbeat (1000)</td></tr>
         </table>
 
         <p>

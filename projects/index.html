@@ -225,91 +225,118 @@
       </section>
 
       <section class="content-section">
+        <p class="section-label">Tools &amp; Automation</p>
+        <h2>Security Tools &amp; Automation</h2>
+
+        <article class="project">
+          <h3>Entra IAM Automation</h3>
+
+          <p>
+            PowerShell and Microsoft Graph scripts for joiners, movers and leavers in cloud-only
+            and hybrid (AD DS plus Entra Connect) tenants, read-only security reports (standing
+            admins, stale accounts, MFA registration, risky app permissions), and access review
+            campaigns with evidence. The automation behind the IAM lab.
+          </p>
+
+          <p class="tags">
+            PowerShell &bull; Microsoft Graph &bull; Entra ID &bull; Hybrid AD &bull; JML &bull;
+            Access Reviews &bull; PSScriptAnalyzer CI
+          </p>
+
+          <p>
+            <a href="https://github.com/Hawkode/entra-iam-automation" target="_blank" rel="noopener noreferrer">View on GitHub</a> &middot;
+            <a href="entra-iam-lab/">IAM lab write-up</a>
+          </p>
+        </article>
+
+        <article class="project">
+          <h3>MailGuard</h3>
+
+          <p>
+            A phishing triage CLI for suspicious <code>.eml</code> files. It translates Microsoft
+            365's own verdict headers, checks SPF, DKIM and DMARC alignment, unwraps Safe Links,
+            and grades links, attachments and sender identity, each with a score and a
+            plain-English reason. It never opens a link or runs an attachment.
+          </p>
+
+          <p class="tags">
+            Python &bull; Email Security &bull; Phishing Triage &bull; SPF/DKIM/DMARC &bull;
+            Defender for Office 365 &bull; pytest
+          </p>
+
+          <p>
+            <a href="https://github.com/Hawkode/MailGuard" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          </p>
+        </article>
+
+        <article class="project">
+          <h3>PasswordAnalyzer</h3>
+
+          <p>
+            A command-line password auditor: charset entropy, a Have I Been Pwned breach check
+            using k-anonymity (only five characters of the SHA-1 hash leave the machine), and a
+            strength rating with zxcvbn or a pattern-based fallback. Tested with pytest.
+          </p>
+
+          <p class="tags">
+            Python &bull; Password Security &bull; Have I Been Pwned &bull; k-Anonymity &bull; pytest
+          </p>
+
+          <p>
+            <a href="https://github.com/Hawkode/PasswordAnalyzer" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          </p>
+        </article>
+      </section>
+
+      <section class="content-section">
         <p class="section-label">Security Labs</p>
         <h2>Security & Networking Labs</h2>
 
         <article class="project">
-          <h3>Windows Privilege Escalation</h3>
+          <h3>Windows Endpoint Security: Attack, Detect, Harden</h3>
 
           <p>
-            A hands-on study of Windows local privilege escalation: the common vectors,
-            the Windows event IDs and Sysmon signals that detect each, and the configuration
-            that closes them. Attack, detect, harden.
+            A three-part series on one Windows host, taken from both sides: how an attacker
+            escalates, how Splunk catches it, and a tool that keeps the endpoint's defences
+            honest and reports to the same SIEM.
           </p>
+
+          <ul>
+            <li>
+              <strong>1. Attack:</strong> <a href="windows-privilege-escalation/">Windows Privilege Escalation</a>.
+              Common local escalation vectors, the event IDs and Sysmon signals for each, and the
+              configuration that closes them.
+            </li>
+            <li>
+              <strong>2. Detect:</strong> <a href="splunk-privesc-detection/">Detecting Privilege Escalation in Splunk</a>.
+              The same techniques as SPL searches and scheduled alerts, mapped to MITRE ATT&amp;CK.
+            </li>
+            <li>
+              <strong>3. Harden:</strong> <a href="windows-health-monitor/">Windows Health Monitor</a>.
+              A tested PowerShell module that checks Defender, firewall, patching, BitLocker and
+              log clearing, writes findings and a heartbeat to the event log, and refuses to run as
+              SYSTEM from a folder users can change.
+              (<a href="https://github.com/Hawkode/Windows-Health-Monitor" target="_blank" rel="noopener noreferrer">GitHub</a>)
+            </li>
+          </ul>
 
           <p class="tags">
-            Windows &bull; Privilege Escalation &bull; Detection &bull; Sysmon &bull; Event IDs &bull; Hardening
-          </p>
-
-          <p>
-            <a href="windows-privilege-escalation/">Read project details</a>
+            Windows &bull; Privilege Escalation &bull; Splunk &bull; Sysmon &bull; PowerShell &bull;
+            Pester &bull; Endpoint Hardening &bull; MITRE ATT&amp;CK
           </p>
         </article>
 
         <article class="project">
-          <h3>Detecting Privilege Escalation in Splunk</h3>
+          <h3>Network Recon Lab: Nmap and a Python Scanner</h3>
 
           <p>
-            The defender's half of the privilege-escalation lab: turning those techniques into
-            Splunk detections: the data sources, the SPL searches, saved alerts, and the
-            MITRE ATT&CK mapping for each.
+            Service discovery and NSE vulnerability checks with Nmap against lab hosts, plus a
+            small, tested Python TCP connect scanner that shows what a port scan does at the socket
+            level, and how both look to a defender.
           </p>
 
           <p class="tags">
-            Splunk &bull; SPL &bull; Detection Engineering &bull; Sysmon &bull; MITRE ATT&CK &bull; SIEM
-          </p>
-
-          <p>
-            <a href="splunk-privesc-detection/">Read project details</a>
-          </p>
-        </article>
-
-        <article class="project">
-          <h3>Penetration Testing Labs</h3>
-
-          <p>
-            A collection of penetration testing lab notes and exercises focused on
-            reconnaissance, enumeration, vulnerability discovery, exploitation practice,
-            and reporting.
-          </p>
-
-          <p class="tags">
-            Kali Linux • Nmap • Metasploit • Web Testing • Lab Notes
-          </p>
-
-          <p>
-            <a href="https://github.com/Hawkode/penetration-testing-labs" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-          </p>
-        </article>
-
-        <article class="project">
-          <h3>Custom Port Scanner</h3>
-
-          <p>
-            A Python-based port scanner project used to practise socket programming,
-            open port detection, and basic network reconnaissance logic.
-          </p>
-
-          <p class="tags">
-            Python • Networking • Port Scanning • Sockets
-          </p>
-
-          <p>
-            <a href="https://github.com/Hawkode/custom-port-scanner" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-          </p>
-        </article>
-
-        <article class="project">
-          <h3>Nmap Security Assessment</h3>
-
-          <p>
-            A full assessment workflow with Nmap (host discovery, service and version detection,
-            and vulnerability script checks), plus how a scan appears to a defender and how to
-            detect it.
-          </p>
-
-          <p class="tags">
-            Nmap • Reconnaissance • Service Detection • Detection • Security Assessment
+            Nmap &bull; NSE &bull; Python &bull; Sockets &bull; Reconnaissance &bull; Detection
           </p>
 
           <p>
@@ -319,15 +346,16 @@
         </article>
 
         <article class="project">
-          <h3>Splunk Security Logs</h3>
+          <h3>Splunk Security Log Collection</h3>
 
           <p>
-            Practised analysing security logs with Splunk, searching events, filtering data,
-            and understanding log activity from a security monitoring view.
+            Getting Windows and Linux security logs into Splunk: Universal Forwarder inputs,
+            rsyslog over TCP, auditd for command execution, and starter searches for failed logons
+            and SSH brute force. The groundwork for the Splunk detection lab above.
           </p>
 
           <p class="tags">
-            Splunk • Logs • SIEM Basics • Security Monitoring
+            Splunk &bull; Universal Forwarder &bull; rsyslog &bull; auditd &bull; SPL &bull; SIEM
           </p>
 
           <p>
@@ -339,12 +367,13 @@
           <h3>Windows Defender Firewall Lab</h3>
 
           <p>
-            Lab focused on Windows Defender Firewall rules, traffic control,
-            inbound/outbound filtering, and host-based security configuration.
+            Profile-scoped inbound and outbound rules, the same rules in PowerShell, firewall
+            logging and the Security events (4946, 4950, 5157) that show rule changes and blocked
+            connections, and how I would deploy it through Group Policy.
           </p>
 
           <p class="tags">
-            Windows Defender Firewall • Host Security • Rules • Traffic Filtering
+            Windows Defender Firewall &bull; PowerShell &bull; Event IDs &bull; Group Policy &bull; Host Security
           </p>
 
           <p>
@@ -356,12 +385,13 @@
           <h3>Snort Lab</h3>
 
           <p>
-            Lab focused on intrusion detection concepts, Snort rules, network traffic
-            inspection, and alert review.
+            Snort 2.9 rules for ping, SSH connection attempts and SSH brute force, tested on live
+            traffic and a PCAP, then tightened: SYN-only matching, local SID ranges and a
+            <code>detection_filter</code> threshold to cut noise.
           </p>
 
           <p class="tags">
-            Snort • IDS • Network Monitoring • Alerts
+            Snort &bull; IDS &bull; Rule Writing &bull; PCAP Analysis &bull; Network Monitoring
           </p>
 
           <p>
@@ -373,12 +403,13 @@
           <h3>OpenVAS Vulnerability Scanning</h3>
 
           <p>
-            Vulnerability scanning lab using OpenVAS to identify exposed services,
-            review scan results, understand risk, and document mitigation steps.
+            Running and reading a Greenbone/OpenVAS scan against a lab target, then turning the
+            report into a fix order: severity, exploitability, exposure, and the Cyber Essentials
+            14-day window for high and critical issues.
           </p>
 
           <p class="tags">
-            OpenVAS • Vulnerability Scanning • Risk Review • Remediation
+            OpenVAS &bull; Greenbone &bull; Vulnerability Management &bull; Risk Prioritisation &bull; Remediation
           </p>
 
           <p>
@@ -387,15 +418,16 @@
         </article>
 
         <article class="project">
-          <h3>Penetration Testing Techniques - Metasploitable 2</h3>
+          <h3>Penetration Testing Lab: Metasploitable 2</h3>
 
           <p>
-            Lab focused on practising penetration testing techniques against
-            Metasploitable 2 in a controlled environment.
+            Exploiting PHP-CGI argument injection, the vsftpd 2.3.4 backdoor and SSH brute force
+            on a deliberately vulnerable VM, with screenshots, and for each attack how it works,
+            how it shows up in logs, and what would have prevented it.
           </p>
 
           <p class="tags">
-            Metasploitable 2 • Metasploit • Enumeration • Exploitation Practice
+            Metasploit &bull; Nmap &bull; Kali Linux &bull; Exploitation &bull; Detection &bull; Hardening
           </p>
 
           <p>
@@ -407,18 +439,20 @@
           <h3>Password Cracking Lab</h3>
 
           <p>
-            Lab focused on password security concepts, hash cracking practice,
-            password strength, and defensive awareness.
+            Recovering RAR5 archive passwords offline with John the Ripper and wordlists, and
+            why it worked: a slow hash doesn't save a dictionary password, and offline attacks
+            leave no logs.
           </p>
 
           <p class="tags">
-            Password Security • Hashes • Cracking Tools • Defensive Awareness
+            John the Ripper &bull; Hash Cracking &bull; Wordlists &bull; Password Policy
           </p>
 
           <p>
             <a href="https://github.com/Hawkode/Password-Cracking" target="_blank" rel="noopener noreferrer">View on GitHub</a>
           </p>
         </article>
+
       </section>
 
     </main>

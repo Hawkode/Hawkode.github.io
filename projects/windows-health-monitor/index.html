@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Windows Health Monitor: Endpoint Posture Checks | Alex Mateescu</title>
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    table.spec {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    table.spec th,
+    table.spec td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(34, 197, 94, 0.18);
+      vertical-align: top;
+    }
+
+    table.spec th { color: #bbf7d0; font-weight: 600; }
+    table.spec td:first-child { color: #86efac; white-space: nowrap; }
+
+    code {
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 13px;
+    }
+
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .visual-card {
+      background: rgba(34, 197, 94, 0.04);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    }
+
+    .visual-card h3 { margin-top: 0; margin-bottom: 12px; color: #bbf7d0; }
+    .visual-card p { margin-bottom: 0; font-size: 14px; }
+
+    .flow-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 18px;
+      border-radius: 8px;
+      background: #020617;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+    }
+
+    .console {
+      background: #0b1220;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      margin: 10px 0 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #cbd5e1;
+    }
+
+    .console .kw { color: #86efac; }
+    .console .fn { color: #7dd3fc; }
+    .console .cm { color: #64748b; }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">Infrastructure, Networking & Security</p>
+
+        <div class="contact">
+          <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/al3ksmatee" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" rel="noopener noreferrer" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Project</h2>
+        <p>
+          A PowerShell module that checks a Windows endpoint's health and security posture,
+          judges it against thresholds, and writes the findings to the event log for Splunk.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../" class="active">Projects & Labs</a>
+        <a href="../../#guides">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+        <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Security Tool</p>
+        <h2>Windows Health Monitor: Endpoint Posture Checks for the SIEM</h2>
+
+        <nav class="series-strip" aria-label="Windows Endpoint Security series">
+          <span class="series-name">Windows Endpoint Security series</span>
+          <a href="../windows-privilege-escalation/"><span class="series-step">1</span> Attack: Privilege Escalation</a>
+          <span class="series-sep" aria-hidden="true">&#8594;</span>
+          <a href="../splunk-privesc-detection/"><span class="series-step">2</span> Detect: Splunk</a>
+          <span class="series-sep" aria-hidden="true">&#8594;</span>
+          <span class="series-current" aria-current="page"><span class="series-step">3</span> Harden: Health Monitor</span>
+        </nav>
+
+        <p>
+          The third part of the series. The privilege-escalation lab showed how an attacker moves
+          up on a Windows host; the Splunk lab showed how to catch it. This module covers the
+          state of the host itself: is Defender actually on, are the firewall profiles up, is the
+          machine patching, has anyone cleared the logs. It checks, judges each result against a
+          threshold, and writes the findings to the Windows event log, where the same Splunk
+          forwarder picks them up.
+        </p>
+
+        <p>
+          <strong>Scope:</strong> a PowerShell module I rebuilt from a 2025 script. It is tested in
+          CI on Windows PowerShell 5.1 and PowerShell 7 (50 Pester tests), and run for real on my
+          own Windows 11 laptop, including as a SYSTEM scheduled task. All output on this page is
+          from that laptop. It is a lab and portfolio tool: lightweight and auditable, not a
+          replacement for an RMM or EDR.
+        </p>
+
+        <p>
+          <a href="https://github.com/Hawkode/Windows-Health-Monitor" target="_blank" rel="noopener noreferrer">Source on GitHub</a> &middot;
+          <a href="https://github.com/Hawkode/Windows-Health-Monitor/releases/tag/v2.0.0" target="_blank" rel="noopener noreferrer">Release v2.0.0</a>
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Design</p>
+        <h2>From Check to Alert</h2>
+
+        <p>
+          Collecting facts and judging them are separate steps. Collectors only gather data; a
+          pure function compares it with the thresholds. That split is what makes the logic
+          testable without a Windows host, and it means a saved snapshot can be judged again
+          later with different thresholds.
+        </p>
+
+        <svg class="flow-svg" viewBox="0 0 560 190" role="img" aria-label="Windows Health Monitor data flow diagram">
+          <g font-family="Arial">
+            <text x="12" y="28" fill="#bbf7d0" font-size="13">Collect &#8594; judge &#8594; write &#8594; forward &#8594; alert</text>
+
+            <rect x="12" y="64" width="98" height="56" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="24" y="86" fill="#d1fae5" font-size="12">12 collectors</text>
+            <text x="24" y="104" fill="#86efac" font-size="10">CIM, registry</text>
+
+            <rect x="132" y="64" width="98" height="56" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="144" y="86" fill="#d1fae5" font-size="12">Thresholds</text>
+            <text x="144" y="104" fill="#86efac" font-size="10">OK / Warn / Crit</text>
+
+            <rect x="252" y="40" width="112" height="44" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="264" y="60" fill="#d1fae5" font-size="12">JSONL + CSV</text>
+            <text x="264" y="75" fill="#86efac" font-size="10">ProgramData</text>
+
+            <rect x="252" y="100" width="112" height="44" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="264" y="120" fill="#d1fae5" font-size="12">Application log</text>
+            <text x="264" y="135" fill="#86efac" font-size="10">EID 1000-4012</text>
+
+            <rect x="386" y="100" width="76" height="44" rx="7" fill="#03130b" stroke="#4ade80" stroke-width="2"/>
+            <text x="398" y="120" fill="#d1fae5" font-size="12">Forwarder</text>
+            <text x="398" y="135" fill="#86efac" font-size="10">Splunk UF</text>
+
+            <rect x="484" y="100" width="64" height="44" rx="7" fill="#052e16" stroke="#22c55e" stroke-width="3"/>
+            <text x="496" y="122" fill="#bbf7d0" font-size="12" font-weight="bold">Alert</text>
+            <text x="496" y="136" fill="#86efac" font-size="10">SPL</text>
+
+            <g stroke="#22c55e" stroke-width="2" fill="none">
+              <path d="M110 92 L132 92"/>
+              <path d="M230 92 L242 92 L242 62 L252 62"/>
+              <path d="M242 92 L242 122 L252 122"/>
+              <path d="M364 122 L386 122"/>
+              <path d="M462 122 L484 122"/>
+            </g>
+            <g fill="#22c55e">
+              <path d="M130 88 l6 4 -6 4 z"/>
+              <path d="M250 58 l6 4 -6 4 z"/>
+              <path d="M250 118 l6 4 -6 4 z"/>
+              <path d="M384 118 l6 4 -6 4 z"/>
+              <path d="M482 118 l6 4 -6 4 z"/>
+            </g>
+
+            <text x="12" y="166" fill="#86efac" font-size="11">Runs every 15 minutes as SYSTEM from an admin-only folder.</text>
+            <text x="12" y="182" fill="#86efac" font-size="11">A check that fails to run reports Unknown, never OK.</text>
+          </g>
+        </svg>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Coverage</p>
+        <h2>What It Checks</h2>
+
+        <table class="spec">
+          <tr><th>Check</th><th>Source</th><th>Warning / Critical</th></tr>
+          <tr><td>CPU, memory, disk</td><td>CIM (<code>Win32_Processor</code>, <code>Win32_OperatingSystem</code>, fixed disks only)</td><td>85 / 95% used; 15 / 5% free</td></tr>
+          <tr><td>Uptime</td><td><code>LastBootUpTime</code></td><td>30 / 60 days: restart-dependent updates not applied</td></tr>
+          <tr><td>Network</td><td><code>Get-NetAdapter -Physical</code></td><td>Warning if no physical link is up</td></tr>
+          <tr><td>Defender</td><td><code>Get-MpComputerStatus</code></td><td>RTP off is Critical; Tamper Protection off is Warning; signatures 2 / 7 days</td></tr>
+          <tr><td>Firewall</td><td><code>Get-NetFirewallProfile -PolicyStore ActiveStore</code></td><td>Any profile off is Critical</td></tr>
+          <tr><td>Pending reboot</td><td>CBS and Windows Update registry keys</td><td>Warning</td></tr>
+          <tr><td>Patch age</td><td><code>Get-HotFix</code>, newest install</td><td>35 / 60 days</td></tr>
+          <tr><td>Logs cleared</td><td>Security 1102, System 104</td><td>Any in 24 hours is Critical</td></tr>
+          <tr><td>BitLocker</td><td><code>Win32_EncryptableVolume</code> on the OS drive</td><td>Protection off is Critical</td></tr>
+        </table>
+
+        <p>
+          Two details carry most of the value. <strong>ActiveStore</strong> reads the effective
+          firewall policy, including Group Policy; the default store shows local settings only and
+          can report a profile as on when GPO turned it off. And <strong>Unknown is never OK</strong>:
+          if a collector fails (module removed, access denied, not elevated), that check is
+          reported as Unknown with the reason. An attacker who breaks a check raises a flag instead
+          of producing a clean report.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Evidence</p>
+        <h2>A Real Run</h2>
+
+        <p>
+          From my laptop, elevated, with my threshold override applied (see the BitLocker
+          finding below). The one Warning is a Windows Update waiting for a restart.
+        </p>
+
+        <div class="console" style="white-space:pre;overflow-x:auto;">
+<span class="kw">PS&gt;</span> <span class="fn">Get-HealthSnapshot</span> | <span class="fn">Test-HealthSnapshot</span> -Threshold $override | <span class="fn">Format-Table</span> Check, Status, Message
+
+Check             Status  Message
+-----             ------  -------
+Cpu               OK      CPU load 4% (1-second sample; one high reading is not a trend).
+Memory            OK      Memory 73.9% used (4.02 GB free of 15.42 GB).
+Disk              OK      C: 59.2% free (281.5 GB of 475.9 GB).
+Uptime            OK      Up 2.07 days since 2026-11-11T18:41:46.5000000Z.
+Network           OK      1 physical adapter(s) up: WiFi.
+DefenderRealTime  OK      Real-time protection on, Tamper Protection True (mode: Normal).
+DefenderSignature OK      Antivirus signatures are 0 day(s) old.
+Firewall          OK      All firewall profiles enabled (effective policy).
+PendingReboot     <span class="kw">Warning</span> Reboot pending: WindowsUpdate.
+PatchAge          OK      Last update KB5132061 installed 3 day(s) ago.
+LogCleared        OK      No event log clearing in the last 24 h.
+BitLocker         OK      Not required by threshold config.
+        </div>
+
+        <p>
+          And what the SYSTEM task wrote to the Application log on its first scheduled run, before
+          the override, when BitLocker was still a Critical:
+        </p>
+
+        <div class="console" style="white-space:pre;overflow-x:auto;">
+<span class="kw">PS&gt;</span> <span class="fn">Get-WinEvent</span> -FilterHashtable @{ LogName='Application'; ProviderName='WindowsHealthMonitor' }
+
+TimeCreated          Id   Level        Message
+-----------          --   -----        -------
+13/11/2026 20:16:40  3012 Error        BitLocker Critical: BitLocker protection OFF for C:
+13/11/2026 20:16:40  2009 Warning      PendingReboot Warning: Reboot pending: WindowsUpdate.
+13/11/2026 20:16:40  1000 Information  Health run complete. Worst status: Critical. Critical: 1, Warning: 1, Unknown: 0.
+        </div>
+        <p style="font-size:13px;color:#86efac;margin-top:-2px;">
+          Event ID = severity base (1000 OK, 2000 Warning, 3000 Critical, 4000 Unknown) + check
+          number, so 3012 always means "BitLocker, Critical". EID 1000 is a heartbeat written on
+          every run.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Detection</p>
+        <h2>The Splunk Side</h2>
+
+        <div class="visual-grid">
+          <div class="visual-card">
+            <div class="console">
+<span class="cm"># Critical findings, last 24 hours</span>
+<span class="kw">index</span>=wineventlog <span class="kw">SourceName</span>="WindowsHealthMonitor"
+       <span class="kw">EventCode</span>&gt;=3000 <span class="kw">EventCode</span>&lt;4000
+| <span class="fn">stats</span> latest(_time) AS last_seen
+        values(Message) AS findings BY host
+            </div>
+            <h3>Posture alerts</h3>
+            <p>
+              Defender off (3006), a firewall profile off (3008) and logs cleared (3011) are the
+              ones worth paging on. The rest feed a daily report.
+            </p>
+          </div>
+
+          <div class="visual-card">
+            <div class="console">
+<span class="cm"># Monitor went quiet: no heartbeat in 45 min</span>
+<span class="kw">index</span>=wineventlog <span class="kw">SourceName</span>="WindowsHealthMonitor"
+       <span class="kw">EventCode</span>=1000 earliest=-7d
+| <span class="fn">stats</span> latest(_time) AS last_heartbeat BY host
+| <span class="fn">where</span> last_heartbeat &lt; relative_time(now(), "-45m")
+            </div>
+            <h3>Heartbeat gap</h3>
+            <p>
+              An attacker with admin rights can stop the task. They can't make it keep sending
+              heartbeats. The gap is the control for that, and it only works off the host.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Attack, Detect, Harden</p>
+        <h2>What an Attacker Does to These Checks</h2>
+
+        <table class="spec">
+          <tr><th>Technique</th><th>Module reports</th><th>Native evidence</th><th>ATT&CK</th></tr>
+          <tr><td>Turn off Defender RTP</td><td>3006 Critical</td><td>Defender Operational 5001, 5007</td><td>T1562.001</td></tr>
+          <tr><td>Turn off a firewall profile</td><td>3008 Critical</td><td>Security 4950 (needs MPSSVC auditing)</td><td>T1562.004</td></tr>
+          <tr><td>Clear event logs</td><td>3011 Critical</td><td>Security 1102, System 104</td><td>T1070.001</td></tr>
+          <tr><td>Stop or delete the monitor</td><td>Heartbeat gap</td><td>Security 4699, Task Scheduler 141</td><td>T1562.001</td></tr>
+          <tr><td>Swap the files a SYSTEM task loads</td><td>Refuses to register</td><td>Security 4698 / 4702</td><td>T1053.005</td></tr>
+        </table>
+
+        <p>
+          The last row is the one I built defences for in the module itself. A SYSTEM scheduled
+          task that loads code from a folder an ordinary user can write to is a direct privilege
+          escalation: replace the file, wait for the next run. It is the same misconfiguration
+          class as the weak service permissions in the
+          <a href="../windows-privilege-escalation/">privilege-escalation lab</a>. So
+          <code>Register-HealthMonitorTask</code> checks every file SYSTEM will load and refuses to
+          register if anyone other than SYSTEM, Administrators or TrustedInstaller can write to it,
+          <em>or owns it</em>: an owner can always rewrite the permissions.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Findings</p>
+        <h2>What It Found on a Real Machine</h2>
+
+        <div class="visual-grid">
+          <div class="visual-card">
+            <h3>Task creation was not audited</h3>
+            <p>
+              After registering the task, Security EID 4698 (scheduled task created) was missing:
+              "Audit Other Object Access Events" is off by default on Windows 11. An attacker's
+              persistence task would have left no trace either. Fix:
+              <code>auditpol /set /subcategory:"{0CCE9227-69AE-11D9-BED3-505054503030}" /success:enable</code>,
+              or the same setting through GPO Advanced Audit Policy in a domain.
+            </p>
+          </div>
+
+          <div class="visual-card">
+            <h3>BitLocker was never enabled</h3>
+            <p>
+              <code>manage-bde -status</code> confirmed the Critical: fully decrypted, no key
+              protectors. It is a personal device, so I accepted the risk, but recorded it in a
+              threshold override (<code>RequireBitLocker = $false</code>) installed under the
+              same admin-only ACL, instead of leaving a permanent red that teaches you to
+              ignore red.
+            </p>
+          </div>
+        </div>
+
+        <div class="visual-card" style="margin-top:20px;">
+          <h3>The guard caught a bug in my own installer</h3>
+          <p>
+            The installer locked down folders with <code>icacls /inheritance:r /grant:r</code>. In
+            CI, the permission guard refused a folder that should have passed, and the ACL dump
+            showed why: <code>runneradmin:(OI)(CI)(F)</code> with no <code>(I)</code> flag. That
+            icacls pattern removes inherited entries and replaces the accounts it names, but an
+            explicit entry for any other account survives. On a real machine, that would have left
+            the module writable by the admin account that installed it, from an unelevated
+            process. The fix sets the exact descriptor instead
+            (<code>O:BAD:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;BU)</code>),
+            and the installer and the task now share that one function, so CI tests the code that
+            actually ships.
+          </p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Engineering</p>
+        <h2>How It Is Built</h2>
+
+        <ul>
+          <li>PowerShell module, compatible with Windows PowerShell 5.1 and PowerShell 7, no dependencies.</li>
+          <li>50 Pester tests: fixture-driven unit tests for the judging logic, plus Windows integration tests (event log, ACL guard, task registration with <code>-WhatIf</code>).</li>
+          <li>GitHub Actions: PSScriptAnalyzer on Ubuntu, Pester on Windows in both PowerShell editions.</li>
+          <li>Output: JSONL (full snapshot), CSV (one summary row per run), Application event log with stable IDs.</li>
+          <li>The task command line is plain <code>-Command</code> with full paths, not <code>-EncodedCommand</code>, so it reads clearly in 4688 and Sysmon process logs and does not look like an attacker's encoded launcher.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Reflection</p>
+        <h2>What This Project Demonstrates</h2>
+
+        <p>
+          The original was a 2025 script with a bug that made every memory figure 1024 times too
+          small, no error handling and an endless loop. Rebuilding it properly meant treating a
+          monitoring tool as something an attacker will target: failures must be visible,
+          silence must be alertable, and the tool must not become the privilege escalation it is
+          meant to spot. CI caught two bugs that would have broken it on real machines, and the
+          real-machine run found two gaps CI never could. For an infrastructure security role
+          that is the point: build it, harden it, and know how it gets attacked and detected.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Tools</p>
+        <h2>Tooling Used</h2>
+
+        <p class="tags">
+          PowerShell &bull; Pester &bull; PSScriptAnalyzer &bull; GitHub Actions &bull; CIM/WMI &bull;
+          Microsoft Defender &bull; Windows Firewall &bull; BitLocker &bull; Task Scheduler &bull;
+          Windows Event Log &bull; Splunk
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Skills</p>
+        <h2>Skills Demonstrated</h2>
+
+        <p class="tags">
+          Endpoint Hardening &bull; Security Posture Monitoring &bull; Windows ACLs and SDDL &bull;
+          Privilege Escalation Prevention &bull; Audit Policy &bull; SIEM Integration &bull;
+          PowerShell Engineering &bull; Automated Testing &bull; CI/CD &bull; MITRE ATT&CK
+        </p>
+
+        <p>
+          <a class="button" href="https://github.com/Hawkode/Windows-Health-Monitor" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          <a class="button" href="../">Back to Projects</a>
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
