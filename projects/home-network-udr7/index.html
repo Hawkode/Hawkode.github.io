@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Home Network Build with UniFi Dream Router 7 | Alex Mateescu</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="description" content="A segmented home network on a UniFi Dream Router 7: four VLANs, zone-based firewall rules, DNS filtering and WireGuard remote access with no exposed services." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Home Network Build with UniFi Dream Router 7 | Alex Mateescu" />
+  <meta property="og:description" content="A segmented home network on a UniFi Dream Router 7: four VLANs, zone-based firewall rules, DNS filtering and WireGuard remote access with no exposed services." />
+  <meta property="og:url" content="https://hawkode.github.io/projects/home-network-udr7/" />
 
   <link rel="stylesheet" href="../../style.css" />
 
@@ -374,7 +382,7 @@
             <td>TVs, camera, printer; 2.4/5 GHz for legacy devices, client isolation</td>
           </tr>
           <tr>
-            <td>Servers <em>(planned)</em></td><td>50</td><td>10.0.50.0/24</td><td>&mdash;</td>
+            <td>Servers <em>(planned)</em></td><td>50</td><td>10.0.50.0/24</td><td>None</td>
             <td>Future project; wired only, reached over WireGuard</td>
           </tr>
         </table>
@@ -812,8 +820,8 @@
             <h3>IPv6 Isolation (Ping)</h3>
             <p>
               A ping across segments over IPv6 returned 100% loss, confirming the isolation
-              rules hold over IPv6 as well as IPv4 &mdash; the gap that is easy to miss when only
-              IPv4 is checked.
+              rules hold over IPv6 as well as IPv4. That gap is easy to miss when only IPv4 is
+              checked.
             </p>
           </div>
 

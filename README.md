@@ -1,41 +1,31 @@
-# Alex Mateescu - Portfolio Website
+# hawkode.github.io
 
-This repository contains my personal portfolio website, hosted with GitHub Pages.
+Source for my portfolio: **https://hawkode.github.io**
 
-The site focuses on my work and learning across:
+Projects, labs, tools and guides across IAM, security and infrastructure, written up with the attack, detection and hardening behind each one.
 
-- Infrastructure
-- Networking
-- Security
-- Guides
-- Microsoft 365 and Azure
-- Technical documentation
-- Projects and labs
+## What's on the site
 
-## Live Website
+**Identity and access**
+- [IAM Lab in Microsoft Entra ID](https://hawkode.github.io/projects/entra-iam-lab/): dynamic groups, joiner-mover-leaver, Conditional Access, PIM, access reviews and SSO, built from an empty tenant.
+- [Entra IAM Automation](https://github.com/Hawkode/entra-iam-automation): PowerShell and Microsoft Graph for cloud and hybrid lifecycle, reporting and access reviews.
+- [Two-site domain consolidation](https://hawkode.github.io/projects/windows-server-2022-domain-migration/): two office domains merged into one, with 60+ accounts matched to their Entra ID identities.
 
-https://hawkode.github.io
+**Windows endpoint security series**
+1. [Attack: Windows Privilege Escalation](https://hawkode.github.io/projects/windows-privilege-escalation/)
+2. [Detect: Privilege Escalation in Splunk](https://hawkode.github.io/projects/splunk-privesc-detection/)
+3. [Harden: Windows Health Monitor](https://hawkode.github.io/projects/windows-health-monitor/) ([repo](https://github.com/Hawkode/Windows-Health-Monitor))
 
-## Sections
+**Tools:** [MailGuard](https://github.com/Hawkode/MailGuard) (phishing triage) and [PasswordAnalyzer](https://github.com/Hawkode/PasswordAnalyzer) (password auditing with Have I Been Pwned).
 
-- About Me
-- Core Skills
-- Projects & Labs
-- Guides
-- Certifications
-- CV
+**Guides:** [15 practical write-ups](https://hawkode.github.io/guides/), from Entra Connect sync troubleshooting and Windows security event IDs to patch and vulnerability management.
 
-## Projects & Labs
+## How it's built
 
-The portfolio includes practical infrastructure, networking, and security-related work, including:
+Plain HTML and one shared stylesheet (`style.css`), served by GitHub Pages. No framework, no build step, no tracking.
 
-- IT asset inventory and site tracking
-- Network cabling and port mapping
-- Windows Server and infrastructure build
-- Vulnerability scanning labs
-- Security monitoring and log analysis labs
-- Linux terminal and command-line practice
+Diagrams are inline SVG. Console output on project pages is sanitised: no real host names, IP addresses, user names or tenant details.
 
-## Purpose
+## Contact
 
-This portfolio is used to document my technical progress, practical projects, guides, and hands-on learning across infrastructure, networking, and security.
+[LinkedIn](https://www.linkedin.com/in/al3ksmatee) · [GitHub](https://github.com/Hawkode)

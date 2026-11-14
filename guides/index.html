@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Guides | Alex Mateescu</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="description" content="Practical guides on identity, security operations, infrastructure and networking: Entra Connect sync, MFA, Windows event IDs, email authentication, PowerShell and more." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Guides | Alex Mateescu" />
+  <meta property="og:description" content="Practical guides on identity, security operations, infrastructure and networking: Entra Connect sync, MFA, Windows event IDs, email authentication, PowerShell and more." />
+  <meta property="og:url" content="https://hawkode.github.io/guides/" />
 
   <link rel="stylesheet" href="../style.css" />
 
@@ -80,38 +88,16 @@
       <section class="content-section">
         <div class="guide-grid">
 
-          <a class="guide-card" href="command-line-basics/">
-            <div class="guide-icon-box">
-              <i class="fa-solid fa-terminal"></i>
-            </div>
+          <a class="guide-card" href="entra-connect-sync-troubleshooting/">
+  <div class="guide-icon-box">
+    <i class="fa-solid fa-arrows-rotate"></i>
+  </div>
 
-            <div class="guide-text">
-              <h3>Linux Terminal Basics</h3>
-              <p>Beginner-friendly command line basics for IT, networking and security.</p>
-            </div>
-          </a>
-
-          <a class="guide-card" href="network-troubleshooting-basics/">
-            <div class="guide-icon-box">
-              <i class="fa-solid fa-network-wired"></i>
-            </div>
-
-            <div class="guide-text">
-              <h3>Network Troubleshooting Basics</h3>
-              <p>Ping, IP configuration, DNS, DHCP, Wi-Fi, VLANs, and physical checks.</p>
-            </div>
-          </a>
-
-          <a class="guide-card" href="windows-defender-firewall-basics/">
-            <div class="guide-icon-box">
-              <i class="fa-solid fa-shield-halved"></i>
-            </div>
-
-            <div class="guide-text">
-              <h3>Windows Defender Firewall Basics</h3>
-              <p>Firewall rules, traffic filtering, inbound/outbound access, and host security.</p>
-            </div>
-          </a>
+  <div class="guide-text">
+    <h3>Entra Connect Sync Troubleshooting</h3>
+    <p>Diagnosing a user that won't sync from on-premises AD to Entra ID: scope, matching, and the source anchor.</p>
+  </div>
+</a>
 
           <a class="guide-card" href="mfa-access-control-notes/">
             <div class="guide-icon-box">
@@ -123,6 +109,39 @@
               <p>Identity checks, account security, permissions, and access troubleshooting.</p>
             </div>
           </a>
+
+          <a class="guide-card" href="windows-security-event-ids/">
+  <div class="guide-icon-box">
+    <i class="fa-solid fa-clipboard-list"></i>
+  </div>
+
+  <div class="guide-text">
+    <h3>Windows Security Event IDs</h3>
+    <p>A detection reference of the Windows and Sysmon event IDs that matter, grouped by what they catch.</p>
+  </div>
+</a>
+
+          <a class="guide-card" href="email-authentication-spf-dkim-dmarc/">
+  <div class="guide-icon-box">
+    <i class="fa-solid fa-envelope"></i>
+  </div>
+
+  <div class="guide-text">
+    <h3>Email Authentication: SPF, DKIM, DMARC</h3>
+    <p>Setting up and verifying the three records for Exchange Online to stop domain spoofing.</p>
+  </div>
+</a>
+
+          <a class="guide-card" href="powershell-for-it-and-security/">
+  <div class="guide-icon-box">
+    <i class="fa-solid fa-code"></i>
+  </div>
+
+  <div class="guide-text">
+    <h3>Practical PowerShell for IT and Security</h3>
+    <p>Day-to-day AD and Entra administration, remoting, and the logging and hardening that control it as an attack tool.</p>
+  </div>
+</a>
 
           <a class="guide-card" href="vulnerability-management-workflow/">
             <div class="guide-icon-box">
@@ -145,69 +164,17 @@
               <p>Checking updates, testing patches, applying fixes, and validating systems.</p>
             </div>
           </a>
-          <a class="guide-card" href="openvas-vulnerability-scanning/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-magnifying-glass-chart"></i>
-  </div>
 
-  <div class="guide-text">
-    <h3>OpenVAS Vulnerability Scanning Lab</h3>
-    <p>Installing OpenVAS, creating scan tasks, reviewing findings, and documenting remediation notes.</p>
-  </div>
-</a>
-          <a class="guide-card" href="splunk-security-logs-lab/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-chart-line"></i>
-  </div>
+          <a class="guide-card" href="windows-defender-firewall-basics/">
+            <div class="guide-icon-box">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
 
-  <div class="guide-text">
-    <h3>Splunk Security Logs Lab</h3>
-    <p>Searching security logs, filtering events, reviewing failed logons, and documenting investigation notes.</p>
-  </div>
-</a>
-          <a class="guide-card" href="nmap-security-assessment/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </div>
-
-  <div class="guide-text">
-    <h3>Nmap Security Assessment</h3>
-    <p>Scanning services, reviewing exposed ports, checking risks, and documenting remediation actions.</p>
-  </div>
-</a>
-
-          <a class="guide-card" href="entra-connect-sync-troubleshooting/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-arrows-rotate"></i>
-  </div>
-
-  <div class="guide-text">
-    <h3>Entra Connect Sync Troubleshooting</h3>
-    <p>Diagnosing a user that won't sync from on-premises AD to Entra ID: scope, matching, and the source anchor.</p>
-  </div>
-</a>
-
-          <a class="guide-card" href="email-authentication-spf-dkim-dmarc/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-envelope"></i>
-  </div>
-
-  <div class="guide-text">
-    <h3>Email Authentication: SPF, DKIM, DMARC</h3>
-    <p>Setting up and verifying the three records for Exchange Online to stop domain spoofing.</p>
-  </div>
-</a>
-
-          <a class="guide-card" href="windows-security-event-ids/">
-  <div class="guide-icon-box">
-    <i class="fa-solid fa-clipboard-list"></i>
-  </div>
-
-  <div class="guide-text">
-    <h3>Windows Security Event IDs</h3>
-    <p>A detection reference of the Windows and Sysmon event IDs that matter, grouped by what they catch.</p>
-  </div>
-</a>
+            <div class="guide-text">
+              <h3>Windows Defender Firewall Basics</h3>
+              <p>Firewall rules, traffic filtering, inbound/outbound access, and host security.</p>
+            </div>
+          </a>
 
           <a class="guide-card" href="hydra-online-password-attacks/">
   <div class="guide-icon-box">
@@ -230,17 +197,58 @@
     <p>Offline hash cracking, why weak hashes fall fast, and the hashing and storage choices that defeat it.</p>
   </div>
 </a>
-
-          <a class="guide-card" href="powershell-for-it-and-security/">
+          <a class="guide-card" href="splunk-security-logs-lab/">
   <div class="guide-icon-box">
-    <i class="fa-solid fa-code"></i>
+    <i class="fa-solid fa-chart-line"></i>
   </div>
 
   <div class="guide-text">
-    <h3>Practical PowerShell for IT and Security</h3>
-    <p>Day-to-day AD and Entra administration, remoting, and the logging and hardening that control it as an attack tool.</p>
+    <h3>Splunk Security Logs Lab</h3>
+    <p>Searching security logs, filtering events, reviewing failed logons, and documenting investigation notes.</p>
   </div>
 </a>
+          <a class="guide-card" href="openvas-vulnerability-scanning/">
+  <div class="guide-icon-box">
+    <i class="fa-solid fa-magnifying-glass-chart"></i>
+  </div>
+
+  <div class="guide-text">
+    <h3>OpenVAS Vulnerability Scanning Lab</h3>
+    <p>Installing OpenVAS, creating scan tasks, reviewing findings, and documenting remediation notes.</p>
+  </div>
+</a>
+          <a class="guide-card" href="nmap-security-assessment/">
+  <div class="guide-icon-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </div>
+
+  <div class="guide-text">
+    <h3>Nmap Security Assessment</h3>
+    <p>Scanning services, reviewing exposed ports, checking risks, and documenting remediation actions.</p>
+  </div>
+</a>
+
+          <a class="guide-card" href="network-troubleshooting-basics/">
+            <div class="guide-icon-box">
+              <i class="fa-solid fa-network-wired"></i>
+            </div>
+
+            <div class="guide-text">
+              <h3>Network Troubleshooting Basics</h3>
+              <p>Ping, IP configuration, DNS, DHCP, Wi-Fi, VLANs, and physical checks.</p>
+            </div>
+          </a>
+
+          <a class="guide-card" href="command-line-basics/">
+            <div class="guide-icon-box">
+              <i class="fa-solid fa-terminal"></i>
+            </div>
+
+            <div class="guide-text">
+              <h3>Linux Terminal Basics</h3>
+              <p>Beginner-friendly command line basics for IT, networking and security.</p>
+            </div>
+          </a>
 
         </div>
       </section>

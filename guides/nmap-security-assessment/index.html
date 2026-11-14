@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Nmap Network Security Assessment Lab | Alex Mateescu</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="description" content="A practical Nmap lab for scanning network services, identifying exposed ports, reviewing risky protocols, and documenting remediation actions." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Nmap Network Security Assessment Lab | Alex Mateescu" />
+  <meta property="og:description" content="A practical Nmap lab for scanning network services, identifying exposed ports, reviewing risky protocols, and documenting remediation actions." />
+  <meta property="og:url" content="https://hawkode.github.io/guides/nmap-security-assessment/" />
 
   <link rel="stylesheet" href="../../style.css" />
 
@@ -377,7 +385,7 @@ Status: To review</code></pre>
           </p>
 
           <p>
-            <strong>Detection logic:</strong> the core rule is a threshold &mdash; one source
+            <strong>Detection logic:</strong> the core rule is a threshold: one source
             reaching more than N distinct destination ports within T seconds raises an alert.
             Tune N and T to the environment so routine health checks do not trip it.
           </p>
@@ -386,7 +394,7 @@ Status: To review</code></pre>
         <p>
           Segmentation makes this stronger. On a VLAN-segmented network, a scanner on an
           untrusted segment is blocked from reaching other segments and the attempts are logged
-          at the firewall, so the scan is both contained and visible &mdash; the same design as
+          at the firewall, so the scan is both contained and visible, the same design as
           my <a href="../../projects/home-network-udr7/">home network build</a>.
         </p>
       </section>

@@ -501,6 +501,19 @@ a { color: #f59e0b; }
 /* Guide grid: let columns shrink to fit the content column. Plain 1fr columns
    cannot go narrower than their longest word, which pushed the grid past the
    right edge. auto-fill picks the column count from the space available. */
-.guide-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.guide-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 .guide-card, .guide-text { min-width: 0; }
-.guide-text h3 { overflow-wrap: break-word; }
+.guide-text h3 { hyphens: auto; -webkit-hyphens: auto; overflow-wrap: normal; }
+
+/* Code and reference tables stay inside the content column on phones */
+.content pre { overflow-x: auto; max-width: 100%; }
+.content code { overflow-wrap: anywhere; }
+.content pre code { overflow-wrap: normal; }
+.content .grid > * { min-width: 0; }
+@media (max-width: 700px) {
+  .content table.ref {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

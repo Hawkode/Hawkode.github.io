@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Windows Privilege Escalation: Techniques, Detection, Hardening | Alex Mateescu</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="description" content="A hands-on study of Windows local privilege escalation: the common vectors, the event IDs and Sysmon signals that detect each, and the fixes." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Windows Privilege Escalation: Techniques, Detection, Hardening | Alex Mateescu" />
+  <meta property="og:description" content="A hands-on study of Windows local privilege escalation: the common vectors, the event IDs and Sysmon signals that detect each, and the fixes." />
+  <meta property="og:url" content="https://hawkode.github.io/projects/windows-privilege-escalation/" />
 
   <link rel="stylesheet" href="../../style.css" />
 
@@ -267,7 +275,7 @@ SeChangeNotifyPrivilege      Bypass traverse checking        Enabled
         </div>
         <p style="font-size:13px;color:#86efac;margin-top:-4px;">
           <code>SeImpersonatePrivilege</code> on a service account is the entry point for a
-          potato attack to SYSTEM &mdash; the first thing enumeration looks for.
+          potato attack to SYSTEM, and the first thing enumeration looks for.
         </p>
       </section>
 
@@ -341,7 +349,7 @@ SeChangeNotifyPrivilege      Bypass traverse checking        Enabled
         </div>
         <p style="font-size:13px;color:#86efac;margin-top:-4px;">
           winPEAS flagging an unquoted service path running as SYSTEM with a writable parent
-          folder &mdash; a planted <code>C:\Program.exe</code> would run at service start.
+          folder: a planted <code>C:\Program.exe</code> would run at service start.
         </p>
 
         <ul>
