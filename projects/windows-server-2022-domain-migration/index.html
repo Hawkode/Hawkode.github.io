@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Windows Server 2022 Domain Controller Migration | Alex Mateescu</title>
+  <title>Two-Site Domain Consolidation on Windows Server 2022 | Alex Mateescu</title>
 
   <link rel="stylesheet" href="../../style.css" />
 
@@ -48,7 +48,7 @@
       <section class="sidebar-block">
         <h2>Project</h2>
         <p>
-          A work-related infrastructure migration project covering Windows Server 2022,
+          A work project merging two office domains into one: Windows Server 2022,
           Active Directory, OU design, DNS, DHCP, replication checks, Microsoft Entra ID
           synchronisation, shared data migration, ADManager Plus, ManageEngine, PowerShell,
           and Windows 11 Pro domain joins.
@@ -71,12 +71,13 @@
 
       <section class="content-section">
         <p class="section-label">Work Project</p>
-        <h2>Windows Server 2022 Domain Controller Migration</h2>
+        <h2>Two-Site Domain Consolidation on Windows Server 2022</h2>
 
         <p>
-          This project involved building a new Windows Server 2022 domain controller and
-          migrating core infrastructure services, user accounts, Windows 11 Pro laptops,
-          shared data, and identity synchronisation from an older environment.
+          Our two offices each ran their own Active Directory domain.
+          This project merged them into a single domain, with a new Windows Server 2022 domain
+          controller VM on VMware ESXi in each office, and moved user accounts, Windows 11 Pro
+          laptops, shared data and identity synchronisation across from the old environments.
         </p>
 
         <p>
@@ -107,7 +108,7 @@
           <div class="card">
             <h3>Infrastructure Built</h3>
             <ul>
-              <li>Windows Server 2022 domain controller</li>
+              <li>Windows Server 2022 domain controllers, one per office, on VMware ESXi</li>
               <li>Active Directory Domain Services</li>
               <li>Organisational unit structure</li>
               <li>DNS and DHCP services</li>
@@ -146,7 +147,7 @@
           <div class="card">
             <h3>Previous State</h3>
             <ul>
-              <li>Core services were running in an older environment.</li>
+              <li>Each office ran its own separate Active Directory domain.</li>
               <li>Users existed locally and also in Microsoft Entra ID.</li>
               <li>Local and cloud identity information needed careful matching.</li>
               <li>Shared data needed a controlled migration process.</li>
@@ -158,7 +159,7 @@
           <div class="card">
             <h3>Target State</h3>
             <ul>
-              <li>New Windows Server 2022 domain controller.</li>
+              <li>One Active Directory domain for both offices, with a Windows Server 2022 domain controller in each.</li>
               <li>Configured AD DS, DNS, and DHCP services.</li>
               <li>Cleaner Active Directory structure for users, devices, and groups.</li>
               <li>On-premises accounts matched with existing Microsoft Entra ID accounts.</li>
@@ -181,8 +182,8 @@
           </p>
 
           <p>
-            <strong>2. Server Build:</strong> installed Windows Server 2022, added the required
-            roles, and promoted the server as a new domain controller.
+            <strong>2. Server Build:</strong> installed Windows Server 2022 on a VM in each office,
+            added the required roles, and promoted both as domain controllers for the new domain.
           </p>
 
           <p>
@@ -230,11 +231,11 @@
 
       <section class="content-section">
         <p class="section-label">Server Build</p>
-        <h2>Windows Server 2022 Domain Controller</h2>
+        <h2>Windows Server 2022 Domain Controllers</h2>
 
         <p>
-          I installed and configured Windows Server 2022 as the new domain controller.
-          This created the foundation for Active Directory, DNS, DHCP, user accounts,
+          I built a Windows Server 2022 VM on VMware ESXi in each office and configured both as
+          domain controllers for the new domain. This created the foundation for Active Directory, DNS, DHCP, user accounts,
           computer accounts, shared resource access, replication health checks, and hybrid identity.
         </p>
 
@@ -242,10 +243,10 @@
           <div class="card">
             <h3>Build Tasks</h3>
             <ul>
-              <li>Installed Windows Server 2022.</li>
+              <li>Installed Windows Server 2022 on a VM in each office.</li>
               <li>Prepared the server for domain controller use.</li>
               <li>Installed Active Directory Domain Services.</li>
-              <li>Promoted the server to a domain controller.</li>
+              <li>Promoted both servers to domain controllers.</li>
               <li>Checked domain health after setup.</li>
             </ul>
           </div>
@@ -281,7 +282,8 @@
 
           <pre><code>example.local
 ├── Domain Controllers
-│   └── DC01
+│   ├── DC01
+│   └── DC02
 │
 ├── Company
 │   ├── Users
@@ -543,6 +545,7 @@ DC=local</code></pre>
               <li>Checked DHCP lease assignment.</li>
               <li>Confirmed shared folder access.</li>
               <li>Reviewed failed joins and corrected issues.</li>
+              <li>Ran each user's cutover: new credentials, Microsoft 365 reconnection, OneDrive data and bookmarks, and Bitwarden onboarding.</li>
             </ul>
           </div>
         </div>
@@ -648,7 +651,7 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
         <p>
           Before the migration, users had local Active Directory accounts and Microsoft
           Entra ID cloud accounts, but the identity relationship needed to be cleaned up
-          through the new on-premises domain controller. The migration aligned the
+          through the new on-premises domain controllers. The migration aligned the
           on-premises accounts with the existing cloud identities before validating sync.
         </p>
 
@@ -774,8 +777,8 @@ Add-Computer -DomainName $DomainName -OUPath $OUPath -Restart</code></pre>
         <h2>Project Outcome</h2>
 
         <p>
-          The migration was completed for 60+ user accounts. The new Windows Server 2022
-          domain controller provided Active Directory, DNS, DHCP, shared resource access,
+          The migration was completed for 60+ user accounts across both offices. The new
+          Windows Server 2022 domain controllers provided Active Directory, DNS, DHCP, shared resource access,
           replication validation, Microsoft Entra ID synchronisation, and Windows 11 Pro
           domain join automation.
         </p>
