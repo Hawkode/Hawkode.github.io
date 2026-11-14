@@ -28,4 +28,4 @@ Diagrams are inline SVG. Console output on project pages is sanitised: no real h
 
 ## Contact
 
-[LinkedIn](https://www.linkedin.com/in/al3ksmatee) · [GitHub](https://github.com/Hawkode)
+[LinkedIn](https://www.linkedin.com/in/hawkode) · [GitHub](https://github.com/Hawkode)
