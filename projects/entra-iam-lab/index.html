@@ -77,7 +77,7 @@
           tenant, covering dynamic RBAC groups, the full joiner-mover-leaver lifecycle,
           MFA and Conditional Access, SSPR, a tested break-glass account, PIM, access reviews,
           entitlement management, SSO, and a least-privilege workload identity. Built to the
-          SC-300 skill set.
+          SC-300 skill set, with every governance control then run end to end.
         </p>
       </section>
 
@@ -137,6 +137,7 @@
               <li>PIM, access reviews and entitlement management</li>
               <li>SAML SSO on an enterprise application</li>
               <li>A least-privilege workload identity (app registration)</li>
+              <li>End-to-end tests of every governance control, with evidence</li>
             </ul>
           </div>
 
@@ -162,7 +163,7 @@
         <p>
           I treated every control the same way: build it correctly, understand how an attacker
           abuses it, identify the log or event that detects the abuse, and apply the hardening
-          that closes it. That framing runs through all six phases below, because an IAM
+          that closes it. That framing runs through all seven phases below, because an IAM
           engineer is expected to run identity <em>and</em> defend it, not just configure it.
         </p>
       </section>
@@ -408,7 +409,7 @@
             <ul>
               <li><strong>Abuse:</strong> standing admin means one compromise owns the tenant; access creep over time</li>
               <li><strong>Detect:</strong> PIM audit log on every activation; audit-log role changes</li>
-              <li><strong>Harden:</strong> no standing privilege, JIT elevation, recurring recertification, fail-closed defaults</li>
+              <li><strong>Harden:</strong> no standing privilege, JIT elevation, recurring recertification, fail-closed defaults (except the break-glass group)</li>
             </ul>
           </div>
         </div>
@@ -476,6 +477,127 @@
         </figure>
       </section>
 
+      <!-- PHASE 7 -->
+      <section class="content-section">
+        <p class="section-label">Phase 7 &middot; Operate and Evidence</p>
+        <h2>Running the Controls</h2>
+
+        <p>
+          A control that is configured but never used is a claim, not evidence. So I ran every
+          governance control end to end with the lab's fictional users, acting as admin, requester
+          and approver in separate sessions, and kept the screenshots and logs from each run.
+          Two of the four tests turned up problems in my own configuration.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Tests Run</h3>
+            <ul>
+              <li>SSO: assigned user signed in with MFA; unassigned user blocked (AADSTS50105)</li>
+              <li>PIM: eligible role requested, approved, used, then deactivated early</li>
+              <li>Access package: user requested project access, approver granted it</li>
+              <li>Access review: wrong member of the MFA-bypass group denied and removed</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>What Testing Found</h3>
+            <ul>
+              <li>The break-glass group's review removed access when nobody responded. Changed to "No change"</li>
+              <li>The review recommended Approve for a member who should not be there. It measures sign-in activity, not need</li>
+              <li>The lab admin held an app assignment it did not need. Removed</li>
+              <li>Global Administrator PIM settings are on defaults, with no eligible users. Accepted for the lab</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>
+          <strong>SSO.</strong> The SAML Toolkit app requires assignment and is assigned to the
+          Engineering group. An Engineering user signed in through My Apps, with MFA enforced by
+          CA01. An HR user was stopped by Entra before any token was issued. The sign-in log shows
+          both, and also showed the lab admin receiving a token it had no reason to get, which led
+          to removing its assignment.
+        </p>
+
+        <figure class="evidence">
+          <img src="img/13-sso-blocked-50105.png" alt="AADSTS50105 error: unassigned user blocked from the SAML application" />
+          <figcaption>Assignment required, proven: an unassigned user is blocked with AADSTS50105.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/14-sso-signin-log.png" alt="Sign-in log showing a successful SAML sign-in with Conditional Access applied" />
+          <figcaption>Sign-in log: the assigned user's SAML sign-in succeeds, with Conditional Access applied.</figcaption>
+        </figure>
+
+        <p>
+          <strong>PIM.</strong> The user requested the eligible User Administrator role with a
+          justification. The lab admin approved it from a separate session, and the role went live
+          for four hours, the cap set in Phase 5. She used it to edit another user, then deactivated
+          it early. The PIM audit log records the approval and the activation.
+        </p>
+
+        <figure class="evidence">
+          <img src="img/15-pim-active-assignment.png" alt="PIM active assignment of User Administrator ending four hours after activation" />
+          <figcaption>Activated after approval, ending four hours later.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/16-pim-audit.png" alt="PIM audit history showing request approved and activation completed" />
+          <figcaption>PIM audit: request approved by the lab admin, then activation completed.</figcaption>
+        </figure>
+
+        <p>
+          <strong>Access package.</strong> A user requested Project IAM Access from the My Access
+          portal. The request waited for the lab admin, who had to give a reason to approve it.
+          The user was then added to the project group, with the assignment set to expire after
+          90 days.
+        </p>
+
+        <figure class="evidence">
+          <img src="img/17-access-package-approval.png" alt="Approver view of a pending access package request with a due date" />
+          <figcaption>The approver's view: who asked, for what, and a 14-day deadline to decide.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/18-access-package-granted.png" alt="Project group showing the requester added after approval" />
+          <figcaption>After approval the requester is in the group. It was empty before the request.</figcaption>
+        </figure>
+
+        <p>
+          <strong>Access review.</strong> I planted a finding by adding an HR user to the
+          break-glass exclusion group, so she bypassed MFA. Before running the review, I checked
+          the existing quarterly review and found it set to auto-apply and remove access when
+          reviewers do not respond. On this group, one missed review would have removed the
+          break-glass account's exclusion, the exact failure that account exists to survive. I
+          changed it to "No change". A one-off review then recommended Approve for both members,
+          because both had signed in recently. I kept the break-glass account, denied the HR user,
+          and the review removed her from the group.
+        </p>
+
+        <figure class="evidence">
+          <img src="img/19-review-fail-closed.png" alt="Access review settings: auto apply on, remove access if reviewers don't respond" />
+          <figcaption>Finding: auto-apply plus "Remove access" on the break-glass group.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/20-review-fixed.png" alt="Access review settings changed to No change if reviewers don't respond" />
+          <figcaption>Fixed: an unanswered review now leaves membership unchanged.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/21-review-recommendations.png" alt="Access review recommending Approve for both members of the exclusion group" />
+          <figcaption>The helper recommends Approve for both. Accepting it would have kept the planted member.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/22-review-complete.png" alt="Completed access review with one approved and one denied" />
+          <figcaption>Review complete: one approved, one denied, and the denied member removed.</figcaption>
+        </figure>
+
+        <p class="tags">
+          Operational Testing • SSO • PIM • Entitlement Management • Access Reviews • Evidence
+        </p>
+      </section>
+
       <!-- CAVEAT -->
       <section class="content-section">
         <p class="section-label">Scope &amp; Honesty</p>
@@ -499,9 +621,10 @@
             Windows Server 2022 domain controller migration project.
           </p>
           <p>
-            <strong>Break-glass fail-closed:</strong> the access review on the emergency-access
-            group was set to fail closed, but I noted this is the one group where that can backfire,
-            since auto-removal could strip the break-glass account's own exclusion.
+            <strong>Break-glass fail-closed:</strong> I first set the access review on the
+            emergency-access group to fail closed. Testing in Phase 7 confirmed that an unanswered
+            review would have removed the break-glass account's own exclusion, so the review now
+            leaves membership unchanged when reviewers do not respond.
           </p>
         </div>
       </section>
@@ -516,13 +639,13 @@
           attribute, the mover re-scoped in both directions, a full leaver deprovision, both
           Conditional Access policies enforced with the break-glass exclusion proven in the sign-in
           logs, and the PIM remediation confirmed by the before-and-after role assignments.
+          In Phase 7: an SSO sign-in and an unassigned-user block, a PIM activation with approval,
+          an access package request with approval, and an access review that removed a member.
         </p>
 
         <p>
-          <strong>Configured, not yet exercised:</strong> an SSO round-trip sign-in, a PIM
-          activation request and approval, an access package request, and the first cycle of the
-          quarterly access review. Each is built and visible in the portal; running them is the
-          next step for this lab.
+          <strong>Not covered here:</strong> hybrid identity, which is in a separate project, and
+          long-term log export to a SIEM.
         </p>
 
         <p>
