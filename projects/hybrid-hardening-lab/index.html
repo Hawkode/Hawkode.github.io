@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Hybrid Hardening Lab: Windows Server 2025 and Entra Connect | Alex Mateescu</title>
+  <title>Hybrid IAM: Testing JML Automation Through Entra Connect | Alex Mateescu</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <meta name="description" content="A Windows Server 2025 domain controller hardened with the Microsoft Security Baseline, measured with scans and a config check, then synced to Entra ID to test hybrid joiner-mover-leaver automation." />
+  <meta name="description" content="Part 2 of the hybrid hardening lab: a hardened Server 2025 DC synced to Entra ID, and six tests of hybrid joiner-mover-leaver automation, backed by the Entra audit log." />
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="Hybrid Hardening Lab | Alex Mateescu" />
-  <meta property="og:description" content="A Windows Server 2025 domain controller hardened with the Microsoft Security Baseline, measured with scans and a config check, then synced to Entra ID to test hybrid joiner-mover-leaver automation." />
+  <meta property="og:title" content="Hybrid IAM with Entra Connect | Alex Mateescu" />
+  <meta property="og:description" content="Part 2 of the hybrid hardening lab: a hardened Server 2025 DC synced to Entra ID, and six tests of hybrid joiner-mover-leaver automation, backed by the Entra audit log." />
   <meta property="og:url" content="https://hawkode.github.io/projects/hybrid-hardening-lab/" />
 
   <link rel="stylesheet" href="../../style.css" />
@@ -37,7 +37,25 @@
     table.spec { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
     table.spec th, table.spec td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(34, 197, 94, 0.18); vertical-align: top; }
     table.spec th { color: #bbf7d0; font-weight: 600; }
-    table.spec td:first-child { color: #86efac; white-space: nowrap; }
+    table.spec td:first-child { color: #86efac; }
+    .evidence img { width: auto; max-width: 100%; }
+    pre.console {
+      background: #0b1220;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 18px 18px 0 0;
+      font-family: monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    pre.console .p { color: #4ade80; }
+    pre.console .e { color: #f87171; }
+    pre.console .w { color: #fbbf24; }
+    pre.console .c { color: #64748b; }
   </style>
 </head>
 <body>
@@ -77,10 +95,9 @@
       <section class="sidebar-block">
         <h2>Project</h2>
         <p>
-          A Windows Server 2025 domain controller in a Hyper-V home lab, hardened with the
-          Microsoft Security Baseline and measured before and after with Greenbone scans and a
-          PowerShell config check. Then synced to Entra ID with Entra Connect, to prove my hybrid
-          joiner, mover and leaver automation works against a real AD.
+          Part 2 of the hybrid hardening lab. The hardened DC synced to Entra ID with Entra
+          Connect, and six tests of my hybrid joiner, mover and leaver automation: joiner, mover,
+          leaver, source of authority and an AD Recycle Bin restore, with the audit trail.
         </p>
       </section>
 
@@ -99,28 +116,30 @@
     <main class="content">
 
       <section class="content-section">
-        <p class="section-label">Hybrid Lab</p>
-        <h2>Hybrid Hardening Lab: Windows Server 2025 and Entra Connect</h2>
+        <p class="section-label">Hybrid Identity Lab</p>
+        <h2>Hybrid IAM: Testing Joiner-Mover-Leaver Automation Through Entra Connect</h2>
+
+        <nav class="series-strip" aria-label="Hybrid hardening lab series">
+          <span class="series-name">Hybrid hardening lab</span>
+          <a href="../server-2025-dc-hardening/"><span class="series-step">1</span> Harden and measure the DC</a>
+          <span class="series-sep" aria-hidden="true">&#8594;</span>
+          <span class="series-current" aria-current="page"><span class="series-step">2</span> Hybrid IAM with Entra Connect</span>
+        </nav>
 
         <p>
-          I built a Windows Server 2025 domain controller in a Hyper-V home lab, hardened it with
-          the Microsoft Security Baseline, and measured the result instead of assuming it. Then I
-          synced it to an Entra ID lab tenant with Entra Connect and ran my own IAM automation
-          against it, to prove the hybrid joiner, mover and leaver scripts work against a real AD,
-          not just on paper.
+          In <a href="../server-2025-dc-hardening/">Part 1</a> I hardened a Windows Server 2025
+          domain controller and measured the result. Here I synced it to an Entra ID lab tenant
+          with Entra Connect and ran my own IAM automation against it, to answer one question: do
+          the hybrid joiner, mover and leaver scripts in
+          <a href="https://github.com/Hawkode/entra-iam-automation" target="_blank" rel="noopener noreferrer">entra-iam-automation</a>
+          work against a real AD, or only on paper?
         </p>
 
         <p>
-          The project covers both sides of my work: infrastructure security (build, harden,
-          scan, find the gaps) and identity (lifecycle automation across AD and Entra ID). Every
-          claim on this page has a command, a scan result or an audit log entry behind it in the
-          repo.
-        </p>
-
-        <p>
-          The lab runs on a 16 GB laptop with an evaluation licence and a trial tenant, with
-          fictional users. Only free tools: Hyper-V, Kali Linux and Greenbone (OpenVAS) Community
-          Edition.
+          They work. Getting there turned up real problems worth knowing about: a UPN mismatch that
+          would have broken two of the three scripts, a Graph SDK bug on Windows PowerShell 5.1,
+          and a guard that stopped an account takeover. Each test below has its console output
+          (sanitised) and the Entra audit log behind it.
         </p>
       </section>
 
@@ -132,192 +151,367 @@
           <div class="card">
             <h3>What I Built</h3>
             <ul>
-              <li>Server 2025 DC hardened with the Microsoft Security Baseline</li>
-              <li>Before/after Greenbone scans, unauthenticated and authenticated</li>
-              <li>A read-only PowerShell config check, scored per checkpoint</li>
-              <li>Entra Connect sync, scoped to one OU, password hash sync</li>
-              <li>Six hybrid lifecycle tests with my own automation</li>
-              <li>Evidence from the console, the scans and the Entra audit log</li>
+              <li>Entra Connect Sync on the hardened DC, password hash sync</li>
+              <li>Sync scoped to one OU, so admin and built-in accounts stay on-prem</li>
+              <li>AD Recycle Bin, department OUs and a Leavers OU</li>
+              <li>Six tests: prep, joiner, mover, leaver, source of authority, restore</li>
+              <li>One test user, taken through her whole lifecycle</li>
+              <li>An audit trail tying every step to Entra&rsquo;s own log</li>
             </ul>
           </div>
 
           <div class="card">
             <h3>Skills Demonstrated</h3>
             <ul>
-              <li>Windows Server and AD hardening (Microsoft baseline, GPO)</li>
-              <li>Vulnerability scanning and finding triage</li>
-              <li>Measuring security controls, not trusting them</li>
-              <li>Hybrid identity with Entra Connect</li>
-              <li>Joiner-mover-leaver automation with PowerShell and Graph</li>
-              <li>Troubleshooting under real constraints (RAM, module bugs)</li>
+              <li>Hybrid identity design with Entra Connect</li>
+              <li>Joiner-mover-leaver automation (PowerShell, Microsoft Graph)</li>
+              <li>Source of authority and source anchor behaviour</li>
+              <li>Safe offboarding order with password hash sync</li>
+              <li>Troubleshooting module and platform problems</li>
+              <li>Evidence-led testing, one commit per test</li>
             </ul>
           </div>
         </div>
-      </section>
-
-      <section class="content-section">
-        <p class="section-label">Approach</p>
-        <h2>Build, Harden, Measure, Sync, Test</h2>
-
-        <p>
-          Each phase ends with proof. Hyper-V checkpoints let me scan and test the same DC in
-          its clean and hardened states, so every comparison changes one thing only.
-        </p>
 
         <table class="spec">
-          <tr><th>VM</th><th>Role</th><th>Size</th></tr>
-          <tr><td>DC01</td><td>Domain controller, DNS, Entra Connect (Windows Server 2025)</td><td>2 vCPU, 2-4 GB, 60 GB</td></tr>
-          <tr><td>KALI01</td><td>Greenbone scanner, attacker in the next phase</td><td>2 vCPU, 3-4 GB, 60 GB</td></tr>
+          <tr><th>Test</th><th>Result</th></tr>
+          <tr><td>1 Prep</td><td>Scripts, parameters and requirements mapped; a UPN mismatch found before any run</td></tr>
+          <tr><td>2 Joiner</td><td>New AD user to synced, licensed Entra user in 20 seconds</td></tr>
+          <tr><td>3 Mover</td><td>HR to Finance; dynamic groups re-scoped; leftover AD access listed</td></tr>
+          <tr><td>4 Leaver</td><td>Disabled, sessions revoked, licence and groups removed in 23 seconds</td></tr>
+          <tr><td>5 Source of authority</td><td>Cloud edits on a synced user refused by the script and by Graph</td></tr>
+          <tr><td>6 Restore</td><td>Deleted and restored in AD: same cloud account back, no duplicate</td></tr>
         </table>
-
-        <p class="tags">
-          Hyper-V &bull; Windows Server 2025 &bull; Active Directory &bull; Kali Linux &bull; Greenbone
-        </p>
       </section>
 
       <!-- PHASE 1 -->
       <section class="content-section">
-        <p class="section-label">Phase 1 &middot; Harden and Measure</p>
-        <h2>The Baseline, and What a Scan Can&rsquo;t See</h2>
+        <p class="section-label">Phase 1 &middot; Sync</p>
+        <h2>Entra Connect on the Hardened DC</h2>
 
         <p>
-          I imported the Microsoft Security Baseline for Windows Server 2025 and linked the DC
-          GPOs. Then I scanned DC01 with Greenbone before and after, unauthenticated and with a
-          domain scan account.
+          I chose Entra Connect Sync over Cloud Sync because the hybrid scripts drive the ADSync
+          module, and only Connect Sync installs it. The hardening from Part 1 got in the way
+          straight away: Edge is blocked on the DC, so the installer was downloaded on the host and
+          copied in through Hyper-V.
         </p>
 
         <table class="spec">
-          <tr><th>Scan</th><th>Before (clean)</th><th>After (hardened)</th></tr>
-          <tr><td>Unauthenticated</td><td>1 Medium, 1 Low</td><td>1 Medium, 1 Low</td></tr>
-          <tr><td>Authenticated</td><td>1 High, 2 Medium, 2 Low</td><td>1 High, 2 Medium, 2 Low</td></tr>
+          <tr><th>Setting</th><th>Choice</th><th>Why</th></tr>
+          <tr><td>Sign-in</td><td>Password hash sync</td><td>No extra servers; works when AD is down</td></tr>
+          <tr><td>Scope</td><td>Only the <code>Lab Users</code> OU</td><td>Administrator, service accounts and DCs never reach the cloud</td></tr>
+          <tr><td>UPN suffix</td><td><code>hawkode.lab</code> can&rsquo;t be verified</td><td>Users fall back to the tenant&rsquo;s onmicrosoft.com domain</td></tr>
+          <tr><td>Source anchor</td><td><code>mS-DS-ConsistencyGuid</code></td><td>Seeded from the <code>objectGUID</code>; links each AD user to one cloud user</td></tr>
+          <tr><td>AD Recycle Bin</td><td>Enabled after install</td><td>Entra Connect flagged it; test 6 depends on it</td></tr>
         </table>
 
-        <p>
-          Same results. The finding is the result: Server 2025 already ships with SMB signing
-          required and SMBv1 off, and the baseline&rsquo;s real changes live inside Windows (NTLM
-          level, LDAP channel binding, UAC, PowerShell logging, audit policy), where a
-          vulnerability scan doesn&rsquo;t look. A scanner finds missing patches. It can&rsquo;t
-          prove hardening.
+        <figure class="evidence">
+          <img src="img/p2-01-edge-blocked.png" alt="Windows message on the DC: This app has been blocked by your system administrator" />
+          <figcaption>Hardening side effect: Edge blocked on the DC. The installer came in through <code>Copy-VMFile</code> instead.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p2-02-upn-not-added.png" alt="Entra Connect sign-in configuration: hawkode.lab UPN suffix Not Added" />
+          <figcaption><code>hawkode.lab</code> isn&rsquo;t routable, so Entra can&rsquo;t verify it. This is where the UPN mismatch in test 1 starts.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p2-03-ou-filtering.png" alt="Entra Connect domain and OU filtering with only Lab Users ticked" />
+          <figcaption>Sync scope: only <code>Lab Users</code>.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p2-04-config-complete.png" alt="Entra Connect configuration complete, with warnings about the AD Recycle Bin and the mS-DS-ConsistencyGuid source anchor" />
+          <figcaption>Done, with two notes that matter later: the Recycle Bin is off, and the source anchor is <code>mS-DS-ConsistencyGuid</code>.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p2-05-phs-signin.png" alt="Microsoft sign-in page asking a synced test user to set up MFA" />
+          <figcaption>Password hash sync proven: the AD password was accepted, and Entra moved on to MFA registration. Tenant name replaced.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p2-06-recycle-bin.png" alt="Enable-ADOptionalFeature turning on the Recycle Bin Feature for hawkode.lab" />
+          <figcaption>AD Recycle Bin on. It can&rsquo;t be turned off again.</figcaption>
+        </figure>
+
+        <p class="tags">
+          Entra Connect Sync &bull; Password Hash Sync &bull; OU Filtering &bull; Source Anchor &bull; AD Recycle Bin
         </p>
+      </section>
+
+      <!-- TEST 1 -->
+      <section class="content-section">
+        <p class="section-label">Test 1 &middot; Prep</p>
+        <h2>Read Before You Run</h2>
 
         <p>
-          So I wrote <code>Get-HardeningState.ps1</code>, a read-only check of 19 settings the
-          baseline should change, and ran it on each checkpoint:
+          Before running anything I read what each hybrid script needs. They run on DC01, which has
+          the AD module and Entra Connect. Each one makes its AD change, runs one delta sync over
+          WinRM, waits for the cloud to catch up, then finishes through Graph.
         </p>
-
-        <table class="spec">
-          <tr><th>State</th><th>Settings at target</th></tr>
-          <tr><td>Clean</td><td>8 of 19</td></tr>
-          <tr><td>Hardened (baseline)</td><td>16 of 19</td></tr>
-          <tr><td>Hardened v2 (+ Print Spooler GPO)</td><td>17 of 19</td></tr>
-        </table>
 
         <div class="grid">
           <div class="card">
-            <h3>Gaps Found</h3>
+            <h3>Finding: UPN Mismatch</h3>
             <ul>
-              <li><strong>Print Spooler running on the DC:</strong> the baseline leaves it on. Fixed with a GPO, confirmed by a rescan</li>
-              <li><strong>Kerberos ticket audit cut to Failure:</strong> the baseline drops the success events Kerberoasting detection needs</li>
-              <li><strong>LSA protection configured, not active:</strong> LSASS still readable after reboot. Open, carried into the attack phase</li>
+              <li>The mover and leaver look up a user in AD and in Entra with the same UPN</li>
+              <li>The first synced users were <code>@hawkode.lab</code> in AD but onmicrosoft.com in Entra</li>
+              <li>Neither lookup would find both, so both scripts would fail</li>
+              <li>Fix: add the onmicrosoft.com domain as a UPN suffix in AD, and use it for new users</li>
             </ul>
           </div>
           <div class="card">
-            <h3>Security Angle</h3>
+            <h3>Setup Problems Solved</h3>
             <ul>
-              <li><strong>Abuse:</strong> PrintNightmare and the PrinterBug (T1187), Kerberoasting (T1558.003), LSASS dumping (T1003.001)</li>
-              <li><strong>Detect:</strong> event 4769 needs success auditing back on; LSASS access events</li>
-              <li><strong>Harden:</strong> Spooler off on DCs, audit policy above the baseline, LSA protection proven active</li>
+              <li>Graph modules installed but invisible: DC01&rsquo;s module path has no user folder. Installed for all users</li>
+              <li><code>Connect-MgGraph</code> fails on 5.1: a known assembly bug in Graph SDK 2.34+. Moved DC01 to PowerShell 7</li>
+              <li>Config copied from the cloud-only setup had no hybrid keys. Rewritten for the lab</li>
             </ul>
           </div>
         </div>
 
+        <figure class="evidence">
+          <img src="img/p2-07-modulepath.png" alt="PSModulePath on DC01 with no Documents folder, then the Graph modules installed for all users" />
+          <figcaption>No Documents folder in the module path, so per-user installs were invisible. All-users install fixed it.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p2-08-graph-51-bug.png" alt="Connect-MgGraph TypeLoadException: method RefreshCacheAsync does not have an implementation" />
+          <figcaption>Graph SDK 2.41.2 on Windows PowerShell 5.1, even in a clean session with Graph loaded first.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p2-09-ps7-connect.png" alt="PowerShell 7.6 connecting to Graph and listing the AAD_PREMIUM_P2 licence" />
+          <figcaption>PowerShell 7.6: Graph connects, and the tenant&rsquo;s only licence is the P2 trial.</figcaption>
+        </figure>
+
         <p class="tags">
-          Microsoft Security Baseline &bull; Group Policy &bull; Greenbone (OpenVAS) &bull; Configuration Audit &bull; PowerShell
+          PowerShell 7 &bull; Microsoft Graph SDK &bull; UPN Suffix &bull; Troubleshooting
         </p>
       </section>
 
-      <!-- PHASE 2 -->
+      <!-- TEST 2 -->
       <section class="content-section">
-        <p class="section-label">Phase 2 &middot; Hybrid Identity</p>
-        <h2>Entra Connect Sync</h2>
+        <p class="section-label">Test 2 &middot; Joiner</p>
+        <h2>From AD Account to Licensed Cloud User</h2>
 
         <p>
-          I installed Entra Connect Sync on DC01 with password hash sync, scoped to a single
-          <code>Lab Users</code> OU so built-in and admin accounts never reach the cloud. A test
-          sign-in with the AD password proved password hash sync. I also turned on the AD Recycle
-          Bin, which the restore test later relies on.
+          The first dry run stopped, which was the script working as intended. A cloud-only user
+          from earlier tests already had that UPN. Creating the AD account would have made Entra
+          Connect soft-match it onto the cloud account and take it over.
         </p>
 
-        <p>
-          Connect Sync, not Cloud Sync, because the hybrid scripts drive the ADSync module, and
-          only Connect Sync installs it.
-        </p>
+<pre class="console"><span class="p">PS&gt;</span> .\Hybrid\New-HybridJoiner.ps1 -GivenName Oliver -Surname Bennett -Department HR -JobTitle 'HR Advisor' -WhatIf
+<span class="e">Exception: Row 1: oliver.bennett@contoso.onmicrosoft.com already exists in Entra ID.
+Entra Connect would soft-match the new AD account onto it. Nothing was created.</span>
 
-        <p class="tags">
-          Entra Connect Sync &bull; Password Hash Sync &bull; OU Filtering &bull; AD Recycle Bin
-        </p>
-      </section>
-
-      <!-- PHASE 3 -->
-      <section class="content-section">
-        <p class="section-label">Phase 3 &middot; IAM Automation</p>
-        <h2>Six Hybrid Lifecycle Tests</h2>
-
-        <p>
-          I ran the hybrid scripts from
-          <a href="https://github.com/Hawkode/entra-iam-automation" target="_blank" rel="noopener noreferrer">entra-iam-automation</a>
-          on DC01 against one test user, through her whole lifecycle. AD is the source of
-          authority, and each script makes its AD change, runs one delta sync, then finishes the
-          cloud side through Microsoft Graph.
-        </p>
+<span class="p">PS&gt;</span> .\Hybrid\New-HybridJoiner.ps1 -GivenName Harriet -Surname Cole -Department HR -JobTitle 'HR Advisor'
+18:52:25 [INFO] Created AD user harriet.cole@contoso.onmicrosoft.com in OU=HR,OU=Lab Users,DC=hawkode,DC=lab
+18:52:43 [INFO] Delta sync on DC01.hawkode.lab: Completed (Success)
+18:52:44 [INFO] Usage location GB set on harriet.cole@contoso.onmicrosoft.com
+18:52:45 [INFO] Assigned AAD_PREMIUM_P2 to harriet.cole@contoso.onmicrosoft.com
+18:52:45 [INFO] Hybrid joiners processed: 1. CSV (no passwords): output\HybridJoiners-20261123-185245.csv
+<span class="w">WARNING: Temporary passwords are shown once. Pass them on through a one-time secret link, not email or chat.</span></pre>
 
         <table class="spec">
-          <tr><th>Test</th><th>Result</th></tr>
-          <tr><td>Prep</td><td>Read what each script needs before running anything</td></tr>
-          <tr><td>Joiner</td><td>New AD user to synced, licensed Entra user in 20 seconds</td></tr>
-          <tr><td>Mover</td><td>HR to Finance in AD; dynamic groups re-scoped; leftover AD group access listed for review</td></tr>
-          <tr><td>Leaver</td><td>Disabled, password reset, groups removed, sessions revoked, licence removed in 23 seconds</td></tr>
-          <tr><td>Source of authority</td><td>Cloud script refused the synced user; Graph refused the edit too</td></tr>
-          <tr><td>Recycle Bin restore</td><td>Deleted in AD, restored: same <code>objectGUID</code>, same cloud object, no duplicate</td></tr>
+          <tr><th>Check</th><th>Result</th></tr>
+          <tr><td>AD</td><td>In <code>OU=HR,OU=Lab Users</code>, department HR, title HR Advisor</td></tr>
+          <tr><td>Entra</td><td>Synced from AD, usage location GB, department and title match, 1 licence</td></tr>
+          <tr><td>Groups</td><td>Joined <code>Dept-HR</code> by its dynamic rule</td></tr>
         </table>
 
-        <div class="grid">
-          <div class="card">
-            <h3>What Testing Found</h3>
-            <ul>
-              <li>AD and Entra UPNs must match, or the mover and leaver can&rsquo;t find the user. Fixed with a UPN suffix</li>
-              <li>The soft-match guard blocked a joiner whose UPN matched an existing cloud account</li>
-              <li>Graph SDK 2.41 fails on Windows PowerShell 5.1 (known assembly bug). Moved the DC to PowerShell 7</li>
-              <li>Mover review lists matter: the AD file share group stayed with the user until the leaver removed it</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Security Angle</h3>
-            <ul>
-              <li><strong>Abuse:</strong> with password hash sync, a leaver&rsquo;s old password still works in the cloud until the sync lands</li>
-              <li><strong>Detect:</strong> Entra audit log: Disable account, refresh token revoked, licence change</li>
-              <li><strong>Harden:</strong> AD first, sync, wait for disabled, then revoke sessions; restore from the Recycle Bin, never recreate</li>
-            </ul>
-          </div>
-        </div>
+        <p class="tags">
+          Joiner &bull; Soft-Match Protection &bull; Delta Sync &bull; Licensing
+        </p>
+      </section>
+
+      <!-- TEST 3 -->
+      <section class="content-section">
+        <p class="section-label">Test 3 &middot; Mover</p>
+        <h2>HR to Finance, and What Didn&rsquo;t Move</h2>
+
+        <p>
+          Before the move I added Harriet to an AD group, <code>GG-HR-FileShare</code>, standing in
+          for an HR file share. The mover changes department, title and OU in AD, syncs, and lists
+          access that doesn&rsquo;t follow the department. It removes nothing: only a person knows
+          whether Finance still needs that share.
+        </p>
+
+<pre class="console"><span class="p">PS&gt;</span> .\Hybrid\Move-HybridUser.ps1 -UserPrincipalName $upn -Department Finance -JobTitle 'Finance Analyst'
+<span class="w">18:57:25 [WARN] harriet.cole@contoso.onmicrosoft.com has no manager in AD. Add -Manager so the leaver can hand over the mailbox later.</span>
+18:57:26 [INFO] Moved harriet.cole@contoso.onmicrosoft.com in AD. department 'HR' -&gt; 'Finance',
+         job title 'HR Advisor' -&gt; 'Finance Analyst', move to OU=Finance,OU=Lab Users,DC=hawkode,DC=lab, delta sync
+18:57:43 [INFO] Delta sync on DC01.hawkode.lab: Completed (Success)
+18:57:44 [INFO] harriet.cole@contoso.onmicrosoft.com synced. Dynamic groups update within minutes.
+<span class="w">18:57:44 [WARN] 1 item(s) do not follow the move for harriet.cole@contoso.onmicrosoft.com.
+         Review with the new manager: AD group: GG-HR-FileShare</span></pre>
+
+        <table class="spec">
+          <tr><th>Check</th><th>Before</th><th>After</th></tr>
+          <tr><td>AD OU</td><td><code>OU=HR,OU=Lab Users</code></td><td><code>OU=Finance,OU=Lab Users</code></td></tr>
+          <tr><td>Department (AD and Entra)</td><td>HR</td><td>Finance</td></tr>
+          <tr><td>Title (AD and Entra)</td><td>HR Advisor</td><td>Finance Analyst</td></tr>
+          <tr><td>Cloud groups</td><td><code>Dept-HR</code></td><td><code>Dept-Finance</code>, <code>GG-HR-FileShare</code></td></tr>
+        </table>
+
+        <p>
+          The dynamic groups re-scoped on their own. <code>GG-HR-FileShare</code> stayed, in AD and
+          as a synced group in Entra: exactly the leftover access the review list flagged. Left
+          unreviewed, that&rsquo;s how permissions pile up over the years.
+        </p>
 
         <p class="tags">
-          Joiner-Mover-Leaver &bull; PowerShell 7 &bull; Microsoft Graph &bull; Entra Connect &bull; Dynamic Groups &bull; Source of Authority
+          Mover &bull; Dynamic Groups &bull; Access Review &bull; Privilege Creep
+        </p>
+      </section>
+
+      <!-- TEST 4 -->
+      <section class="content-section">
+        <p class="section-label">Test 4 &middot; Leaver</p>
+        <h2>Offboarding in the Right Order</h2>
+
+        <p>
+          With password hash sync, a leaver&rsquo;s cloud account accepts the old password until the
+          sync marks it disabled. So the leaver works AD first, then syncs and waits for Entra to
+          show the account disabled, and only then revokes sessions and removes the licence. I
+          checked the sync scope first: the Leavers OU sits inside it, so the cloud account is
+          disabled rather than deleted.
+        </p>
+
+<pre class="console"><span class="p">PS&gt;</span> .\Hybrid\Disable-HybridLeaver.ps1 -UserPrincipalName $upn -Ticket LAB-0004
+19:05:16 [INFO] Leaver plan for harriet.cole@contoso.onmicrosoft.com: AD: disable; reset password;
+         remove from 1 AD group(s): GG-HR-FileShare; clear department 'Finance';
+         description 'Leaver 2026-11-23 LAB-0004 by administrator'; move to OU=Leavers,OU=Lab Users,DC=hawkode,DC=lab;
+         delta sync; Entra: revoke sessions; remove direct licences
+Are you sure you want to perform this action? [Y] Yes  [N] No (default is "Y"): y
+19:05:20 [INFO] AD: disabled and password reset: harriet.cole@contoso.onmicrosoft.com
+19:05:20 [INFO] AD: removed harriet.cole@contoso.onmicrosoft.com from GG-HR-FileShare
+19:05:20 [INFO] AD: department cleared, description stamped, moved to OU=Leavers,OU=Lab Users,DC=hawkode,DC=lab
+19:05:38 [INFO] Delta sync on DC01.hawkode.lab: Completed (Success)
+19:05:38 [INFO] Sessions revoked: &lt;object-id&gt;
+19:05:39 [INFO] Removed 1 direct licence(s): &lt;object-id&gt;
+19:05:39 [INFO] Leaver done for harriet.cole@contoso.onmicrosoft.com, no manual items.</pre>
+
+        <table class="spec">
+          <tr><th>Check</th><th>After</th></tr>
+          <tr><td>AD</td><td>Disabled, in Leavers, department empty, description stamped with the ticket, 0 groups</td></tr>
+          <tr><td>Entra account</td><td>Disabled</td></tr>
+          <tr><td>Sessions valid from</td><td>23 Nov 2026 19:05:38</td></tr>
+          <tr><td>Licences and groups</td><td>0 and none: the file share group went through the sync, <code>Dept-Finance</code> through its rule</td></tr>
+        </table>
+
+        <p class="tags">
+          Leaver &bull; Deprovisioning &bull; Token Revocation &bull; Password Hash Sync
+        </p>
+      </section>
+
+      <!-- TEST 5 -->
+      <section class="content-section">
+        <p class="section-label">Test 5 &middot; Source of Authority</p>
+        <h2>The Cloud Is Read-Only for Synced Users</h2>
+
+        <p>
+          For a synced user, AD is the source of authority. I tried to break that three ways.
+        </p>
+
+<pre class="console"><span class="p">PS&gt;</span> .\Cloud\Move-CloudUser.ps1 -UserPrincipalName $upn -Department IT
+<span class="e">Exception: harriet.cole@contoso.onmicrosoft.com is synced from AD. Use the Hybrid script.</span>
+
+<span class="p">PS&gt;</span> Update-MgUser -UserId $upn -Department 'IT'
+<span class="e">Update-MgUser_UpdateExpanded: Unable to update the specified properties for on-premises mastered
+Directory Sync objects or objects currently undergoing migration.
+Status: 400 (BadRequest)  ErrorCode: Request_BadRequest</span>
+
+<span class="p">PS&gt;</span> .\Hybrid\Move-HybridUser.ps1 -UserPrincipalName 'oliver.bennett@contoso.onmicrosoft.com' -Department Finance -WhatIf
+<span class="e">Exception: oliver.bennett@contoso.onmicrosoft.com not found in AD.</span></pre>
+
+        <p>
+          The script guard gives a clear next step instead of a raw Graph error, and even without it
+          Graph refuses the change. Not everything is AD-mastered, though: usage location and
+          licences live only in the cloud, which is why the joiner sets them through Graph on a
+          synced user.
+        </p>
+
+        <p class="tags">
+          Source of Authority &bull; Microsoft Graph &bull; Guardrails
+        </p>
+      </section>
+
+      <!-- TEST 6 -->
+      <section class="content-section">
+        <p class="section-label">Test 6 &middot; Restore</p>
+        <h2>An Accidental Delete, Undone</h2>
+
+        <p>
+          I deleted Harriet in AD, synced, and found her in Entra&rsquo;s Deleted users. Then I
+          restored her from the AD Recycle Bin and synced again. Pass meant the same cloud account
+          coming back, not a new one.
+        </p>
+
+<pre class="console"><span class="p">PS&gt;</span> [Convert]::ToBase64String($guid.ToByteArray())    <span class="c"># equals the cloud OnPremisesImmutableId</span>
+<span class="p">PS&gt;</span> Remove-ADUser -Identity $guid -Confirm:$false
+<span class="p">PS&gt;</span> Invoke-Command -ComputerName DC01.hawkode.lab { Start-ADSyncSyncCycle -PolicyType Delta }    <span class="c"># Success</span>
+<span class="p">PS&gt;</span> Invoke-MgGraphRequest -Uri "v1.0/directory/deletedItems/$($cloud.Id)" | Select-Object displayName
+Harriet Cole
+<span class="p">PS&gt;</span> Get-ADObject -Filter "objectGUID -eq '$guid'" -IncludeDeletedObjects | Restore-ADObject
+<span class="p">PS&gt;</span> Invoke-Command -ComputerName DC01.hawkode.lab { Start-ADSyncSyncCycle -PolicyType Delta }    <span class="c"># Success</span></pre>
+
+        <table class="spec">
+          <tr><th>Check</th><th>Before delete</th><th>After restore</th></tr>
+          <tr><td>AD <code>objectGUID</code></td><td>&lt;guid&gt;</td><td>Same</td></tr>
+          <tr><td>AD OU and state</td><td>Leavers, disabled</td><td>Same</td></tr>
+          <tr><td>Entra object ID</td><td>&lt;object-id&gt;</td><td>Same</td></tr>
+          <tr><td>Entra <code>ImmutableId</code></td><td>Base64 of the <code>objectGUID</code></td><td>Same</td></tr>
+        </table>
+
+        <p>
+          The Recycle Bin keeps the object&rsquo;s identity, including the source anchor, so Entra
+          Connect matched the restored account to the soft-deleted cloud one and brought it back.
+          Recreating the account instead would have meant a new <code>objectGUID</code>, a new
+          anchor, and either a second cloud account or a soft-match by UPN, with the old object
+          ID and its history gone.
         </p>
 
         <figure class="evidence">
           <img src="img/hjml-01-onprem-panel.png" alt="Entra ID user On-premises panel showing sync enabled, the Leavers OU and the domain" />
-          <figcaption>The restored user in Entra ID: synced from AD, in the Leavers OU. Identifiers redacted.</figcaption>
+          <figcaption>The restored user in Entra: synced from AD, still in Leavers. Identifiers redacted.</figcaption>
         </figure>
+
+        <p class="tags">
+          AD Recycle Bin &bull; Source Anchor &bull; ImmutableId &bull; Disaster Recovery
+        </p>
+      </section>
+
+      <!-- AUDIT TRAIL -->
+      <section class="content-section">
+        <p class="section-label">Evidence</p>
+        <h2>The Audit Trail</h2>
+
+        <p>
+          Everything the scripts logged in the console also shows up in Entra&rsquo;s audit log,
+          recorded by Microsoft, including the refused edit from test 5. Times are UTC.
+        </p>
+
+        <table class="spec">
+          <tr><th>Time</th><th>Activity</th><th>Test</th></tr>
+          <tr><td>18:52:39-45</td><td>Add user, update, change licence</td><td>2 Joiner</td></tr>
+          <tr><td>18:52:54</td><td>Add member to group (<code>Dept-HR</code>)</td><td>2 Joiner</td></tr>
+          <tr><td>18:57:39-58:19</td><td>Update user; <code>Dept-Finance</code> in, <code>Dept-HR</code> out</td><td>3 Mover</td></tr>
+          <tr><td>19:05:33-40</td><td>Disable account, refresh tokens revoked, licence and groups removed</td><td>4 Leaver</td></tr>
+          <tr><td>19:17:52</td><td>Update user: <strong>Failure</strong> (property update not allowed)</td><td>5 Source of authority</td></tr>
+          <tr><td>19:21:12</td><td>Delete user</td><td>6 Restore</td></tr>
+          <tr><td>19:22:58</td><td>Restore user</td><td>6 Restore</td></tr>
+        </table>
 
         <figure class="evidence">
           <img src="img/hjml-02-audit-lifecycle.png" alt="Entra ID audit log for the test user: add, update, licence, group changes, disable, a failed update and restore" />
-          <figcaption>The whole lifecycle in the Entra audit log, including the refused edit (Failure) from the source of authority test.</figcaption>
+          <figcaption>The whole lifecycle in the Entra audit log.</figcaption>
         </figure>
 
         <figure class="evidence">
           <img src="img/hjml-03-audit-delete.png" alt="Entra ID audit log showing the Delete user event" />
-          <figcaption>The AD delete synced at 19:21; the restore brought the same object back at 19:22.</figcaption>
+          <figcaption>The delete is filed under the user&rsquo;s changed UPN, so it only shows with an Activity filter.</figcaption>
         </figure>
       </section>
 
@@ -329,20 +523,22 @@
         <div class="list">
           <p>
             <strong>Entra Connect on the DC:</strong> done to fit in 16 GB. In production it goes
-            on a dedicated member server, treated as Tier 0.
+            on a dedicated member server, treated as Tier 0, and the scripts run from a management
+            server.
           </p>
           <p>
-            <strong>Checkpoints on a DC:</strong> safe here because there is one DC. In a
-            multi-DC domain, reverting one causes USN rollback.
-          </p>
-          <p>
-            <strong>Domain:</strong> the lab uses the tenant&rsquo;s onmicrosoft.com domain as the
-            UPN suffix. In production, the AD suffix and the verified domain are the same real
-            domain.
+            <strong>Domain:</strong> the onmicrosoft.com domain stands in for a verified company
+            domain. In production the AD UPN suffix and the verified domain are the same real
+            domain, which removes the mismatch from test 1.
           </p>
           <p>
             <strong>No mailbox:</strong> the trial licence has no Exchange plan, so the leaver
-            skipped the shared mailbox step.
+            skipped converting the mailbox to shared. In production that step runs first, with HR
+            agreeing who gets access.
+          </p>
+          <p>
+            <strong>Temporary passwords:</strong> shown once in the console here. In production they
+            go to the manager through a one-time secret link.
           </p>
         </div>
       </section>
@@ -353,12 +549,13 @@
         <h2>Attack and Detect</h2>
 
         <p>
-          The gaps from Phase 1 set the next phase: Kerberoasting and LSASS dumping from KALI01
-          against the hardened DC, detected in its event logs, then the fixes proven with a
-          recheck.
+          Part 1 left two gaps open on the DC: Kerberos ticket auditing and LSA protection. The
+          next phase attacks both from KALI01, detects the attacks in the DC&rsquo;s event logs,
+          then fixes and rechecks.
         </p>
 
         <p>
+          <a class="button" href="../server-2025-dc-hardening/">Part 1: Harden the DC</a>
           <a class="button" href="https://github.com/Hawkode/hybrid-hardening-lab" target="_blank" rel="noopener noreferrer">View on GitHub</a>
           <a class="button" href="https://github.com/Hawkode/entra-iam-automation" target="_blank" rel="noopener noreferrer">The Automation</a>
           <a class="button" href="../">Back to Projects</a>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Hardening a Windows Server 2025 Domain Controller | Alex Mateescu</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="description" content="A Windows Server 2025 domain controller hardened with the Microsoft Security Baseline, then measured: Greenbone scans before and after, a PowerShell config check, and three gaps the baseline leaves open." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Hardening a Windows Server 2025 DC | Alex Mateescu" />
+  <meta property="og:description" content="A Windows Server 2025 domain controller hardened with the Microsoft Security Baseline, then measured: Greenbone scans before and after, a PowerShell config check, and three gaps the baseline leaves open." />
+  <meta property="og:url" content="https://hawkode.github.io/projects/server-2025-dc-hardening/" />
+
+  <link rel="stylesheet" href="../../style.css" />
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Evidence figures (scoped to this page, matches the site's green/dark theme) -->
+  <style>
+    .evidence { margin: 20px 18px 0 0; }
+    .evidence img {
+      width: 100%;
+      border: 1px solid rgba(22, 163, 74, 0.28);
+      border-radius: 8px;
+      box-shadow: 0 0 14px rgba(22, 163, 74, 0.08);
+      display: block;
+    }
+    .evidence figcaption {
+      color: #4ade80;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    table.spec { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+    table.spec th, table.spec td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(34, 197, 94, 0.18); vertical-align: top; }
+    table.spec th { color: #bbf7d0; font-weight: 600; }
+    table.spec td:first-child { color: #86efac; }
+    .evidence img { width: auto; max-width: 100%; }
+    pre.console {
+      background: #0b1220;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 18px 18px 0 0;
+      font-family: monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    pre.console .p { color: #4ade80; }
+    pre.console .e { color: #f87171; }
+    pre.console .w { color: #fbbf24; }
+    pre.console .c { color: #64748b; }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+
+      <section class="sidebar-block intro">
+        <h1>Alex Mateescu</h1>
+        <p class="role">IAM, Security &amp; Infrastructure</p>
+
+        <div class="contact">
+          <p><a href="mailto:al3ksmatee@gmail.com" style="color:inherit;">al3ksmatee@gmail.com</a></p>
+
+          <div class="social-icons">
+            <a href="https://www.linkedin.com/in/hawkode" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="https://www.credly.com/users/alexandru-mateescu.6fc48efb" target="_blank" rel="noopener noreferrer" aria-label="Credly">
+              <i class="fa-solid fa-certificate"></i>
+            </a>
+
+            <a href="https://tryhackme.com/p/Hawkode" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe">
+              <i class="fa-solid fa-user-secret"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-block">
+        <h2>Project</h2>
+        <p>
+          Part 1 of the hybrid hardening lab. A Windows Server 2025 domain controller hardened
+          with the Microsoft Security Baseline, then measured with Greenbone scans and a
+          PowerShell configuration check, which found three gaps the baseline leaves open.
+        </p>
+      </section>
+
+      <nav class="sidebar-block menu">
+        <a href="../../#about">About Me</a>
+        <a href="../../#skills">Core Skills</a>
+        <a href="../" class="active">Projects & Labs</a>
+        <a href="../../#guides">Guides</a>
+        <a href="../../#certifications">Certifications</a>
+        <a href="../../#cv">CV</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <section class="content-section">
+        <p class="section-label">Infrastructure Security Lab</p>
+        <h2>Hardening a Windows Server 2025 Domain Controller, and Proving It</h2>
+
+        <nav class="series-strip" aria-label="Hybrid hardening lab series">
+          <span class="series-name">Hybrid hardening lab</span>
+          <span class="series-current" aria-current="page"><span class="series-step">1</span> Harden and measure the DC</span>
+          <span class="series-sep" aria-hidden="true">&#8594;</span>
+          <a href="../hybrid-hardening-lab/"><span class="series-step">2</span> Hybrid IAM with Entra Connect</a>
+        </nav>
+
+        <p>
+          I built a Windows Server 2025 domain controller in a Hyper-V home lab, applied the
+          Microsoft Security Baseline, and then tried to prove the baseline had done something.
+          That turned out to be the interesting part: a vulnerability scanner showed no
+          difference at all, so I wrote a configuration check that did, and it found three gaps
+          the baseline leaves open.
+        </p>
+
+        <p>
+          Everything ran on a 16 GB laptop, with an evaluation licence and free tools only:
+          Hyper-V, Kali Linux and Greenbone (OpenVAS) Community Edition. Hyper-V checkpoints let
+          me scan the same DC in its clean and hardened states, so each comparison changes one
+          thing. Part 2 syncs this DC to Entra ID and tests my IAM automation against it.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <p class="section-label">Project Snapshot</p>
+        <h2>Overview</h2>
+
+        <div class="grid">
+          <div class="card">
+            <h3>What I Built</h3>
+            <ul>
+              <li>A Server 2025 DC (Gen 2, Secure Boot, vTPM) in a new forest</li>
+              <li>The Microsoft Security Baseline v2602, imported and linked by GPO</li>
+              <li>A Kali scanner VM with Greenbone Community Edition</li>
+              <li>Five scans: unauthenticated and authenticated, before and after</li>
+              <li><code>Get-HardeningState.ps1</code>, a read-only check of 19 settings</li>
+              <li>A GPO fix for one gap, proven by a rescan and a recheck</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Skills Demonstrated</h3>
+            <ul>
+              <li>Windows Server and AD build and hardening</li>
+              <li>Group Policy and security baselines</li>
+              <li>Vulnerability scanning and finding triage</li>
+              <li>Measuring a control instead of assuming it</li>
+              <li>PowerShell for configuration auditing</li>
+              <li>Working inside hard limits (16 GB RAM, one laptop)</li>
+            </ul>
+          </div>
+        </div>
+
+        <table class="spec">
+          <tr><th>Result</th><th>Value</th></tr>
+          <tr><td>Scan findings, before vs after</td><td>No change (Server 2025 defaults already pass)</td></tr>
+          <tr><td>Config check, at target</td><td>Clean 8 &rarr; hardened 16 &rarr; hardened v2 17 of 19</td></tr>
+          <tr><td>Gaps found</td><td>3: Print Spooler on the DC (fixed), Kerberos ticket audit reduced, LSA protection not active</td></tr>
+        </table>
+      </section>
+
+      <!-- PHASE 1 -->
+      <section class="content-section">
+        <p class="section-label">Phase 1 &middot; Build</p>
+        <h2>The Domain Controller</h2>
+
+        <p>
+          DC01 is a Generation 2 VM with Secure Boot and a virtual TPM, on an external Hyper-V
+          switch. I gave it a static address, promoted it to a new forest (<code>hawkode.lab</code>,
+          Windows Server 2025 functional level), and added DNS forwarders so it could resolve the
+          internet. Then I took the first checkpoint, <code>Clean DC</code>: the &ldquo;before&rdquo;
+          state every later comparison goes back to.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Build</h3>
+            <ul>
+              <li>Windows Server 2025 Standard evaluation, Desktop Experience</li>
+              <li>2 vCPU, 4 GB at build time, 60 GB disk</li>
+              <li>Static IP, DNS pointing at itself</li>
+              <li>New forest and domain: <code>hawkode.lab</code></li>
+              <li>Forwarders to public resolvers</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security Angle</h3>
+            <ul>
+              <li><strong>Abuse:</strong> a DC is Tier 0: whoever controls it controls the domain</li>
+              <li><strong>Detect:</strong> a known-clean checkpoint gives a baseline to compare against</li>
+              <li><strong>Harden:</strong> Secure Boot and vTPM from the start, before any software goes on</li>
+            </ul>
+          </div>
+        </div>
+
+        <figure class="evidence">
+          <img src="img/p1-01-vm-security.png" alt="Hyper-V settings for DC01: Secure Boot enabled with the Microsoft Windows template and the Trusted Platform Module enabled" />
+          <figcaption>DC01 VM security: Secure Boot (Microsoft Windows template) and a virtual TPM.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p1-02-domain.png" alt="Get-ADDomain output showing hawkode.lab at Windows2025Domain functional level" />
+          <figcaption>The new domain at the Windows Server 2025 functional level.</figcaption>
+        </figure>
+
+        <p class="tags">
+          Hyper-V &bull; Windows Server 2025 &bull; Active Directory &bull; DNS
+        </p>
+      </section>
+
+      <!-- PHASE 2 -->
+      <section class="content-section">
+        <p class="section-label">Phase 2 &middot; Harden</p>
+        <h2>The Microsoft Security Baseline</h2>
+
+        <p>
+          I downloaded the Security Compliance Toolkit baseline for Server 2025 (v2602) and
+          imported its GPOs with <code>Baseline-ADImport.ps1</code>. The first run was refused:
+          the scripts came from the internet and the execution policy blocked them, so I unblocked
+          the files rather than lowering the policy. I linked the Domain Controller GPO to the
+          Domain Controllers OU and the Domain Security GPO to the domain, ran
+          <code>gpupdate /force</code>, rebooted, and confirmed with <code>gpresult</code>.
+          Checkpoint: <code>Hardened DC</code>.
+        </p>
+
+        <table class="spec">
+          <tr><th>Area</th><th>What the baseline changes</th><th>Attack it closes</th></tr>
+          <tr><td>SMB</td><td>Signing required, SMBv1 off</td><td>NTLM relay, EternalBlue-class exploits</td></tr>
+          <tr><td>LDAP</td><td>Signing and channel binding</td><td>LDAP relay to take over AD</td></tr>
+          <tr><td>Legacy auth</td><td>NTLMv2 only, LM off, WDigest off</td><td>Weak hashes, cleartext credential caching</td></tr>
+          <tr><td>Logging</td><td>Advanced audit policy, PowerShell script block logging</td><td>Attacks leaving no trace</td></tr>
+          <tr><td>User rights</td><td>Tighter logon, RDP and service rights</td><td>Fewer accounts able to try</td></tr>
+        </table>
+
+        <div class="grid">
+          <div class="card">
+            <h3>What Can Break</h3>
+            <ul>
+              <li>Devices doing unsigned LDAP binds, such as older printers and MFPs looking up address books</li>
+              <li>Anything still on SMBv1 or NTLMv1</li>
+              <li>Fix: LDAPS and firmware updates, tested on a non-critical server first</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security Angle</h3>
+            <ul>
+              <li><strong>Abuse:</strong> NTLM and LDAP relay, credential theft from memory</li>
+              <li><strong>Detect:</strong> the audit policy the baseline turns on (logon, Kerberos, directory changes)</li>
+              <li><strong>Harden:</strong> Microsoft&rsquo;s own baseline, linked by GPO so it reapplies</li>
+            </ul>
+          </div>
+        </div>
+
+        <figure class="evidence">
+          <img src="img/p1-03-baseline-import.png" alt="Baseline-ADImport.ps1 importing the Windows Server 2025 v2602 baseline GPOs into hawkode.lab" />
+          <figcaption>Importing the v2602 baseline GPOs into the domain.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p1-04-gpresult.png" alt="gpresult showing the MSFT Windows Server 2025 v2602 Domain Controller and Domain Security GPOs applied" />
+          <figcaption><code>gpresult</code> on DC01: the Domain Controller and Domain Security baseline GPOs applied.</figcaption>
+        </figure>
+
+        <p class="tags">
+          Microsoft Security Baseline &bull; Security Compliance Toolkit &bull; Group Policy &bull; LDAP Signing &bull; NTLM
+        </p>
+      </section>
+
+      <!-- PHASE 3 -->
+      <section class="content-section">
+        <p class="section-label">Phase 3 &middot; Scanner</p>
+        <h2>Kali and Greenbone on 16 GB</h2>
+
+        <p>
+          KALI01 runs Greenbone Community Edition. It will also be the attacker in the next phase.
+          The first feed sync takes one to two hours, and a 16 GB host with two VMs and a browser
+          leaves little room, so most of the work in this phase was making it fit.
+        </p>
+
+        <table class="spec">
+          <tr><th>Problem</th><th>Cause</th><th>Fix</th></tr>
+          <tr><td>VM won&rsquo;t start: unable to allocate 6144 MB</td><td>Static memory needs the full amount free at start</td><td>DC01 at 2 GB, Kali at 3-4 GB, host apps closed</td></tr>
+          <tr><td>No boot image</td><td>Secure Boot on for a Linux guest</td><td>Secure Boot off for KALI01 only</td></tr>
+          <tr><td>Start greyed out: feed syncing</td><td>After a reboot the scanner reloads its tests (about 4 min)</td><td>Wait for &ldquo;Finished loading VTs&rdquo; in the log</td></tr>
+          <tr><td>Feed download stalls</td><td>Host went to sleep</td><td>Sleep off and charger in during the sync</td></tr>
+          <tr><td>DC01 won&rsquo;t start after a checkpoint</td><td>The checkpoint restores its old memory setting</td><td>Remove saved state, set memory again</td></tr>
+        </table>
+
+        <figure class="evidence">
+          <img src="img/p1-06-ram-limit.png" alt="Hyper-V error: KALI01 failed to start, unable to allocate 6144 MB of RAM" />
+          <figcaption>The 16 GB limit, early on. Both VMs only fit with DC01 on 2 GB and Kali on 3-4 GB.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p1-07-feed-status.png" alt="Greenbone feed status: NVTs current, SCAP, CERT and data objects updating" />
+          <figcaption>Feed sync in progress: the vulnerability tests are current, the rest still loading.</figcaption>
+        </figure>
+
+        <p class="tags">
+          Kali Linux &bull; Greenbone (OpenVAS) &bull; Hyper-V &bull; Troubleshooting
+        </p>
+      </section>
+
+      <!-- PHASE 4 -->
+      <section class="content-section">
+        <p class="section-label">Phase 4 &middot; Measure</p>
+        <h2>Five Scans, No Difference</h2>
+
+        <p>
+          I scanned DC01 in each state with the same target and config (Full and fast, all IANA
+          TCP ports, quality of detection 70 and above), changing only the checkpoint.
+          Authenticated scans log in over SMB with a dedicated domain account,
+          <code>svc-scan</code>. It needs admin rights to read the registry, which makes it a
+          Tier 0 account, so I deleted it before the DC was ever synced to the cloud.
+        </p>
+
+        <table class="spec">
+          <tr><th>Scan</th><th>Critical</th><th>High</th><th>Medium</th><th>Low</th></tr>
+          <tr><td>Unauthenticated, clean</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+          <tr><td>Unauthenticated, hardened</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+          <tr><td>Authenticated, clean</td><td>0</td><td>1</td><td>2</td><td>2</td></tr>
+          <tr><td>Authenticated, hardened</td><td>0</td><td>1</td><td>2</td><td>2</td></tr>
+          <tr><td>Authenticated, hardened v2</td><td>0</td><td>1</td><td>2</td><td>2</td></tr>
+        </table>
+
+        <figure class="evidence">
+          <img src="img/p1-08-unauth-counts.png" alt="Greenbone severity counts: 0 critical, 0 high, 1 medium, 1 low" />
+          <figcaption>Unauthenticated scan of the hardened DC: 1 Medium, 1 Low. The clean DC scored the same.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p1-09-unauth-results.png" alt="Greenbone results: DCE/RPC services enumeration (medium) and TCP timestamps (low)" />
+          <figcaption>The two findings: RPC enumeration (a DC needs RPC) and TCP timestamps. Both accepted. IP replaced with a documentation address.</figcaption>
+        </figure>
+
+        <p>
+          <strong>Triage.</strong> Logging in added three findings, all file-presence or version
+          checks. I worked through each one instead of taking the scanner&rsquo;s word for it:
+        </p>
+
+        <table class="spec">
+          <tr><th>Finding</th><th>CVSS</th><th>Real risk</th><th>Decision</th></tr>
+          <tr><td>IExpress untrusted search path</td><td>7.8</td><td>Low: needs an installer run from a writable folder</td><td>Accept, nobody builds installers on a DC</td></tr>
+          <tr><td>HID over USB code execution</td><td>6.9</td><td>Close to none on a VM</td><td>Accept on the VM, USB control on hardware</td></tr>
+          <tr><td>RPC services enumeration</td><td>5.0</td><td>Expected on a DC</td><td>Accept</td></tr>
+          <tr><td>Snipping Tool disclosure</td><td>3.3</td><td>None: the CVE affects the Store app, which isn&rsquo;t installed</td><td>Proved false positive, overridden</td></tr>
+          <tr><td>TCP timestamps</td><td>2.6</td><td>Uptime can be estimated</td><td>Accept</td></tr>
+        </table>
+
+        <figure class="evidence">
+          <img src="img/p1-10-auth-target.png" alt="Greenbone new target with the svc-scan SMB credential selected" />
+          <figcaption>The authenticated target: SMB (NTLM) login with the <code>svc-scan</code> domain account.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p1-11-auth-results.png" alt="Greenbone results dashboard: 136 results, mostly log level, a few low, medium and high" />
+          <figcaption>Authenticated results: 136 in total, 118 of them information only.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p1-12-snipping-check.png" alt="PowerShell showing only the legacy SnippingTool.exe and no Store Snipping Tool packages" />
+          <figcaption>The check behind the false positive: only the legacy <code>SnippingTool.exe</code>, no Store packages.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p1-13-false-positive.png" alt="Greenbone new override setting the finding's severity to False Positive" />
+          <figcaption>The override, so the finding stops coming back in every report.</figcaption>
+        </figure>
+
+        <p>
+          <strong>What this shows.</strong> Server 2025 already ships with SMB signing required,
+          SMBv1 off and LDAP signing on, so an unauthenticated scan has nothing to report. The
+          baseline&rsquo;s real changes (NTLM level, LDAP channel binding, UAC, logging, audit
+          policy) live inside Windows, and a vulnerability scanner checks patches and software,
+          not configuration. A scan can&rsquo;t prove hardening.
+        </p>
+
+        <p class="tags">
+          Vulnerability Scanning &bull; Authenticated Scans &bull; Triage &bull; False Positives &bull; CVSS
+        </p>
+      </section>
+
+      <!-- PHASE 5 -->
+      <section class="content-section">
+        <p class="section-label">Phase 5 &middot; Prove</p>
+        <h2>A Configuration Check That Can See It</h2>
+
+        <p>
+          So I wrote <code>Get-HardeningState.ps1</code>: read-only, run elevated on the DC, it
+          reads the settings the baseline is meant to change and scores them against a target. I
+          ran it on each checkpoint.
+        </p>
+
+        <table class="spec">
+          <tr><th>Setting</th><th>Clean</th><th>Hardened</th></tr>
+          <tr><td>LDAP channel binding</td><td>Not set</td><td>Always</td></tr>
+          <tr><td>LmCompatibilityLevel</td><td>Not set (OS default 3)</td><td>5, NTLMv2 only</td></tr>
+          <tr><td>LSA protection</td><td>Not set</td><td>Configured, UEFI lock</td></tr>
+          <tr><td>UAC admin token filtering</td><td>Not set</td><td>On</td></tr>
+          <tr><td>PowerShell script block logging</td><td>Not set</td><td>On</td></tr>
+          <tr><td>Audit: Credential Validation</td><td>Success</td><td>Success and Failure</td></tr>
+          <tr><td>Audit: Directory Service Changes</td><td>No auditing</td><td>Success</td></tr>
+          <tr><td>Audit: Kerberos Service Ticket Operations</td><td>Success</td><td><strong>Failure only</strong></td></tr>
+          <tr><td>Audit subcategories with no auditing</td><td>43</td><td>30</td></tr>
+          <tr><td>Print Spooler</td><td>Automatic</td><td><strong>Automatic</strong></td></tr>
+        </table>
+
+        <table class="spec">
+          <tr><th>State</th><th>At target (19 checks, v1.1)</th></tr>
+          <tr><td>Clean</td><td>8</td></tr>
+          <tr><td>Hardened (baseline)</td><td>16</td></tr>
+          <tr><td>Hardened v2 (+ Print Spooler GPO)</td><td>17</td></tr>
+        </table>
+
+        <p>
+          Version 1.0 of the script scored clean 7 and hardened 13. Checking the misses, three
+          were my targets being wrong for Server 2025 (the legacy LDAP value, WDigest, the LSA
+          value name), not the DC. Version 1.1 fixed them, which is why the screenshots below show
+          different numbers from the table.
+        </p>
+
+        <figure class="evidence">
+          <img src="img/p1-14-config-clean.png" alt="Get-HardeningState.ps1 output for the clean DC: 7 of 19 checks at target" />
+          <figcaption>Clean DC, script v1.0: 7 of 19 (8 with the v1.1 targets).</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p1-15-config-v2.png" alt="Get-HardeningState.ps1 output for hardened v2: 17 of 19 checks at target" />
+          <figcaption>Hardened v2, script v1.1: 17 of 19. The two misses are the open gaps below.</figcaption>
+        </figure>
+
+        <p class="tags">
+          PowerShell &bull; Configuration Audit &bull; Audit Policy &bull; Registry
+        </p>
+      </section>
+
+      <!-- PHASE 6 -->
+      <section class="content-section">
+        <p class="section-label">Phase 6 &middot; Gaps</p>
+        <h2>What the Baseline Leaves Open</h2>
+
+        <p>
+          <strong>Print Spooler on the DC (fixed).</strong> The scan&rsquo;s RPC list showed
+          <code>spoolsv.exe</code> listening, before and after the baseline. On a DC that&rsquo;s
+          the PrintNightmare path, and the PrinterBug lets any domain user force the DC to
+          authenticate to a host they control. I added a GPO to disable it on the Domain
+          Controllers OU, after the four baseline scans so that comparison stayed clean. The v2
+          scan no longer lists the spooler or its named pipe.
+        </p>
+
+        <figure class="evidence">
+          <img src="img/p1-16-spooler-gpo.png" alt="Group Policy setting: Print Spooler service Disabled" />
+          <figcaption>The lab GPO: Print Spooler service disabled.</figcaption>
+        </figure>
+
+        <figure class="evidence">
+          <img src="img/p1-17-spooler-gpresult.png" alt="gpresult showing the Lab - DC Disable Print Spooler GPO applied" />
+          <figcaption>Applied on DC01: <code>Lab - DC Disable Print Spooler</code>.</figcaption>
+        </figure>
+
+        <p>
+          <strong>Kerberos ticket auditing cut to Failure (open).</strong> The clean DC logs
+          successful service ticket requests (event 4769). The baseline trims that noisy event and
+          loses Kerberoasting visibility with it. The fix is an audit setting above the baseline,
+          which belongs with the detection work in the next phase.
+        </p>
+
+        <p>
+          <strong>LSA protection configured, not active (open).</strong> The baseline sets LSA
+          protection with a UEFI lock, and DC01 rebooted after. But an elevated session can still
+          read the LSASS process, and the event that confirms protection never appears. So LSASS
+          dumping is still possible. I haven&rsquo;t found the cause yet; the next phase proves it
+          with a dump attempt, then fixes and rechecks.
+        </p>
+
+        <figure class="evidence">
+          <img src="img/p1-18-lsa-gap.png" alt="RunAsPPLBoot is 1 and the DC rebooted, but Get-Process can still read lsass.exe modules" />
+          <figcaption>Configured (<code>RunAsPPLBoot = 1</code>, rebooted) but not protected: LSASS modules are still readable.</figcaption>
+        </figure>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Gaps</h3>
+            <ul>
+              <li>Print Spooler on DCs: fixed and proven</li>
+              <li>4769 success auditing: next phase</li>
+              <li>LSA protection: prove, then fix</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security Angle</h3>
+            <ul>
+              <li><strong>Abuse:</strong> PrinterBug / forced authentication (T1187), Kerberoasting (T1558.003), LSASS dumping (T1003.001)</li>
+              <li><strong>Detect:</strong> event 4769 with success auditing back on; LSASS access events</li>
+              <li><strong>Harden:</strong> Spooler off on every DC, audit above the baseline, LSA protection verified, not assumed</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tags">
+          PrintNightmare &bull; Kerberoasting &bull; LSA Protection &bull; MITRE ATT&amp;CK &bull; Group Policy
+        </p>
+      </section>
+
+      <!-- CHECKPOINTS -->
+      <section class="content-section">
+        <p class="section-label">Method</p>
+        <h2>One Change per Checkpoint</h2>
+
+        <p>
+          Every state on this page is a checkpoint, so any scan or check can be rerun against it.
+          The tree grew as the project did: clean, hardened, scan-ready copies of each with the
+          scan account, hardened v2 with the spooler fix, then the states for Part 2.
+        </p>
+
+        <figure class="evidence">
+          <img src="img/p1-05-checkpoints.png" alt="Hyper-V Manager with DC01 and KALI01 running and the DC01 checkpoint tree" />
+          <figcaption>DC01 and KALI01 running side by side, with the checkpoint tree behind the comparisons.</figcaption>
+        </figure>
+      </section>
+
+      <!-- CAVEAT -->
+      <section class="content-section">
+        <p class="section-label">Scope &amp; Honesty</p>
+        <h2>Lab vs Production</h2>
+
+        <div class="list">
+          <p>
+            <strong>Checkpoints on a DC:</strong> safe here because there is one DC. Reverting a DC
+            in a multi-DC domain causes USN rollback.
+          </p>
+          <p>
+            <strong>Scan account:</strong> <code>svc-scan</code> had admin rights for authenticated
+            scans and was deleted after. In production a scan account is Tier 0, gets a long random
+            password, and is restricted to the scanner&rsquo;s address.
+          </p>
+          <p>
+            <strong>Rollout:</strong> the baseline went straight onto the only DC. In production it
+            goes to a test server first, after checking for unsigned LDAP binds and NTLMv1.
+          </p>
+          <p>
+            <strong>Evaluation licence:</strong> 180 days. The lab is documented so it can be
+            rebuilt from the repo.
+          </p>
+        </div>
+      </section>
+
+      <!-- NEXT -->
+      <section class="content-section">
+        <p class="section-label">Next</p>
+        <h2>Part 2: Hybrid IAM</h2>
+
+        <p>
+          The hardened DC is synced to Entra ID with Entra Connect, and my joiner, mover and leaver
+          automation is tested against it end to end. After that, the attack phase: Kerberoasting
+          and LSASS dumping from KALI01, to close the two open gaps above with detection and proof.
+        </p>
+
+        <p>
+          <a class="button" href="../hybrid-hardening-lab/">Part 2: Hybrid IAM</a>
+          <a class="button" href="https://github.com/Hawkode/hybrid-hardening-lab" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+          <a class="button" href="../">Back to Projects</a>
+        </p>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>

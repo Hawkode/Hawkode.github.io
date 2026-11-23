@@ -225,14 +225,25 @@
         </article>
 
         <article class="project">
-          <h3>Hybrid Hardening Lab: Windows Server 2025 and Entra Connect</h3>
+          <h3>Hybrid Hardening Lab: Harden a DC, Then Prove IAM Automation on It</h3>
 
           <p>
-            Hardened a Server 2025 domain controller with the Microsoft Security Baseline and
-            measured it with scans and a PowerShell config check (8 to 17 of 19 settings at target,
-            three gaps found). Then synced it to Entra ID and proved my hybrid joiner, mover and
-            leaver automation end to end, backed by the Entra audit log.
+            A two-part lab on one Windows Server 2025 domain controller in Hyper-V: harden it and
+            measure the result, then sync it to Entra ID and test my IAM automation against it.
           </p>
+
+          <ul>
+            <li>
+              <strong>1. Harden:</strong> <a href="projects/server-2025-dc-hardening/">Hardening a Windows Server 2025 DC</a>.
+              Microsoft Security Baseline, five Greenbone scans that showed no difference, and a
+              PowerShell config check that did (8 to 17 of 19 settings at target), with three gaps found.
+            </li>
+            <li>
+              <strong>2. Hybrid IAM:</strong> <a href="projects/hybrid-hardening-lab/">Testing JML automation through Entra Connect</a>.
+              Joiner in 20 seconds, leaver in 23, source of authority enforced, and an AD Recycle Bin
+              restore that brought back the same cloud identity, all in the Entra audit log.
+            </li>
+          </ul>
 
           <p class="tags">
             Windows Server 2025 &bull; Microsoft Security Baseline &bull; Greenbone &bull; Entra Connect &bull;
@@ -240,7 +251,6 @@
           </p>
 
           <p>
-            <a href="projects/hybrid-hardening-lab/">Read project details</a> &middot;
             <a href="https://github.com/Hawkode/hybrid-hardening-lab" target="_blank" rel="noopener noreferrer">View on GitHub</a>
           </p>
         </article>

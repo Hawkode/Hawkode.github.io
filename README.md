@@ -9,7 +9,7 @@ Projects, labs, tools and guides across IAM, security and infrastructure, writte
 **Identity and access**
 - [IAM Lab in Microsoft Entra ID](https://hawkode.github.io/projects/entra-iam-lab/): dynamic groups, joiner-mover-leaver, Conditional Access, PIM, access reviews and SSO, built from an empty tenant.
 - [Entra IAM Automation](https://github.com/Hawkode/entra-iam-automation): PowerShell and Microsoft Graph for cloud and hybrid lifecycle, reporting and access reviews.
-- [Hybrid hardening lab](https://hawkode.github.io/projects/hybrid-hardening-lab/): Server 2025 DC hardened and measured, synced with Entra Connect, hybrid joiner-mover-leaver automation tested end to end.
+- Hybrid hardening lab: [1. Harden a Server 2025 DC](https://hawkode.github.io/projects/server-2025-dc-hardening/) (baseline, scans, config check, three gaps) and [2. Hybrid IAM](https://hawkode.github.io/projects/hybrid-hardening-lab/) (Entra Connect, six joiner-mover-leaver tests, audit trail).
 - [Two-site domain consolidation](https://hawkode.github.io/projects/windows-server-2022-domain-migration/): two office domains merged into one, with 60+ accounts matched to their Entra ID identities.
 
 **Windows endpoint security series**

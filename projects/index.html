@@ -141,20 +141,25 @@
         </article>
 
         <article class="project">
-          <h3>Hybrid Hardening Lab: Windows Server 2025 and Entra Connect</h3>
+          <h3>Hybrid Hardening Lab: Harden a DC, Then Prove IAM Automation on It</h3>
 
           <p>
-            Hardened a Server 2025 domain controller with the Microsoft Security Baseline, then
-            measured it: before/after Greenbone scans showed no change, so a PowerShell config check
-            proved the real one (8 to 17 of 19 settings at target) and found three gaps the baseline
-            leaves open.
+            A two-part lab on one Windows Server 2025 domain controller in Hyper-V: harden it and
+            measure the result, then sync it to Entra ID and test my IAM automation against it.
           </p>
 
-          <p>
-            Synced the DC to Entra ID with Entra Connect and ran six hybrid lifecycle tests with my
-            own automation: joiner in 20 seconds, leaver in 23, source of authority enforced, and an
-            AD Recycle Bin restore that brought back the same cloud identity.
-          </p>
+          <ul>
+            <li>
+              <strong>1. Harden:</strong> <a href="server-2025-dc-hardening/">Hardening a Windows Server 2025 DC</a>.
+              Microsoft Security Baseline, five Greenbone scans that showed no difference, and a
+              PowerShell config check that did (8 to 17 of 19 settings at target), with three gaps found.
+            </li>
+            <li>
+              <strong>2. Hybrid IAM:</strong> <a href="hybrid-hardening-lab/">Testing JML automation through Entra Connect</a>.
+              Joiner in 20 seconds, leaver in 23, source of authority enforced, and an AD Recycle Bin
+              restore that brought back the same cloud identity, all in the Entra audit log.
+            </li>
+          </ul>
 
           <p class="tags">
             Windows Server 2025 &bull; Microsoft Security Baseline &bull; Greenbone &bull; Entra Connect &bull;
@@ -162,7 +167,6 @@
           </p>
 
           <p>
-            <a href="hybrid-hardening-lab/">Read project details</a> &middot;
             <a href="https://github.com/Hawkode/hybrid-hardening-lab" target="_blank" rel="noopener noreferrer">View on GitHub</a>
           </p>
         </article>
