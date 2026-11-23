@@ -259,6 +259,7 @@
               <li>The first synced users were <code>@hawkode.lab</code> in AD but onmicrosoft.com in Entra</li>
               <li>Neither lookup would find both, so both scripts would fail</li>
               <li>Fix: add the onmicrosoft.com domain as a UPN suffix in AD, and use it for new users</li>
+              <li>Fixed properly in the scripts afterwards: see <a href="#fixed-and-retested">Fixed and Retested</a></li>
             </ul>
           </div>
           <div class="card">
@@ -513,6 +514,35 @@ Harriet Cole
           <img src="img/hjml-03-audit-delete.png" alt="Entra ID audit log showing the Delete user event" />
           <figcaption>The delete is filed under the user&rsquo;s changed UPN, so it only shows with an Activity filter.</figcaption>
         </figure>
+      </section>
+
+      <!-- FIXED AND RETESTED -->
+      <section class="content-section" id="fixed-and-retested">
+        <p class="section-label">Follow-up</p>
+        <h2>Fixed and Retested</h2>
+
+        <p>
+          The lab run passed, but it turned up gaps in the scripts. I fixed them, retested on DC01
+          the same evening, and released the fixes.
+        </p>
+
+        <table class="spec">
+          <tr><th>Gap</th><th>Fix</th><th>Retest</th></tr>
+          <tr><td>Mover and leaver matched AD and Entra by UPN</td><td>Match through the source anchor (<code>mS-DS-ConsistencyGuid</code> = <code>OnPremisesImmutableId</code>)</td><td>Found <code>hy.alice</code>, whose UPNs differ. The old code failed on her</td></tr>
+          <tr><td>Joiner accepted the AD DNS root as its domain</td><td>Also check the domain is verified in Entra ID</td><td><code>hawkode.lab</code> refused before anything was created</td></tr>
+          <tr><td>Graph sign-in fails on PowerShell 5.1</td><td>Stop with a clear message before sign-in</td><td>Pester test; PowerShell 7 required</td></tr>
+          <tr><td>Stale accounts report: AD logon lookup by UPN</td><td>Match through the source anchor, one AD query</td><td>Alice&rsquo;s AD logon counted; no longer flagged stale</td></tr>
+        </table>
+
+        <p>
+          After the fixes, a full joiner, mover and leaver run on a new user took 18, 17 and 18
+          seconds, and MFA method removal on a cloud leaver worked first time. Released as
+          <a href="https://github.com/Hawkode/entra-iam-automation/releases" target="_blank" rel="noopener noreferrer">entra-iam-automation v1.4.0 and v1.4.1</a>.
+        </p>
+
+        <p class="tags">
+          Source Anchor &bull; Pester &bull; Release Management &bull; Retesting
+        </p>
       </section>
 
       <!-- CAVEAT -->
