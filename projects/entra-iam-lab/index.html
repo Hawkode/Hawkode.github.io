@@ -616,9 +616,10 @@
             the group membership drops.
           </p>
           <p>
-            <strong>Hybrid identity:</strong> the lab is cloud-only. A full build would add an
-            on-premises Active Directory synced to Entra ID, which I have done separately in my
-            Windows Server 2022 domain controller migration project.
+            <strong>Hybrid identity:</strong> this lab was built cloud-only. I later synced the same
+            tenant with a hardened Windows Server 2025 domain controller through Entra Connect in the
+            <a href="../hybrid-hardening-lab/">hybrid hardening lab</a>, and tested the hybrid
+            joiner, mover and leaver scripts there.
           </p>
           <p>
             <strong>Break-glass fail-closed:</strong> I first set the access review on the
@@ -644,7 +645,8 @@
         </p>
 
         <p>
-          <strong>Not covered here:</strong> hybrid identity, which is in a separate project, and
+          <strong>Not covered here:</strong> hybrid identity, which is in the
+          <a href="../hybrid-hardening-lab/">hybrid hardening lab</a> on the same tenant, and
           long-term log export to a SIEM.
         </p>
 
